@@ -26,3 +26,7 @@ export function formatDay(date: string, index: number): string {
   // Noon avoids the date shifting across a timezone boundary.
   return new Date(`${date}T12:00:00`).toLocaleDateString("en-US", { weekday: "short" });
 }
+
+export function formatFeet(value: number | null | undefined): string {
+  return value == null ? "—" : `${Math.round(value).toLocaleString("en-US")} ft`;
+}

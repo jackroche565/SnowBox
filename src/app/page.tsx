@@ -1,5 +1,5 @@
-import SnowApp from "@/components/SnowApp";
+import Overview from "@/components/Overview";
 
 export default function Home() {
-  return <SnowApp />;
+  return <Overview />;
 }

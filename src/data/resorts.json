@@ -1,21 +1,357 @@
 [
-  { "id": "stowe", "name": "Stowe", "state": "VT", "lat": 44.5303, "lon": -72.7814, "passes": ["Epic"], "summitFt": 3625, "verticalFt": 2360 },
-  { "id": "okemo", "name": "Okemo", "state": "VT", "lat": 43.4018, "lon": -72.717, "passes": ["Epic"], "summitFt": 3344, "verticalFt": 2200 },
-  { "id": "mount-snow", "name": "Mount Snow", "state": "VT", "lat": 42.9602, "lon": -72.9204, "passes": ["Epic"], "summitFt": 3600, "verticalFt": 1700 },
-  { "id": "killington", "name": "Killington", "state": "VT", "lat": 43.6045, "lon": -72.8201, "passes": ["Ikon"], "summitFt": 4241, "verticalFt": 3050 },
-  { "id": "sugarbush", "name": "Sugarbush", "state": "VT", "lat": 44.1359, "lon": -72.8944, "passes": ["Ikon"], "summitFt": 4083, "verticalFt": 2600 },
-  { "id": "stratton", "name": "Stratton", "state": "VT", "lat": 43.1134, "lon": -72.9081, "passes": ["Ikon"], "summitFt": 3875, "verticalFt": 2003 },
-  { "id": "jay-peak", "name": "Jay Peak", "state": "VT", "lat": 44.927, "lon": -72.505, "passes": ["Indy"], "summitFt": 3968, "verticalFt": 2153 },
-  { "id": "bolton-valley", "name": "Bolton Valley", "state": "VT", "lat": 44.4214, "lon": -72.8497, "passes": ["Indy"], "summitFt": 3150, "verticalFt": 1704 },
-  { "id": "magic-mountain", "name": "Magic Mountain", "state": "VT", "lat": 43.2017, "lon": -72.773, "passes": ["Indy"], "summitFt": 2850, "verticalFt": 1700 },
-  { "id": "loon", "name": "Loon Mountain", "state": "NH", "lat": 44.0364, "lon": -71.6214, "passes": ["Ikon"], "summitFt": 3050, "verticalFt": 2100 },
-  { "id": "bretton-woods", "name": "Bretton Woods", "state": "NH", "lat": 44.258, "lon": -71.4414, "passes": ["Ikon"], "summitFt": 3100, "verticalFt": 1500 },
-  { "id": "attitash", "name": "Attitash", "state": "NH", "lat": 44.0828, "lon": -71.2294, "passes": ["Epic"], "summitFt": 2350, "verticalFt": 1750 },
-  { "id": "wildcat", "name": "Wildcat", "state": "NH", "lat": 44.264, "lon": -71.239, "passes": ["Epic"], "summitFt": 4062, "verticalFt": 2112 },
-  { "id": "mount-sunapee", "name": "Mount Sunapee", "state": "NH", "lat": 43.3316, "lon": -72.08, "passes": ["Epic"], "summitFt": 2743, "verticalFt": 1510 },
-  { "id": "black-mountain-nh", "name": "Black Mountain", "state": "NH", "lat": 44.1791, "lon": -71.1629, "passes": ["Indy"], "summitFt": 3303, "verticalFt": 1100 },
-  { "id": "sunday-river", "name": "Sunday River", "state": "ME", "lat": 44.4734, "lon": -70.8566, "passes": ["Ikon"], "summitFt": 3140, "verticalFt": 2340 },
-  { "id": "sugarloaf", "name": "Sugarloaf", "state": "ME", "lat": 45.0314, "lon": -70.3131, "passes": ["Ikon"], "summitFt": 4237, "verticalFt": 2820 },
-  { "id": "saddleback", "name": "Saddleback", "state": "ME", "lat": 44.9364, "lon": -70.504, "passes": ["Indy"], "summitFt": 4120, "verticalFt": 2000 },
-  { "id": "hunter", "name": "Hunter Mountain", "state": "NY", "lat": 42.2029, "lon": -74.2097, "passes": ["Epic"], "summitFt": 3200, "verticalFt": 1600 }
+  {
+    "id": "stowe",
+    "name": "Stowe",
+    "state": "VT",
+    "lat": 44.5303,
+    "lon": -72.7814,
+    "passes": [
+      "Epic"
+    ],
+    "summitFt": 3719,
+    "baseFt": 1359,
+    "verticalFt": 2360,
+    "trails": 116,
+    "trailMapUrl": "https://www.stowe.com/the-mountain/about-the-mountain/trail-maps.aspx",
+    "snowReportUrl": "https://www.stowe.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "webcamUrl": "https://www.stowe.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "estimates": [
+      "summitFt",
+      "baseFt"
+    ]
+  },
+  {
+    "id": "okemo",
+    "name": "Okemo",
+    "state": "VT",
+    "lat": 43.4018,
+    "lon": -72.717,
+    "passes": [
+      "Epic"
+    ],
+    "summitFt": 3344,
+    "baseFt": 1144,
+    "verticalFt": 2200,
+    "trails": 123,
+    "trailMapUrl": "https://www.okemo.com/the-mountain/about-the-mountain/trail-maps.aspx",
+    "snowReportUrl": "https://www.okemo.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "webcamUrl": "https://www.okemo.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+  },
+  {
+    "id": "mount-snow",
+    "name": "Mount Snow",
+    "state": "VT",
+    "lat": 42.9602,
+    "lon": -72.9204,
+    "passes": [
+      "Epic"
+    ],
+    "summitFt": 3600,
+    "baseFt": 1900,
+    "verticalFt": 1700,
+    "trails": 86,
+    "trailMapUrl": "https://www.mountsnow.com/the-mountain/about-the-mountain/trail-maps.aspx",
+    "snowReportUrl": "https://www.mountsnow.com/the-mountain/mountain-conditions/weather-report.aspx",
+    "webcamUrl": "https://www.mountsnow.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+  },
+  {
+    "id": "killington",
+    "name": "Killington",
+    "state": "VT",
+    "lat": 43.6045,
+    "lon": -72.8201,
+    "passes": [
+      "Ikon"
+    ],
+    "summitFt": 4241,
+    "baseFt": 1165,
+    "verticalFt": 3050,
+    "trails": 155,
+    "trailMapUrl": "https://www.killington.com/the-mountain/trail-area-maps/winter-trail-guide/",
+    "snowReportUrl": "https://www.killington.com/mountain-report",
+    "webcamUrl": "https://www.killington.com/the-mountain/conditions-weather/webcam/"
+  },
+  {
+    "id": "sugarbush",
+    "name": "Sugarbush",
+    "state": "VT",
+    "lat": 44.1359,
+    "lon": -72.8944,
+    "passes": [
+      "Ikon"
+    ],
+    "summitFt": 4083,
+    "baseFt": 1483,
+    "verticalFt": 2600,
+    "trails": 111,
+    "trailMapUrl": "https://www.sugarbush.com/mountain",
+    "snowReportUrl": "https://www.sugarbush.com/mountain/conditions",
+    "webcamUrl": "https://www.sugarbush.com/mountain/webcams",
+    "estimates": [
+      "trailMapUrl"
+    ]
+  },
+  {
+    "id": "stratton",
+    "name": "Stratton",
+    "state": "VT",
+    "lat": 43.1134,
+    "lon": -72.9081,
+    "passes": [
+      "Ikon"
+    ],
+    "summitFt": 3875,
+    "baseFt": 1872,
+    "verticalFt": 2003,
+    "trails": 99,
+    "trailMapUrl": "https://www.stratton.com/the-mountain/interactive-trail-map",
+    "snowReportUrl": "https://www.stratton.com/the-mountain/mountain-report",
+    "webcamUrl": "https://www.stratton.com/the-mountain/webcams"
+  },
+  {
+    "id": "jay-peak",
+    "name": "Jay Peak",
+    "state": "VT",
+    "lat": 44.927,
+    "lon": -72.505,
+    "passes": [
+      "Indy"
+    ],
+    "summitFt": 3968,
+    "baseFt": 1815,
+    "verticalFt": 2153,
+    "trails": 81,
+    "trailMapUrl": "https://jaypeakresort.com/skiing-riding/snow-report-maps/trail-map",
+    "snowReportUrl": "https://jaypeakresort.com/skiing-riding/snow-report-maps/snow-report",
+    "webcamUrl": "https://jaypeakresort.com/resort/photo-day"
+  },
+  {
+    "id": "bolton-valley",
+    "name": "Bolton Valley",
+    "state": "VT",
+    "lat": 44.4214,
+    "lon": -72.8497,
+    "passes": [
+      "Indy"
+    ],
+    "summitFt": 3150,
+    "baseFt": 2100,
+    "verticalFt": 1704,
+    "trails": 71,
+    "trailMapUrl": "https://www.boltonvalley.com/winter/trail-maps-snow-reports/",
+    "snowReportUrl": "https://www.boltonvalley.com/winter/trail-maps-snow-reports/snow-reports/",
+    "webcamUrl": "https://www.boltonvalley.com/the-resort/live-webcams/",
+    "estimates": [
+      "verticalFt"
+    ]
+  },
+  {
+    "id": "magic-mountain",
+    "name": "Magic Mountain",
+    "state": "VT",
+    "lat": 43.2017,
+    "lon": -72.773,
+    "passes": [
+      "Indy"
+    ],
+    "summitFt": 2850,
+    "baseFt": 1350,
+    "verticalFt": 1500,
+    "trails": 39,
+    "trailMapUrl": "https://www.magicmtn.com/trail-map",
+    "snowReportUrl": "https://www.magicmtn.com/snow-report",
+    "webcamUrl": "https://www.magicmtn.com/snow-report",
+    "estimates": [
+      "trails",
+      "webcamUrl"
+    ]
+  },
+  {
+    "id": "loon",
+    "name": "Loon Mountain",
+    "state": "NH",
+    "lat": 44.0364,
+    "lon": -71.6214,
+    "passes": [
+      "Ikon"
+    ],
+    "summitFt": 3050,
+    "baseFt": 860,
+    "verticalFt": 2190,
+    "trails": 73,
+    "trailMapUrl": "https://www.loonmtn.com/mountain-maps",
+    "snowReportUrl": "https://www.loonmtn.com/mountain-report",
+    "webcamUrl": "https://www.loonmtn.com/explore/snow-conditions/webcams",
+    "estimates": [
+      "baseFt",
+      "verticalFt"
+    ]
+  },
+  {
+    "id": "bretton-woods",
+    "name": "Bretton Woods",
+    "state": "NH",
+    "lat": 44.258,
+    "lon": -71.4414,
+    "passes": [
+      "Ikon"
+    ],
+    "summitFt": 3100,
+    "baseFt": 1600,
+    "verticalFt": 1500,
+    "trails": 100,
+    "trailMapUrl": "https://www.brettonwoods.com/plan-visit/maps/",
+    "snowReportUrl": "https://www.brettonwoods.com/snow-trail-report/",
+    "webcamUrl": "https://www.brettonwoods.com/live-cam-forecast/"
+  },
+  {
+    "id": "attitash",
+    "name": "Attitash",
+    "state": "NH",
+    "lat": 44.0828,
+    "lon": -71.2294,
+    "passes": [
+      "Epic"
+    ],
+    "summitFt": 2350,
+    "baseFt": 600,
+    "verticalFt": 1750,
+    "trails": 68,
+    "trailMapUrl": "https://www.attitash.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "snowReportUrl": "https://www.attitash.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "webcamUrl": "https://www.attitash.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+  },
+  {
+    "id": "wildcat",
+    "name": "Wildcat",
+    "state": "NH",
+    "lat": 44.264,
+    "lon": -71.239,
+    "passes": [
+      "Epic"
+    ],
+    "summitFt": 4062,
+    "baseFt": 1950,
+    "verticalFt": 2112,
+    "trails": 49,
+    "trailMapUrl": "https://www.skiwildcat.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "snowReportUrl": "https://www.skiwildcat.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "webcamUrl": "https://www.skiwildcat.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+  },
+  {
+    "id": "mount-sunapee",
+    "name": "Mount Sunapee",
+    "state": "NH",
+    "lat": 43.3316,
+    "lon": -72.08,
+    "passes": [
+      "Epic"
+    ],
+    "summitFt": 2743,
+    "baseFt": 1230,
+    "verticalFt": 1513,
+    "trails": 66,
+    "trailMapUrl": "https://www.mountsunapee.com/the-mountain/about-the-mountain/trail-maps.aspx",
+    "snowReportUrl": "https://www.mountsunapee.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "webcamUrl": "https://www.mountsunapee.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+  },
+  {
+    "id": "black-mountain-nh",
+    "name": "Black Mountain",
+    "state": "NH",
+    "lat": 44.1791,
+    "lon": -71.1629,
+    "passes": [
+      "Indy"
+    ],
+    "summitFt": 2350,
+    "baseFt": 1250,
+    "verticalFt": 1100,
+    "trails": 45,
+    "trailMapUrl": "https://www.blackmt.com/trail-map",
+    "snowReportUrl": "https://www.blackmt.com/conditions",
+    "webcamUrl": "https://www.blackmt.com/conditions",
+    "estimates": [
+      "summitFt",
+      "baseFt",
+      "webcamUrl"
+    ]
+  },
+  {
+    "id": "sunday-river",
+    "name": "Sunday River",
+    "state": "ME",
+    "lat": 44.4734,
+    "lon": -70.8566,
+    "passes": [
+      "Ikon"
+    ],
+    "summitFt": 3140,
+    "baseFt": 800,
+    "verticalFt": 2340,
+    "trails": 135,
+    "trailMapUrl": "https://www.sundayriver.com/resort-maps",
+    "snowReportUrl": "https://www.sundayriver.com/mountain-report",
+    "webcamUrl": "https://www.sundayriver.com/mountain-report",
+    "estimates": [
+      "webcamUrl"
+    ]
+  },
+  {
+    "id": "sugarloaf",
+    "name": "Sugarloaf",
+    "state": "ME",
+    "lat": 45.0314,
+    "lon": -70.3131,
+    "passes": [
+      "Ikon"
+    ],
+    "summitFt": 4237,
+    "baseFt": 1417,
+    "verticalFt": 2820,
+    "trails": 176,
+    "trailMapUrl": "https://www.sugarloaf.com/mountain-info/mountain-maps",
+    "snowReportUrl": "https://www.sugarloaf.com/mountain-report",
+    "webcamUrl": "https://www.sugarloaf.com/mountain-report",
+    "estimates": [
+      "webcamUrl"
+    ]
+  },
+  {
+    "id": "saddleback",
+    "name": "Saddleback",
+    "state": "ME",
+    "lat": 44.9364,
+    "lon": -70.504,
+    "passes": [
+      "Indy"
+    ],
+    "summitFt": 4120,
+    "baseFt": 2460,
+    "verticalFt": 2000,
+    "trails": 68,
+    "trailMapUrl": "https://www.saddlebackmaine.com/trail-maps/",
+    "snowReportUrl": "https://www.saddlebackmaine.com/mountain-report/",
+    "webcamUrl": "https://www.saddlebackmaine.com/webcams/",
+    "estimates": [
+      "verticalFt"
+    ]
+  },
+  {
+    "id": "hunter",
+    "name": "Hunter Mountain",
+    "state": "NY",
+    "lat": 42.2029,
+    "lon": -74.2097,
+    "passes": [
+      "Epic"
+    ],
+    "summitFt": 3200,
+    "baseFt": 1600,
+    "verticalFt": 1600,
+    "trails": 67,
+    "trailMapUrl": "https://www.huntermtn.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "snowReportUrl": "https://www.huntermtn.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "webcamUrl": "https://www.huntermtn.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+  }
 ]

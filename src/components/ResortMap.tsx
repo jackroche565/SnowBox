@@ -14,7 +14,6 @@ export type MapFocus = LatLon & { zoom: number; key: number };
 type Props = {
   resorts: Resort[];
   forecasts: Record<string, ResortForecast> | null;
-  selectedId: string | null;
   hoveredId: string | null;
   onSelect: (id: string) => void;
   onHover: (id: string | null) => void;
@@ -52,7 +51,6 @@ function FocusController({ focus }: { focus: MapFocus | null }) {
 export default function ResortMap({
   resorts,
   forecasts,
-  selectedId,
   hoveredId,
   onSelect,
   onHover,
@@ -93,7 +91,7 @@ export default function ResortMap({
         </CircleMarker>
       )}
       {resorts.map((resort) => {
-        const active = resort.id === hoveredId || resort.id === selectedId;
+        const active = resort.id === hoveredId;
         const next7 = forecasts?.[resort.id]?.next7In;
         return (
           <CircleMarker

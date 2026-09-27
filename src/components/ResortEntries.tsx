@@ -1,3 +1,4 @@
+import Link from "next/link";
 import CountUp from "@/components/CountUp";
 import DailySnow from "@/components/DailySnow";
 import PassTags from "@/components/PassTags";
@@ -17,10 +18,10 @@ export type EntryProps = {
   forecast: ResortForecast | undefined;
   forecastState: "loading" | "error" | "ready";
   distance: number | null;
-  selected: boolean;
   hovered: boolean;
   compare: CompareState;
-  onSelect: () => void;
+  /** The resort's detail page. */
+  href: string;
   onHover: (hovering: boolean) => void;
 };
 
@@ -68,7 +69,7 @@ export function FeaturedResort({
   distance,
   hovered,
   compare,
-  onSelect,
+  href,
   onHover,
 }: EntryProps & { label: string }) {
   const stats = forecast && [
@@ -94,7 +95,7 @@ export function FeaturedResort({
       <div className="h-1 bg-barn" />
       <div className="p-4 sm:p-5">
         <div className="flex items-start gap-3">
-          <button type="button" onClick={onSelect} className="block min-w-0 flex-1 text-left">
+          <Link href={href} className="group block min-w-0 flex-1 text-left">
             <span className="inline-block rounded-sm bg-barn px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase">
               {label}
             </span>
@@ -104,10 +105,11 @@ export function FeaturedResort({
               </h3>
               <Distance miles={distance} />
             </div>
-            <div className="mt-2">
+            <div className="mt-2 flex items-center gap-3">
               <PassTags passes={resort.passes} />
+              <span className="text-xs font-medium text-glacier group-hover:underline">View details →</span>
             </div>
-          </button>
+          </Link>
           <CompareToggle name={resort.name} compare={compare} />
         </div>
 
@@ -149,10 +151,9 @@ export function ResortRow({
   forecast,
   forecastState,
   distance,
-  selected,
   hovered,
   compare,
-  onSelect,
+  href,
   onHover,
 }: EntryProps) {
   const cells = forecast && [
@@ -167,36 +168,36 @@ export function ResortRow({
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
       className={`relative border-b border-line transition-colors last:border-b-0 ${
-        hovered || selected ? "bg-glacier/[.07]" : "bg-white"
+        hovered ? "bg-glacier/[.07]" : "bg-white"
       }`}
     >
       <span
         aria-hidden="true"
         className={`absolute inset-y-0 left-0 w-[3px] bg-glacier transition-opacity ${
-          hovered || selected ? "opacity-100" : "opacity-0"
+          hovered ? "opacity-100" : "opacity-0"
         }`}
       />
       <div className="flex items-start gap-2 py-3 pl-3 sm:items-center">
         <div className="pt-0.5 sm:pt-0">
           <CompareToggle name={resort.name} compare={compare} />
         </div>
-        <button
-          type="button"
-          onClick={onSelect}
-          aria-expanded={selected}
+        <Link
+          href={href}
           className="grid min-w-0 flex-1 grid-cols-4 items-center gap-x-2 gap-y-2 pr-4 text-left sm:grid-cols-[minmax(0,1fr)_repeat(4,3.25rem)]"
         >
-          <div className="col-span-4 flex min-w-0 items-center justify-between gap-2 sm:col-span-1">
+          <div className="col-span-4 min-w-0 sm:col-span-1">
             <div className="flex min-w-0 items-center gap-2">
               <span className="truncate font-semibold" title={resort.name}>
                 {resort.name}
               </span>
-              <span className="shrink-0 text-sm text-ink-muted">{resort.state}</span>
               <span className="shrink-0">
                 <PassTags passes={resort.passes} />
               </span>
             </div>
-            <Distance miles={distance} />
+            <div className="mt-0.5 text-xs text-ink-muted tabular-nums">
+              {resort.state}
+              {distance !== null && <> · {Math.round(distance)} mi</>}
+            </div>
           </div>
           {cells ? (
             cells.map((c) => (
@@ -210,13 +211,8 @@ export function ResortRow({
               <ForecastStatus state={forecastState} />
             </div>
           )}
-        </button>
+        </Link>
       </div>
-      {selected && forecast && (
-        <div className="px-4 pb-4 sm:pl-12">
-          <DailySnow days={forecast.upcoming} />
-        </div>
-      )}
     </div>
   );
 }
