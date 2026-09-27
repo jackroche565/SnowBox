@@ -1,0 +1,21 @@
+[
+  { "id": "stowe", "name": "Stowe", "state": "VT", "lat": 44.5303, "lon": -72.7814, "passes": ["Epic"] },
+  { "id": "okemo", "name": "Okemo", "state": "VT", "lat": 43.4018, "lon": -72.717, "passes": ["Epic"] },
+  { "id": "mount-snow", "name": "Mount Snow", "state": "VT", "lat": 42.9602, "lon": -72.9204, "passes": ["Epic"] },
+  { "id": "killington", "name": "Killington", "state": "VT", "lat": 43.6045, "lon": -72.8201, "passes": ["Ikon"] },
+  { "id": "sugarbush", "name": "Sugarbush", "state": "VT", "lat": 44.1359, "lon": -72.8944, "passes": ["Ikon"] },
+  { "id": "stratton", "name": "Stratton", "state": "VT", "lat": 43.1134, "lon": -72.9081, "passes": ["Ikon"] },
+  { "id": "jay-peak", "name": "Jay Peak", "state": "VT", "lat": 44.927, "lon": -72.505, "passes": ["Indy"] },
+  { "id": "bolton-valley", "name": "Bolton Valley", "state": "VT", "lat": 44.4214, "lon": -72.8497, "passes": ["Indy"] },
+  { "id": "magic-mountain", "name": "Magic Mountain", "state": "VT", "lat": 43.2017, "lon": -72.773, "passes": ["Indy"] },
+  { "id": "loon", "name": "Loon Mountain", "state": "NH", "lat": 44.0364, "lon": -71.6214, "passes": ["Ikon"] },
+  { "id": "bretton-woods", "name": "Bretton Woods", "state": "NH", "lat": 44.258, "lon": -71.4414, "passes": ["Ikon"] },
+  { "id": "attitash", "name": "Attitash", "state": "NH", "lat": 44.0828, "lon": -71.2294, "passes": ["Epic"] },
+  { "id": "wildcat", "name": "Wildcat", "state": "NH", "lat": 44.264, "lon": -71.239, "passes": ["Epic"] },
+  { "id": "mount-sunapee", "name": "Mount Sunapee", "state": "NH", "lat": 43.3316, "lon": -72.08, "passes": ["Epic"] },
+  { "id": "black-mountain-nh", "name": "Black Mountain", "state": "NH", "lat": 44.1791, "lon": -71.1629, "passes": ["Indy"] },
+  { "id": "sunday-river", "name": "Sunday River", "state": "ME", "lat": 44.4734, "lon": -70.8566, "passes": ["Ikon"] },
+  { "id": "sugarloaf", "name": "Sugarloaf", "state": "ME", "lat": 45.0314, "lon": -70.3131, "passes": ["Ikon"] },
+  { "id": "saddleback", "name": "Saddleback", "state": "ME", "lat": 44.9364, "lon": -70.504, "passes": ["Indy"] },
+  { "id": "hunter", "name": "Hunter Mountain", "state": "NY", "lat": 42.2029, "lon": -74.2097, "passes": ["Epic"] }
+]

@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Test123",
-  description: "My first web app, built with Next.js and hosted on Vercel",
+  title: "Northeast Snow Report",
+  description: "Snowfall and forecasts for Northeast US ski resorts",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
