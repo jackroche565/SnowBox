@@ -1,20 +1,21 @@
-# Northeast Snow Report
+# Snowline
 
-Snowfall and forecasts for ski resorts in the Northeast US, built with [Next.js](https://nextjs.org) and hosted on [Vercel](https://vercel.com). Weather data comes from [Open-Meteo](https://open-meteo.com), which is free and needs no API key.
+Snowfall and forecasts for ski resorts, starting in the Northeast US, built with [Next.js](https://nextjs.org) and hosted on [Vercel](https://vercel.com). Weather data comes from [Open-Meteo](https://open-meteo.com), which is free and needs no API key.
 
 ## Adding or editing resorts
 
 All resorts live in `src/data/resorts.json`. To add one, copy an existing entry and change the values:
 
 ```json
-{ "id": "smugglers-notch", "name": "Smugglers' Notch", "state": "VT", "lat": 44.588, "lon": -72.790, "passes": [] }
+{ "id": "smugglers-notch", "name": "Smugglers' Notch", "state": "VT", "lat": 44.588, "lon": -72.790, "passes": [], "summitFt": 3640, "verticalFt": 2610 }
 ```
 
 - `id`: a unique short name with no spaces
 - `lat` / `lon`: coordinates of the base area. In Google Maps, right-click the spot and click the numbers to copy them.
+- `summitFt` / `verticalFt` (optional): top of the lift-served terrain and vertical drop, in feet. They appear in the compare view.
 - `passes`: any of `"Epic"`, `"Ikon"`, `"Indy"`, e.g. `["Ikon", "Indy"]`. Use `[]` for none.
 
-Pass lineups change every season, so check them each fall.
+Pass lineups change every season, so check them each fall. The elevations are approximate; the resorts' own trail maps are the best source.
 
 ## How the snow numbers work
 
@@ -56,17 +57,18 @@ Then open http://localhost:3000. The page reloads automatically when you edit fi
 | File | What it does |
 | --- | --- |
 | `src/data/resorts.json` | The list of resorts. |
-| `src/components/SnowApp.tsx` | The main screen: location search, pass filter, sorting. |
+| `src/components/SnowApp.tsx` | The main screen: location search, pass filter, sorting, compare tray. |
+| `src/components/CompareDialog.tsx` | The side-by-side compare view. |
 | `src/components/ResortMap.tsx` | The map. |
 | `src/components/Hero.tsx` | The navy header band with the search box. |
-| `src/components/Ridgeline.tsx` | The mountain silhouette in the header. |
+| `src/components/Ridgeline.tsx` | Shows the mountain silhouette (`public/ridgeline.svg`) in the header. |
 | `src/components/ResortEntries.tsx` | The featured resort card and the compact list rows. |
 | `src/components/DailySnow.tsx` | The day-by-day snowfall bars. |
 | `src/app/api/forecast/route.ts` | Fetches snow forecasts from Open-Meteo. |
 | `src/app/api/geocode/route.ts` | Turns a city or zip code into map coordinates. |
 | `src/app/layout.tsx` | The shell around every page (page title, fonts). |
-| `src/app/globals.css` | Colors (navy, snow, glacier, alpenglow) and map styling. Styling uses [Tailwind CSS](https://tailwindcss.com) classes. |
-| `public/topo.svg` | The contour-line texture behind the map. |
+| `src/app/globals.css` | Colors (navy, snow, glacier, alpenglow, barn red), pass-tag patches, and map styling. Styling uses [Tailwind CSS](https://tailwindcss.com) classes. |
+| `public/topo.svg`, `public/topo-map.svg` | The contour-line textures around and over the map. |
 
 To add a new page at `/about`, create `src/app/about/page.tsx`.
 

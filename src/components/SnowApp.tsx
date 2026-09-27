@@ -4,10 +4,12 @@ import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import type { GeocodeResult } from "@/app/api/geocode/route";
+import CompareDialog from "@/components/CompareDialog";
 import { CountUpContext } from "@/components/CountUp";
 import Hero from "@/components/Hero";
 import { FeaturedResort, ResortRow } from "@/components/ResortEntries";
 import type { MapFocus } from "@/components/ResortMap";
+import SegmentedControl from "@/components/SegmentedControl";
 import SortControl, { type SortKey } from "@/components/SortControl";
 import type { ForecastResponse, ResortForecast } from "@/lib/forecast";
 import { PASS_COLORS } from "@/lib/format";
@@ -22,7 +24,10 @@ const ResortMap = dynamic(() => import("@/components/ResortMap"), {
 
 type Origin = LatLon & { label: string };
 
+type PassFilter = Pass | "All";
+
 const NEARBY_ZOOM = 8;
+const COMPARE_LIMIT = 3;
 const COUNT_UP_WINDOW_MS = 1500;
 
 const entryId = (resortId: string) => `resort-${resortId}`;
@@ -40,11 +45,13 @@ export default function SnowApp() {
   const [locating, setLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
 
-  const [activePasses, setActivePasses] = useState<Set<Pass>>(new Set());
+  const [passFilter, setPassFilter] = useState<PassFilter>("All");
   const [sortKey, setSortKey] = useState<SortKey>("next7");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [focus, setFocus] = useState<MapFocus | null>(null);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [compareOpen, setCompareOpen] = useState(false);
 
   const [forecasts, setForecasts] = useState<Record<string, ResortForecast> | null>(null);
   const [forecastState, setForecastState] = useState<"loading" | "error" | "ready">("loading");
@@ -112,13 +119,10 @@ export default function SnowApp() {
     );
   }
 
-  function togglePass(pass: Pass) {
-    setActivePasses((prev) => {
-      const next = new Set(prev);
-      if (next.has(pass)) next.delete(pass);
-      else next.add(pass);
-      return next;
-    });
+  function toggleCompare(id: string) {
+    setCompareIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : prev.length < COMPARE_LIMIT ? [...prev, id] : prev,
+    );
   }
 
   function selectResort(id: string, from: "map" | "list") {
@@ -134,10 +138,7 @@ export default function SnowApp() {
   }
 
   const visible = useMemo(() => {
-    // No chips selected means "show everything"; otherwise match any selected pass.
-    const filtered = resorts.filter(
-      (r) => activePasses.size === 0 || r.passes.some((p) => activePasses.has(p)),
-    );
+    const filtered = resorts.filter((r) => passFilter === "All" || r.passes.includes(passFilter));
     const withDistance = filtered.map((resort) => ({
       resort,
       distance: origin ? distanceMiles(origin, resort) : null,
@@ -154,7 +155,7 @@ export default function SnowApp() {
           return a.resort.name.localeCompare(b.resort.name);
       }
     });
-  }, [activePasses, origin, sortKey, forecasts]);
+  }, [passFilter, origin, sortKey, forecasts]);
 
   // Snow rankings mean nothing until forecasts arrive, so hold the featured card until then.
   const featuredLabel =
@@ -171,7 +172,30 @@ export default function SnowApp() {
     hovered: resort.id === hoveredId,
     onSelect: () => selectResort(resort.id, "list"),
     onHover: (hovering: boolean) => setHoveredId(hovering ? resort.id : null),
+    compare: {
+      inCompare: compareIds.includes(resort.id),
+      canAdd: compareIds.length < COMPARE_LIMIT,
+      onToggle: () => toggleCompare(resort.id),
+    },
   });
+
+  const compareEntries = compareIds.flatMap((id) => {
+    const resort = resorts.find((r) => r.id === id);
+    if (!resort) return [];
+    return [{ resort, forecast: forecasts?.[id], distance: origin ? distanceMiles(origin, resort) : null }];
+  });
+  // Emptying the tray from inside the dialog closes it.
+  const showCompare = compareOpen && compareEntries.length > 0;
+
+  const compareButton = (className: string) => (
+    <button
+      type="button"
+      onClick={() => setCompareOpen(true)}
+      className={`items-center gap-2 rounded-md bg-barn px-4 py-2 text-sm font-semibold whitespace-nowrap text-white shadow-sm hover:brightness-110 ${className}`}
+    >
+      Compare <span className="tabular-nums">({compareIds.length})</span>
+    </button>
+  );
 
   const heroStatus = locationError
     ? { kind: "error" as const, text: locationError }
@@ -191,49 +215,33 @@ export default function SnowApp() {
           status={heroStatus}
         />
 
-        <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 pb-10">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm font-medium text-ink-muted">Pass</span>
-              {PASSES.map((pass) => {
-                const active = activePasses.has(pass);
-                return (
-                  <button
-                    key={pass}
-                    type="button"
-                    onClick={() => togglePass(pass)}
-                    aria-pressed={active}
-                    className="flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium transition-colors"
-                    style={
-                      active
-                        ? { backgroundColor: PASS_COLORS[pass], borderColor: PASS_COLORS[pass], color: "#fff" }
-                        : { borderColor: "var(--line)", backgroundColor: "#fff" }
-                    }
-                  >
-                    {!active && (
-                      <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: PASS_COLORS[pass] }} />
-                    )}
-                    {pass}
-                  </button>
-                );
-              })}
-              {activePasses.size > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setActivePasses(new Set())}
-                  className="text-sm text-ink-muted underline hover:text-ink"
-                >
-                  Clear
-                </button>
-              )}
+        <main className={`mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 ${compareIds.length > 0 ? "pb-24 sm:pb-10" : "pb-10"}`}>
+          <div className="z-[1100] -mx-4 flex flex-col gap-2 px-4 py-2 sm:sticky sm:top-0 sm:flex-row sm:items-center sm:justify-between sm:bg-snow/95 sm:backdrop-blur">
+            <SegmentedControl
+              label="Filter by pass"
+              value={passFilter}
+              onChange={setPassFilter}
+              className="w-full sm:w-auto"
+              segments={[
+                { value: "All", label: "All passes" },
+                ...PASSES.map((pass) => ({ value: pass, label: pass, color: PASS_COLORS[pass] })),
+              ]}
+            />
+            <div className="flex items-center gap-2">
+              <SortControl
+                value={sortKey}
+                onChange={setSortKey}
+                distanceAvailable={origin !== null}
+                className="w-full sm:w-auto"
+              />
+              {compareIds.length > 0 && compareButton("hidden sm:inline-flex")}
             </div>
-            <SortControl value={sortKey} onChange={setSortKey} distanceAvailable={origin !== null} />
           </div>
 
-          <div className="grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_480px]">
+          <div className="grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_520px]">
             <section
               aria-label="Resort map"
-              className="flex h-96 flex-col overflow-hidden rounded-lg bg-navy bg-[url(/topo.svg)] bg-cover bg-center p-2 lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)]"
+              className="flex h-96 flex-col overflow-hidden rounded-lg bg-navy bg-[url(/topo.svg)] bg-cover bg-center p-2 lg:sticky lg:top-16 lg:h-[calc(100vh-5rem)]"
             >
               <div className="flex items-center justify-between px-1.5 pt-0.5 pb-2 text-snow">
                 <h2 className="font-display text-xl tracking-wider">Resort Map</h2>
@@ -252,7 +260,11 @@ export default function SnowApp() {
                   )}
                 </ul>
               </div>
-              <div className="min-h-0 flex-1 overflow-hidden rounded-md">
+              <div className="relative min-h-0 flex-1 overflow-hidden rounded-md">
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 z-[401] bg-[url(/topo-map.svg)] bg-cover bg-center"
+                />
                 <ResortMap
                   resorts={visible.map((v) => v.resort)}
                   forecasts={forecasts}
@@ -290,7 +302,7 @@ export default function SnowApp() {
 
               {rest.length > 0 && (
                 <div className="overflow-hidden rounded-lg border border-line bg-white">
-                  <div className="hidden grid-cols-[minmax(0,1fr)_repeat(4,3.25rem)] gap-x-2 border-b border-line px-4 py-2 text-right text-[11px] font-semibold tracking-wide whitespace-nowrap text-ink-muted uppercase sm:grid">
+                  <div className="hidden grid-cols-[minmax(0,1fr)_repeat(4,3.25rem)] gap-x-2 border-b border-line py-2 pr-4 pl-12 text-right text-[11px] font-semibold tracking-wide whitespace-nowrap text-ink-muted uppercase sm:grid">
                     <span className="text-left">Resort</span>
                     <span>Next 7</span>
                     <span>Last 7</span>
@@ -334,6 +346,22 @@ export default function SnowApp() {
             </section>
           </div>
         </main>
+
+        {compareIds.length > 0 && (
+          <div className="fixed inset-x-0 bottom-0 z-[1100] flex items-center justify-between gap-3 border-t border-line bg-white/95 px-4 py-3 backdrop-blur sm:hidden">
+            <span className="text-sm text-ink-muted">
+              {compareIds.length} of {COMPARE_LIMIT} selected
+            </span>
+            {compareButton("inline-flex")}
+          </div>
+        )}
+
+        <CompareDialog
+          open={showCompare}
+          entries={compareEntries}
+          onClose={() => setCompareOpen(false)}
+          onRemove={toggleCompare}
+        />
       </CountUpContext.Provider>
     </MotionConfig>
   );

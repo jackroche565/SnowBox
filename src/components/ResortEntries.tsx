@@ -5,6 +5,13 @@ import type { ResortForecast } from "@/lib/forecast";
 import { formatInches, formatTemp } from "@/lib/format";
 import type { Resort } from "@/lib/resorts";
 
+export type CompareState = {
+  inCompare: boolean;
+  /** False when the tray is full and this resort isn't in it. */
+  canAdd: boolean;
+  onToggle: () => void;
+};
+
 export type EntryProps = {
   resort: Resort;
   forecast: ResortForecast | undefined;
@@ -12,6 +19,7 @@ export type EntryProps = {
   distance: number | null;
   selected: boolean;
   hovered: boolean;
+  compare: CompareState;
   onSelect: () => void;
   onHover: (hovering: boolean) => void;
 };
@@ -30,6 +38,28 @@ function Distance({ miles }: { miles: number | null }) {
   return <span className="shrink-0 text-sm text-ink-muted tabular-nums">{Math.round(miles)} mi</span>;
 }
 
+function CompareToggle({ name, compare }: { name: string; compare: CompareState }) {
+  const { inCompare, canAdd, onToggle } = compare;
+  const label = inCompare ? `Remove ${name} from compare` : `Add ${name} to compare`;
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      disabled={!inCompare && !canAdd}
+      aria-pressed={inCompare}
+      aria-label={label}
+      title={!inCompare && !canAdd ? "Compare holds up to 3 resorts" : label}
+      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded border text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-35 ${
+        inCompare
+          ? "border-barn bg-barn text-white"
+          : "border-line bg-white text-ink-muted hover:border-barn hover:text-barn"
+      }`}
+    >
+      <span aria-hidden="true">{inCompare ? "✓" : "+"}</span>
+    </button>
+  );
+}
+
 export function FeaturedResort({
   label,
   resort,
@@ -37,13 +67,19 @@ export function FeaturedResort({
   forecastState,
   distance,
   hovered,
+  compare,
   onSelect,
   onHover,
 }: EntryProps & { label: string }) {
   const stats = forecast && [
     { label: "Next 7 days", value: formatInches(forecast.next7In) },
     { label: "Last 7 days", value: formatInches(forecast.past7In) },
-    { label: "Snow depth", short: "Depth", value: <CountUp value={forecast.snowDepthIn} format={formatInches} />, hint: DEPTH_HINT },
+    {
+      label: "Snow depth",
+      short: "Depth",
+      value: <CountUp value={forecast.snowDepthIn} format={formatInches} />,
+      hint: DEPTH_HINT,
+    },
     { label: "Now", value: <CountUp value={forecast.tempF} format={formatTemp} /> },
   ];
 
@@ -55,20 +91,25 @@ export function FeaturedResort({
         hovered ? "border-glacier shadow-[0_0_0_1px_var(--glacier)]" : "border-line"
       }`}
     >
-      <div className="h-1 bg-alpenglow" />
+      <div className="h-1 bg-barn" />
       <div className="p-4 sm:p-5">
-        <button type="button" onClick={onSelect} className="block w-full text-left">
-          <div className="text-xs font-semibold tracking-wider text-alpenglow uppercase">{label}</div>
-          <div className="mt-1 flex items-start justify-between gap-3">
-            <h3 className="font-display text-4xl leading-none tracking-wide text-ink">
-              {resort.name} <span className="text-2xl text-ink-muted">{resort.state}</span>
-            </h3>
-            <Distance miles={distance} />
-          </div>
-          <div className="mt-2">
-            <PassTags passes={resort.passes} />
-          </div>
-        </button>
+        <div className="flex items-start gap-3">
+          <button type="button" onClick={onSelect} className="block min-w-0 flex-1 text-left">
+            <span className="inline-block rounded-sm bg-barn px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase">
+              {label}
+            </span>
+            <div className="mt-2 flex items-start justify-between gap-3">
+              <h3 className="font-display text-4xl leading-none tracking-wide text-ink">
+                {resort.name} <span className="text-2xl text-ink-muted">{resort.state}</span>
+              </h3>
+              <Distance miles={distance} />
+            </div>
+            <div className="mt-2">
+              <PassTags passes={resort.passes} />
+            </div>
+          </button>
+          <CompareToggle name={resort.name} compare={compare} />
+        </div>
 
         <div className="mt-4">
           <ForecastStatus state={forecastState} />
@@ -110,6 +151,7 @@ export function ResortRow({
   distance,
   selected,
   hovered,
+  compare,
   onSelect,
   onHover,
 }: EntryProps) {
@@ -134,37 +176,44 @@ export function ResortRow({
           hovered || selected ? "opacity-100" : "opacity-0"
         }`}
       />
-      <button
-        type="button"
-        onClick={onSelect}
-        aria-expanded={selected}
-        className="grid w-full grid-cols-4 items-center gap-x-2 gap-y-2 px-4 py-3 text-left sm:grid-cols-[minmax(0,1fr)_repeat(4,3.25rem)]"
-      >
-        <div className="col-span-4 flex min-w-0 items-center justify-between gap-2 sm:col-span-1">
-          <div className="flex min-w-0 items-center gap-2">
-            <span className="truncate font-semibold">{resort.name}</span>
-            <span className="shrink-0 text-sm text-ink-muted">{resort.state}</span>
-            <span className="shrink-0">
-              <PassTags passes={resort.passes} />
-            </span>
-          </div>
-          <Distance miles={distance} />
+      <div className="flex items-start gap-2 py-3 pl-3 sm:items-center">
+        <div className="pt-0.5 sm:pt-0">
+          <CompareToggle name={resort.name} compare={compare} />
         </div>
-        {cells ? (
-          cells.map((c) => (
-            <div key={c.label} className="tabular-nums sm:text-right">
-              <div className="text-[11px] text-ink-muted sm:hidden">{c.label}</div>
-              <div className={c.strong ? "font-semibold" : "text-ink"}>{c.value}</div>
+        <button
+          type="button"
+          onClick={onSelect}
+          aria-expanded={selected}
+          className="grid min-w-0 flex-1 grid-cols-4 items-center gap-x-2 gap-y-2 pr-4 text-left sm:grid-cols-[minmax(0,1fr)_repeat(4,3.25rem)]"
+        >
+          <div className="col-span-4 flex min-w-0 items-center justify-between gap-2 sm:col-span-1">
+            <div className="flex min-w-0 items-center gap-2">
+              <span className="truncate font-semibold" title={resort.name}>
+                {resort.name}
+              </span>
+              <span className="shrink-0 text-sm text-ink-muted">{resort.state}</span>
+              <span className="shrink-0">
+                <PassTags passes={resort.passes} />
+              </span>
             </div>
-          ))
-        ) : (
-          <div className="col-span-4 sm:col-span-4 sm:text-right">
-            <ForecastStatus state={forecastState} />
+            <Distance miles={distance} />
           </div>
-        )}
-      </button>
+          {cells ? (
+            cells.map((c) => (
+              <div key={c.label} className="tabular-nums sm:text-right">
+                <div className="text-[11px] text-ink-muted sm:hidden">{c.label}</div>
+                <div className={c.strong ? "font-semibold" : "text-ink"}>{c.value}</div>
+              </div>
+            ))
+          ) : (
+            <div className="col-span-4 sm:text-right">
+              <ForecastStatus state={forecastState} />
+            </div>
+          )}
+        </button>
+      </div>
       {selected && forecast && (
-        <div className="px-4 pb-4">
+        <div className="px-4 pb-4 sm:pl-12">
           <DailySnow days={forecast.upcoming} />
         </div>
       )}

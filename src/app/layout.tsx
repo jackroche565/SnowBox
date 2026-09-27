@@ -14,8 +14,14 @@ const bebas = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
-  title: "Northeast Snow Report",
-  description: "Snowfall and forecasts for Northeast US ski resorts",
+  title: "Snowline",
+  description: "Snowfall and forecasts for ski resorts, starting in the Northeast.",
+  applicationName: "Snowline",
+  openGraph: {
+    title: "Snowline",
+    description: "Snowfall and forecasts for ski resorts, starting in the Northeast.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

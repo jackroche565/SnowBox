@@ -15,9 +15,9 @@ export default function Hero({ query, onQueryChange, onSearch, onUseMyLocation, 
     <header className="relative overflow-hidden bg-navy text-snow">
       <div className="relative z-10 mx-auto max-w-7xl px-4 pt-8 pb-32 sm:pt-12 sm:pb-44">
         <p className="text-xs font-semibold tracking-[0.2em] text-glacier uppercase">VT · NH · ME · NY</p>
-        <h1 className="mt-1 font-display text-5xl leading-none tracking-wide sm:text-7xl">Northeast Snow Report</h1>
+        <h1 className="mt-1 font-display text-5xl leading-none tracking-wide sm:text-8xl">Snowline</h1>
         <p className="mt-2 max-w-xl text-sm text-snow/70 sm:text-base">
-          Recent snowfall and 7-day forecasts for ski resorts across the Northeast.
+          Snowfall and forecasts for ski resorts, starting in the Northeast.
         </p>
 
         <form onSubmit={onSearch} className="mt-6 flex max-w-2xl flex-wrap gap-2">
