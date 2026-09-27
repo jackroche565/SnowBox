@@ -1,0 +1,51 @@
+# Test123
+
+My first web app, built with [Next.js](https://nextjs.org) and hosted on [Vercel](https://vercel.com).
+
+## How the pieces fit together
+
+- **This code** is the web app.
+- **GitHub** stores the code and keeps its history.
+- **Vercel** watches the GitHub repo. Every time new code is pushed, it builds the app and puts it online at a public URL.
+
+## Put the app online with Vercel (one-time setup)
+
+1. Go to [vercel.com/signup](https://vercel.com/signup) and choose **Continue with GitHub**.
+2. Click **Add New… → Project**.
+3. Find the **Test123** repository and click **Import**. If it isn't listed, click **Adjust GitHub App Permissions** and give Vercel access to it.
+4. Leave every setting as it is. Vercel detects Next.js by itself. Click **Deploy**.
+5. After about a minute you get a live URL like `https://test123-xxxx.vercel.app`.
+
+After that, every push to the production branch updates the live site automatically. Pushes to any other branch get their own **preview URL**, so you can check changes before they go live.
+
+## Run it on your own computer (optional)
+
+You need [Node.js](https://nodejs.org) (the LTS version) and [Git](https://git-scm.com).
+
+```bash
+git clone https://github.com/jackroche565/Test123.git
+cd Test123
+npm install
+npm run dev
+```
+
+Then open http://localhost:3000. The page reloads automatically when you edit files.
+
+## Where things live
+
+| File | What it does |
+| --- | --- |
+| `src/app/page.tsx` | The home page. Start here. |
+| `src/app/layout.tsx` | The shell around every page (page title, fonts). |
+| `src/app/globals.css` | Global styles. Styling uses [Tailwind CSS](https://tailwindcss.com) classes. |
+| `public/` | Images and other static files. |
+
+To add a new page at `/about`, create `src/app/about/page.tsx`.
+
+## Useful commands
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the local development server |
+| `npm run build` | Build the app the same way Vercel does, which catches errors before you push |
+| `npm run lint` | Check the code for common mistakes |
