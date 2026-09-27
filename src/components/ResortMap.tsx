@@ -1,12 +1,13 @@
 "use client";
 
 import "leaflet/dist/leaflet.css";
-import { useEffect } from "react";
+import { latLngBounds, type CircleMarker as LeafletCircleMarker } from "leaflet";
+import { useEffect, useRef } from "react";
 import { CircleMarker, MapContainer, TileLayer, Tooltip, useMap } from "react-leaflet";
 import type { LatLon } from "@/lib/geo";
 import type { ResortForecast } from "@/lib/forecast";
 import { formatInches, passColor } from "@/lib/format";
-import type { Resort } from "@/lib/resorts";
+import { resorts as allResorts, type Resort } from "@/lib/resorts";
 
 export type MapFocus = LatLon & { zoom: number; key: number };
 
@@ -14,31 +15,69 @@ type Props = {
   resorts: Resort[];
   forecasts: Record<string, ResortForecast> | null;
   selectedId: string | null;
+  hoveredId: string | null;
   onSelect: (id: string) => void;
+  onHover: (id: string | null) => void;
   origin: LatLon | null;
   focus: MapFocus | null;
 };
 
-// Roughly frames VT, NH, ME and eastern NY.
-const NORTHEAST_CENTER: [number, number] = [44.0, -72.0];
-const NORTHEAST_ZOOM = 6;
+const ALL_RESORT_BOUNDS = latLngBounds(allResorts.map((r) => [r.lat, r.lon]));
+const BOUNDS_PADDING: [number, number] = [24, 24];
 
 function FocusController({ focus }: { focus: MapFocus | null }) {
   const map = useMap();
+
+  const hasFocused = useRef(false);
+
+  // The panel's final size isn't known when Leaflet first measures it, so re-measure on
+  // resize, and keep every resort in frame until the user picks a place to look at.
   useEffect(() => {
-    if (focus) map.flyTo([focus.lat, focus.lon], focus.zoom, { duration: 0.8 });
+    const observer = new ResizeObserver(() => {
+      map.invalidateSize();
+      if (!hasFocused.current) map.fitBounds(ALL_RESORT_BOUNDS, { padding: BOUNDS_PADDING });
+    });
+    observer.observe(map.getContainer());
+    return () => observer.disconnect();
+  }, [map]);
+
+  useEffect(() => {
+    if (!focus) return;
+    hasFocused.current = true;
+    map.flyTo([focus.lat, focus.lon], focus.zoom, { duration: 0.8 });
   }, [map, focus]);
   return null;
 }
 
-export default function ResortMap({ resorts, forecasts, selectedId, onSelect, origin, focus }: Props) {
+export default function ResortMap({
+  resorts,
+  forecasts,
+  selectedId,
+  hoveredId,
+  onSelect,
+  onHover,
+  origin,
+  focus,
+}: Props) {
+  const markers = useRef(new Map<string, LeafletCircleMarker>());
+
+  // Hovering a card in the list lifts its pin above its neighbors and shows its label.
+  useEffect(() => {
+    if (!hoveredId) return;
+    const marker = markers.current.get(hoveredId);
+    marker?.bringToFront();
+    marker?.openTooltip();
+    return () => {
+      marker?.closeTooltip();
+    };
+  }, [hoveredId]);
+
   return (
     <MapContainer
-      center={NORTHEAST_CENTER}
-      zoom={NORTHEAST_ZOOM}
+      bounds={ALL_RESORT_BOUNDS}
+      boundsOptions={{ padding: BOUNDS_PADDING }}
       scrollWheelZoom
-      className="h-full w-full"
-    >
+      className="h-full w-full">
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -48,29 +87,36 @@ export default function ResortMap({ resorts, forecasts, selectedId, onSelect, or
         <CircleMarker
           center={[origin.lat, origin.lon]}
           radius={6}
-          pathOptions={{ color: "#111827", fillColor: "#111827", fillOpacity: 1 }}
+          pathOptions={{ color: "#ffffff", weight: 2, fillColor: "#e85d3d", fillOpacity: 1 }}
         >
           <Tooltip>Your location</Tooltip>
         </CircleMarker>
       )}
       {resorts.map((resort) => {
-        const selected = resort.id === selectedId;
-        const color = passColor(resort.passes);
+        const active = resort.id === hoveredId || resort.id === selectedId;
         const next7 = forecasts?.[resort.id]?.next7In;
         return (
           <CircleMarker
             key={resort.id}
-            center={[resort.lat, resort.lon]}
-            radius={selected ? 11 : 8}
-            pathOptions={{
-              color: selected ? "#111827" : "#ffffff",
-              weight: 2,
-              fillColor: color,
-              fillOpacity: 0.9,
+            ref={(marker) => {
+              if (marker) markers.current.set(resort.id, marker);
+              else markers.current.delete(resort.id);
             }}
-            eventHandlers={{ click: () => onSelect(resort.id) }}
+            center={[resort.lat, resort.lon]}
+            radius={active ? 11 : 7}
+            pathOptions={{
+              color: active ? "#101826" : "#ffffff",
+              weight: active ? 3 : 2,
+              fillColor: passColor(resort.passes),
+              fillOpacity: 0.95,
+            }}
+            eventHandlers={{
+              click: () => onSelect(resort.id),
+              mouseover: () => onHover(resort.id),
+              mouseout: () => onHover(null),
+            }}
           >
-            <Tooltip direction="top" offset={[0, -8]}>
+            <Tooltip direction="top" offset={[0, -10]}>
               <strong>{resort.name}</strong>
               {next7 !== undefined && <> · {formatInches(next7)} next 7 days</>}
             </Tooltip>

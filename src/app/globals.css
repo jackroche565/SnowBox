@@ -1,19 +1,64 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafafa;
-  --foreground: #171717;
+  --navy: #101826;
+  --navy-2: #1a2538;
+  --snow: #f5f7fa;
+  --glacier: #4a90b8;
+  --alpenglow: #e85d3d;
+  --ink: #101826;
+  --ink-muted: #5a6475;
+  --line: #dde3ea;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-navy: var(--navy);
+  --color-navy-2: var(--navy-2);
+  --color-snow: var(--snow);
+  --color-glacier: var(--glacier);
+  --color-alpenglow: var(--alpenglow);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-bebas);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background: var(--snow);
+  color: var(--ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+/* Map chrome in alpine navy. */
+.leaflet-container {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  background: #dfe6ee;
+}
+.leaflet-bar {
+  border: none !important;
+  box-shadow: 0 1px 3px rgb(16 24 38 / 0.3) !important;
+}
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  background: var(--navy);
+  color: var(--snow);
+  border-bottom-color: #2a3650;
+}
+.leaflet-bar a:hover {
+  background: var(--navy-2);
+}
+.leaflet-tooltip {
+  background: var(--navy);
+  color: var(--snow);
+  border: none;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 6px rgb(16 24 38 / 0.3);
+}
+.leaflet-tooltip-top::before {
+  border-top-color: var(--navy);
+}
+.leaflet-control-attribution {
+  font-size: 10px;
 }

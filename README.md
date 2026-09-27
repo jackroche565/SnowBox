@@ -58,12 +58,15 @@ Then open http://localhost:3000. The page reloads automatically when you edit fi
 | `src/data/resorts.json` | The list of resorts. |
 | `src/components/SnowApp.tsx` | The main screen: location search, pass filter, sorting. |
 | `src/components/ResortMap.tsx` | The map. |
-| `src/components/ResortCard.tsx` | One resort's card in the list. |
+| `src/components/Hero.tsx` | The navy header band with the search box. |
+| `src/components/Ridgeline.tsx` | The mountain silhouette in the header. |
+| `src/components/ResortEntries.tsx` | The featured resort card and the compact list rows. |
+| `src/components/DailySnow.tsx` | The day-by-day snowfall bars. |
 | `src/app/api/forecast/route.ts` | Fetches snow forecasts from Open-Meteo. |
 | `src/app/api/geocode/route.ts` | Turns a city or zip code into map coordinates. |
 | `src/app/layout.tsx` | The shell around every page (page title, fonts). |
-| `src/app/globals.css` | Global styles. Styling uses [Tailwind CSS](https://tailwindcss.com) classes. |
-| `public/` | Images and other static files. |
+| `src/app/globals.css` | Colors (navy, snow, glacier, alpenglow) and map styling. Styling uses [Tailwind CSS](https://tailwindcss.com) classes. |
+| `public/topo.svg` | The contour-line texture behind the map. |
 
 To add a new page at `/about`, create `src/app/about/page.tsx`.
 
