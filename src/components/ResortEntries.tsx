@@ -1,6 +1,7 @@
 import Link from "next/link";
 import CountUp from "@/components/CountUp";
 import DailySnow from "@/components/DailySnow";
+import FavoriteButton from "@/components/FavoriteButton";
 import PassTags from "@/components/PassTags";
 import type { ResortForecast } from "@/lib/forecast";
 import { formatInches, formatTemp } from "@/lib/format";
@@ -110,7 +111,10 @@ export function FeaturedResort({
               <span className="text-xs font-medium text-glacier group-hover:underline">View details →</span>
             </div>
           </Link>
-          <CompareToggle name={resort.name} compare={compare} />
+          <div className="flex items-center gap-1">
+            <FavoriteButton id={resort.id} name={resort.name} />
+            <CompareToggle name={resort.name} compare={compare} />
+          </div>
         </div>
 
         <div className="mt-4">
@@ -177,13 +181,13 @@ export function ResortRow({
           hovered ? "opacity-100" : "opacity-0"
         }`}
       />
-      <div className="flex items-start gap-2 py-3 pl-3 sm:items-center">
+      <div className="flex items-start gap-2 py-3 pr-3 pl-3 sm:items-center">
         <div className="pt-0.5 sm:pt-0">
           <CompareToggle name={resort.name} compare={compare} />
         </div>
         <Link
           href={href}
-          className="grid min-w-0 flex-1 grid-cols-4 items-center gap-x-2 gap-y-2 pr-4 text-left sm:grid-cols-[minmax(0,1fr)_repeat(4,3.25rem)]"
+          className="grid min-w-0 flex-1 grid-cols-4 items-center gap-x-2 gap-y-2 pr-1 text-left sm:grid-cols-[minmax(0,1fr)_repeat(4,3.25rem)]"
         >
           <div className="col-span-4 min-w-0 sm:col-span-1">
             <div className="flex min-w-0 items-center gap-2">
@@ -212,6 +216,7 @@ export function ResortRow({
             </div>
           )}
         </Link>
+        <FavoriteButton id={resort.id} name={resort.name} className="-mt-1 sm:mt-0" />
       </div>
     </div>
   );

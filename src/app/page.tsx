@@ -1,5 +1,5 @@
-import Overview from "@/components/Overview";
+import Home from "@/components/Home";
 
-export default function Home() {
-  return <Overview />;
+export default function HomePage() {
+  return <Home />;
 }

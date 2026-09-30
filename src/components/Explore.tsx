@@ -30,7 +30,7 @@ const FEATURED_LABEL: Record<SortKey, string | null> = {
   name: null,
 };
 
-export default function Overview() {
+export default function Explore() {
   const router = useRouter();
   const {
     forecasts,
@@ -95,28 +95,18 @@ export default function Overview() {
     },
   });
 
-  const compareLink = (className: string) => (
-    <Link
-      href="/compare"
-      className={`items-center gap-2 rounded-md bg-barn px-4 py-2 text-sm font-semibold whitespace-nowrap text-white shadow-sm hover:brightness-110 ${className}`}
-    >
-      Compare <span className="tabular-nums">({compareIds.length})</span>
-    </Link>
-  );
-
   return (
     <MotionConfig reducedMotion="user">
       <SiteHeader
+        size="compact"
         eyebrow="VT · NH · ME · NY"
-        title="Snowline"
-        subtitle="Snowfall and forecasts for ski resorts, starting in the Northeast."
+        title="Explore"
+        subtitle="Every resort on the map, ranked by the snow that matters to you."
       >
         <LocationSearch onLocated={handleLocated} />
       </SiteHeader>
 
-      <main
-        className={`mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 ${compareIds.length > 0 ? "pb-24 sm:pb-10" : "pb-10"}`}
-      >
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 pt-2 pb-10">
         <div className="z-[1100] -mx-4 flex flex-col gap-2 px-4 py-2 sm:sticky sm:top-0 sm:flex-row sm:items-center sm:justify-between sm:bg-snow/95 sm:backdrop-blur">
           <SegmentedControl
             label="Filter by pass"
@@ -135,7 +125,14 @@ export default function Overview() {
               distanceAvailable={origin !== null}
               className="w-full sm:w-auto"
             />
-            {compareIds.length > 0 && compareLink("hidden sm:inline-flex")}
+            {compareIds.length > 0 && (
+              <Link
+                href="/compare"
+                className="hidden items-center gap-2 rounded-md bg-barn px-4 py-2 text-sm font-semibold whitespace-nowrap text-white shadow-sm hover:brightness-110 sm:inline-flex"
+              >
+                Compare <span className="tabular-nums">({compareIds.length})</span>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -201,7 +198,7 @@ export default function Overview() {
 
             {rest.length > 0 && (
               <div className="overflow-hidden rounded-lg border border-line bg-white">
-                <div className="hidden grid-cols-[minmax(0,1fr)_repeat(4,3.25rem)] gap-x-2 border-b border-line py-2 pr-4 pl-12 text-right text-[11px] font-semibold tracking-wide whitespace-nowrap text-ink-muted uppercase sm:grid">
+                <div className="hidden grid-cols-[minmax(0,1fr)_repeat(4,3.25rem)] gap-x-2 border-b border-line py-2 pr-[3.25rem] pl-12 text-right text-[11px] font-semibold tracking-wide whitespace-nowrap text-ink-muted uppercase sm:grid">
                   <span className="text-left">Resort</span>
                   <span>Next 7</span>
                   <span>Last 7</span>
@@ -237,15 +234,6 @@ export default function Overview() {
           </section>
         </div>
       </main>
-
-      {compareIds.length > 0 && (
-        <div className="fixed inset-x-0 bottom-0 z-[1100] flex items-center justify-between gap-3 border-t border-line bg-white/95 px-4 py-3 backdrop-blur sm:hidden">
-          <span className="text-sm text-ink-muted">
-            {compareIds.length} of {COMPARE_LIMIT} selected
-          </span>
-          {compareLink("inline-flex")}
-        </div>
-      )}
     </MotionConfig>
   );
 }

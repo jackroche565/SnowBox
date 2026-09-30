@@ -30,3 +30,21 @@ export function formatDay(date: string, index: number): string {
 export function formatFeet(value: number | null | undefined): string {
   return value == null ? "—" : `${Math.round(value).toLocaleString("en-US")} ft`;
 }
+
+/** "Sat, Oct 4" for a YYYY-MM-DD date. */
+export function formatShortDate(date: string): string {
+  return new Date(`${date}T12:00:00`).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+}
+
+/** Colors for what's falling. Snow uses glacier; the rest are muted so snow stays the story. */
+export const PRECIP_COLORS = {
+  snow: "#4a90b8",
+  mix: "#9a7fc4",
+  rain: "#7a8699",
+} as const;
+
+/** "3pm" for a YYYY-MM-DDTHH:mm local time. */
+export function formatHour(time: string): string {
+  const hour = Number(time.slice(11, 13));
+  return `${hour % 12 || 12}${hour < 12 ? "am" : "pm"}`;
+}

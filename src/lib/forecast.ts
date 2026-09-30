@@ -5,6 +5,8 @@ export type DailyForecast = {
   snowIn: number | null;
   highF: number | null;
   lowF: number | null;
+  /** Strongest wind gust of the day at the grid point, in mph. */
+  gustMph: number | null;
 };
 
 export type ResortForecast = {
@@ -13,28 +15,42 @@ export type ResortForecast = {
   tempF: number | null;
   /** Total snowfall over the previous 7 days, in inches. */
   past7In: number;
+  /** Forecast snowfall for today alone, in inches. */
+  todayIn: number;
+  /** Total forecast snowfall for today plus the next 2 days, in inches. */
+  next3In: number;
   /** Total forecast snowfall for today plus the next 6 days, in inches. */
   next7In: number;
+  /** Total forecast snowfall for days 8 to 16. Long-range: treat as a trend, not a number. */
+  days8to16In: number;
+  /** Today plus the next 6 days. */
   upcoming: DailyForecast[];
+  /** Today plus the next 15 days. */
+  outlook: DailyForecast[];
+  /** The previous 7 days, oldest first. */
+  past: DailyForecast[];
 };
 
 export type ForecastResponse = {
   forecasts: Record<string, ResortForecast>;
 };
 
-const TIMEZONE = "America/New_York";
+export const TIMEZONE = "America/New_York";
+/** How far ahead the outlook reaches. 16 is Open-Meteo's maximum. */
+export const OUTLOOK_DAYS = 16;
 
 export function buildForecastUrl(list: Resort[]): string {
   const params = new URLSearchParams({
     latitude: list.map((r) => r.lat).join(","),
     longitude: list.map((r) => r.lon).join(","),
     current: "temperature_2m,snow_depth",
-    daily: "snowfall_sum,temperature_2m_max,temperature_2m_min",
+    daily: "snowfall_sum,temperature_2m_max,temperature_2m_min,wind_gusts_10m_max",
     past_days: "7",
-    forecast_days: "7",
+    forecast_days: String(OUTLOOK_DAYS),
     timezone: TIMEZONE,
     temperature_unit: "fahrenheit",
     precipitation_unit: "inch",
+    wind_speed_unit: "mph",
   });
   return `https://api.open-meteo.com/v1/forecast?${params}`;
 }
@@ -64,16 +80,17 @@ type OpenMeteoLocation = {
     snowfall_sum?: (number | null)[];
     temperature_2m_max?: (number | null)[];
     temperature_2m_min?: (number | null)[];
+    wind_gusts_10m_max?: (number | null)[];
   };
   daily_units?: { snowfall_sum?: string };
 };
 
-function todayInTimezone(now: Date): string {
+export function todayInTimezone(now: Date): string {
   // en-CA formats dates as YYYY-MM-DD, matching Open-Meteo's daily timestamps.
   return now.toLocaleDateString("en-CA", { timeZone: TIMEZONE });
 }
 
-function sum(values: (number | null)[]): number {
+export function sum(values: (number | null)[]): number {
   return values.reduce<number>((total, v) => total + (v ?? 0), 0);
 }
 
@@ -87,16 +104,23 @@ export function parseLocation(loc: OpenMeteoLocation, now = new Date()): ResortF
     snowIn: toInches(daily?.snowfall_sum?.[i], snowUnit),
     highF: daily?.temperature_2m_max?.[i] ?? null,
     lowF: daily?.temperature_2m_min?.[i] ?? null,
+    gustMph: daily?.wind_gusts_10m_max?.[i] ?? null,
   }));
   const past = days.filter((d) => d.date < today);
-  const upcoming = days.filter((d) => d.date >= today);
+  const outlook = days.filter((d) => d.date >= today);
+  const snowOver = (list: DailyForecast[]) => sum(list.map((d) => d.snowIn));
 
   return {
     snowDepthIn: toInches(loc.current?.snow_depth, loc.current_units?.snow_depth),
     tempF: loc.current?.temperature_2m ?? null,
-    past7In: sum(past.map((d) => d.snowIn)),
-    next7In: sum(upcoming.map((d) => d.snowIn)),
-    upcoming,
+    past7In: snowOver(past),
+    todayIn: snowOver(outlook.slice(0, 1)),
+    next3In: snowOver(outlook.slice(0, 3)),
+    next7In: snowOver(outlook.slice(0, 7)),
+    days8to16In: snowOver(outlook.slice(7)),
+    upcoming: outlook.slice(0, 7),
+    outlook,
+    past,
   };
 }
 

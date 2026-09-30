@@ -24,6 +24,15 @@ type Props = {
 const ALL_RESORT_BOUNDS = latLngBounds(allResorts.map((r) => [r.lat, r.lon]));
 const BOUNDS_PADDING: [number, number] = [24, 24];
 
+// Pins grow with the week's forecast snow so the snowiest corner of the map stands out.
+// Square root keeps a 20" storm from swallowing its neighbors.
+const PIN_RADIUS = 7;
+const MAX_PIN_RADIUS = 17;
+function pinRadius(next7In: number | undefined): number {
+  if (!next7In) return PIN_RADIUS;
+  return Math.min(MAX_PIN_RADIUS, PIN_RADIUS + Math.sqrt(next7In) * 2);
+}
+
 function FocusController({ focus }: { focus: MapFocus | null }) {
   const map = useMap();
 
@@ -101,7 +110,7 @@ export default function ResortMap({
               else markers.current.delete(resort.id);
             }}
             center={[resort.lat, resort.lon]}
-            radius={active ? 11 : 7}
+            radius={pinRadius(next7) + (active ? 4 : 0)}
             pathOptions={{
               color: active ? "#101826" : "#ffffff",
               weight: active ? 3 : 2,

@@ -7,6 +7,7 @@
   --glacier: #4a90b8;
   --alpenglow: #e85d3d;
   --barn: #b5482e;
+  --gold: #e0a526; /* favorites star only */
   --ink: #101826;
   --ink-muted: #5a6475;
   --line: #dde3ea;
@@ -19,6 +20,7 @@
   --color-glacier: var(--glacier);
   --color-alpenglow: var(--alpenglow);
   --color-barn: var(--barn);
+  --color-gold: var(--gold);
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
   --color-line: var(--line);
