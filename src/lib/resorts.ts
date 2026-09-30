@@ -20,6 +20,8 @@ export type Resort = {
   trailMapUrl?: string;
   snowReportUrl?: string;
   webcamUrl?: string;
+  /** The resort's own homepage, for areas without a dedicated snow report page on file. */
+  websiteUrl?: string;
   /** Fields whose values are estimates or conflict between sources (or, for URLs, not a dedicated page). */
   estimates?: (keyof Resort)[];
 };

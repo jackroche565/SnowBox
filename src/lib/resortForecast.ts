@@ -69,17 +69,18 @@ const COMMON = {
 };
 
 export function buildHourlyUrl(resort: Resort): string {
-  const summitFt = resort.summitFt ?? 0;
-  const baseFt = resort.baseFt ?? summitFt;
   const params = new URLSearchParams({
     ...COMMON,
     // The same point twice, at summit then base height: Open-Meteo adjusts for elevation.
     latitude: `${resort.lat},${resort.lat}`,
     longitude: `${resort.lon},${resort.lon}`,
-    elevation: [summitFt, baseFt].map((ft) => Math.round(ft / FEET_PER_METER)).join(","),
     hourly: "snowfall,precipitation,temperature_2m,wind_gusts_10m,freezing_level_height",
     forecast_hours: String(HOURLY_HOURS),
   });
+  // Without known heights, Open-Meteo uses its own terrain height for both points.
+  if (resort.summitFt && resort.baseFt) {
+    params.set("elevation", [resort.summitFt, resort.baseFt].map((ft) => Math.round(ft / FEET_PER_METER)).join(","));
+  }
   return `https://api.open-meteo.com/v1/forecast?${params}`;
 }
 

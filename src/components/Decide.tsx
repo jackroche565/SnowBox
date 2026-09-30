@@ -280,7 +280,7 @@ export default function Decide() {
             {picks.length > 0 ? (
               <ol className="overflow-hidden rounded-lg border border-line bg-white">
                 {picks.map((p, i) => (
-                  <ResultRow key={p.resort.id} pick={p} rank={i + 1} highlight={i === 0 && anySnow} />
+                  <ResultRow key={p.resort.id} pick={p} rank={i + 1} highlight={i === 0 && p.snowIn >= 0.1} />
                 ))}
               </ol>
             ) : (

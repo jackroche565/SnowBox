@@ -84,55 +84,161 @@ function MountainRow({ resort, forecast }: { resort: Resort; forecast: ResortFor
   );
 }
 
-function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: () => void }) {
+const NEARBY_COUNT = 8;
+const QUICK_ADD_RESULTS = 6;
+
+/** Matches a resort by name or state ("stowe", "vt", "vermont"). */
+function matches(resort: Resort, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  return (
+    resort.name.toLowerCase().includes(q) ||
+    resort.state.toLowerCase() === q ||
+    (US_STATES[resort.state] ?? "").toLowerCase().startsWith(q)
+  );
+}
+
+function StarChip({ resort, onToggle }: { resort: Resort; onToggle?: () => void }) {
   const { favoriteIds, toggleFavorite } = useAppState();
-  const states = [...new Set(resorts.map((r) => r.state))];
+  const on = favoriteIds.includes(resort.id);
+  return (
+    <button
+      type="button"
+      aria-pressed={on}
+      onClick={() => {
+        toggleFavorite(resort.id);
+        onToggle?.();
+      }}
+      className={`flex items-center gap-1.5 rounded-full border py-1.5 pr-3.5 pl-2.5 text-sm transition-colors ${
+        on ? "border-navy bg-navy text-snow" : "border-line bg-snow text-ink hover:border-ink/30"
+      }`}
+    >
+      <StarIcon filled={on} className={`h-4 w-4 ${on ? "text-gold" : "text-ink-muted"}`} />
+      {resort.name}
+    </button>
+  );
+}
+
+function ChipGroup({ label, list, onToggle }: { label: string; list: Resort[]; onToggle: () => void }) {
+  if (list.length === 0) return null;
+  return (
+    <div>
+      <div className="text-[11px] font-semibold tracking-wider text-ink-muted uppercase">{label}</div>
+      <ul className="mt-1.5 flex flex-wrap gap-2">
+        {list.map((r) => (
+          <li key={r.id}>
+            <StarChip resort={r} onToggle={onToggle} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+const STATE_ORDER = [...new Set(resorts.map((r) => r.state))];
+
+function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: () => void }) {
+  const { favoriteIds, origin, distanceTo } = useAppState();
+  const [query, setQuery] = useState("");
+  const [state, setState] = useState("All");
+
+  const shown = resorts.filter((r) => (state === "All" || r.state === state) && matches(r, query));
+  const nearby =
+    origin && !query && state === "All"
+      ? [...resorts].sort((a, b) => (distanceTo(a) ?? 0) - (distanceTo(b) ?? 0)).slice(0, NEARBY_COUNT)
+      : [];
 
   return (
     <section aria-label="Choose your mountains" className="rounded-lg border border-line bg-white p-4 sm:p-5">
-      <p className="text-sm text-ink-muted">Star the mountains you ski.</p>
-      <div className="mt-4 flex flex-col gap-4">
-        {states.map((state) => (
-          <div key={state}>
-            <div className="text-[11px] font-semibold tracking-wider text-ink-muted uppercase">{US_STATES[state] ?? state}</div>
-            <ul className="mt-1.5 flex flex-wrap gap-2">
-              {resorts
-                .filter((r) => r.state === state)
-                .map((r) => {
-                  const on = favoriteIds.includes(r.id);
-                  return (
-                    <li key={r.id}>
-                      <button
-                        type="button"
-                        aria-pressed={on}
-                        onClick={() => {
-                          toggleFavorite(r.id);
-                          onToggle();
-                        }}
-                        className={`flex items-center gap-1.5 rounded-full border py-1.5 pr-3.5 pl-2.5 text-sm transition-colors ${
-                          on ? "border-navy bg-navy text-snow" : "border-line bg-snow text-ink hover:border-ink/30"
-                        }`}
-                      >
-                        <StarIcon filled={on} className={`h-4 w-4 ${on ? "text-gold" : "text-ink-muted"}`} />
-                        {r.name}
-                      </button>
-                    </li>
-                  );
-                })}
-            </ul>
-          </div>
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm text-ink-muted">Star the mountains you ski.</p>
+        {favoriteIds.length > 0 && (
+          <button
+            type="button"
+            onClick={onDone}
+            className="shrink-0 rounded-md bg-navy px-4 py-1.5 text-sm font-semibold text-snow hover:bg-navy-2"
+          >
+            Done · {favoriteIds.length}
+          </button>
+        )}
+      </div>
+
+      <label htmlFor="mountain-search" className="sr-only">
+        Search mountains
+      </label>
+      <input
+        id="mountain-search"
+        type="search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder={`Search ${resorts.length} mountains`}
+        className="mt-3 w-full rounded-md border border-line bg-snow px-3 py-2 text-sm placeholder:text-ink-muted focus:ring-2 focus:ring-glacier focus:outline-none"
+      />
+      <div role="radiogroup" aria-label="State" className="-mx-1 mt-2 flex gap-1 overflow-x-auto px-1 pb-1">
+        {["All", ...STATE_ORDER].map((s) => (
+          <button
+            key={s}
+            type="button"
+            role="radio"
+            aria-checked={state === s}
+            onClick={() => setState(s)}
+            className={`shrink-0 rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
+              state === s ? "bg-navy text-snow" : "text-ink-muted hover:text-ink"
+            }`}
+          >
+            {s}
+          </button>
         ))}
       </div>
-      {favoriteIds.length > 0 && (
-        <button
-          type="button"
-          onClick={onDone}
-          className="mt-5 rounded-md bg-navy px-5 py-2 text-sm font-semibold text-snow hover:bg-navy-2"
-        >
-          Done
-        </button>
-      )}
+
+      <div className="mt-3 flex flex-col gap-4">
+        {origin && <ChipGroup label={`Near ${origin.label}`} list={nearby} onToggle={onToggle} />}
+        {STATE_ORDER.map((st) => (
+          <ChipGroup
+            key={st}
+            label={US_STATES[st] ?? st}
+            list={shown.filter((r) => r.state === st)}
+            onToggle={onToggle}
+          />
+        ))}
+        {shown.length === 0 && <p className="text-sm text-ink-muted">No mountains match “{query}”.</p>}
+      </div>
     </section>
+  );
+}
+
+/** A search box under the list: find a mountain and star it without opening Edit. */
+function QuickAdd() {
+  const { favoriteIds } = useAppState();
+  const [query, setQuery] = useState("");
+  const results = query.trim()
+    ? resorts.filter((r) => !favoriteIds.includes(r.id) && matches(r, query)).slice(0, QUICK_ADD_RESULTS)
+    : [];
+
+  return (
+    <div>
+      <label htmlFor="quick-add" className="sr-only">
+        Add a mountain
+      </label>
+      <input
+        id="quick-add"
+        type="search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="+ Add a mountain"
+        className="w-full rounded-md border border-dashed border-line bg-white px-3 py-2.5 text-sm placeholder:text-ink-muted focus:border-solid focus:ring-2 focus:ring-glacier focus:outline-none"
+      />
+      {query.trim() && (
+        <ul className="mt-2 flex flex-wrap gap-2">
+          {results.map((r) => (
+            <li key={r.id}>
+              <StarChip resort={r} onToggle={() => setQuery("")} />
+            </li>
+          ))}
+          {results.length === 0 && <li className="text-sm text-ink-muted">No other mountains match.</li>}
+        </ul>
+      )}
+    </div>
   );
 }
 
@@ -222,6 +328,7 @@ export default function Home() {
                 <MountainRow key={r.id} resort={r} forecast={forecasts?.[r.id]} />
               ))}
             </ul>
+            <QuickAdd />
             {forecastState === "error" && (
               <p className="text-sm text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>
             )}

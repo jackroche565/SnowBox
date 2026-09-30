@@ -69,6 +69,7 @@ const LINKS = [
   { field: "snowReportUrl", label: "Snow report", blurb: "Lifts, trails, grooming, base depth." },
   { field: "webcamUrl", label: "Webcams", blurb: "Live mountain cams." },
   { field: "trailMapUrl", label: "Trail map", blurb: "Current trail map." },
+  { field: "websiteUrl", label: "Website", blurb: "Conditions, tickets and trail map." },
 ] as const;
 
 // ── Tabs ──────────────────────────────────────────────────────────────
@@ -429,11 +430,13 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
   const forecast = forecasts?.[resort.id];
   const distance = distanceTo(resort);
 
-  const facts = [
-    resort.summitFt && `${formatFeet(resort.summitFt)} summit`,
-    resort.verticalFt && `${formatFeet(resort.verticalFt)} vertical`,
-    resort.trails && `${resort.trails} trails`,
-  ].filter(Boolean);
+  const facts = (
+    [
+      ["summitFt", resort.summitFt && `${formatFeet(resort.summitFt)} summit`],
+      ["verticalFt", resort.verticalFt && `${formatFeet(resort.verticalFt)} vertical`],
+      ["trails", resort.trails && `${resort.trails} trails`],
+    ] as const
+  ).flatMap(([field, text]) => (text ? [{ field, text }] : []));
 
   return (
     <>
@@ -446,21 +449,29 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
           {US_STATES[resort.state] ?? resort.state}
         </div>
         <h1 className="mt-1 font-display text-5xl leading-none tracking-wide sm:text-7xl">{resort.name}</h1>
-        <p className="mt-2 text-sm text-snow/70 tabular-nums sm:text-base">{facts.join(" · ")}</p>
+        <p className="mt-2 text-sm text-snow/70 tabular-nums sm:text-base">
+          {facts.map(({ field, text }, i) => (
+            <span key={field}>
+              {i > 0 && " · "}
+              {text}
+              {isEstimate(resort, field) && <span className="ml-1 text-xs text-snow/50">est.</span>}
+            </span>
+          ))}
+        </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <PassTags passes={resort.passes} />
           {distance !== null && <span className="text-sm text-snow/70 tabular-nums">{Math.round(distance)} mi away</span>}
         </div>
         <div className="mt-5 flex flex-wrap gap-2">
           <FavoriteButton id={resort.id} name={resort.name} tone="dark" withLabel />
-          {resort.snowReportUrl && (
+          {(resort.snowReportUrl ?? resort.websiteUrl) && (
             <a
-              href={resort.snowReportUrl}
+              href={resort.snowReportUrl ?? resort.websiteUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 rounded-md border border-snow/30 px-4 py-2.5 text-sm font-medium text-snow hover:border-snow/60 hover:bg-white/5"
             >
-              Official report
+              {resort.snowReportUrl ? "Official report" : "Website"}
               <ExternalIcon className="h-3.5 w-3.5 text-snow/60" />
               <span className="sr-only">(opens {resort.name}&apos;s website in a new tab)</span>
             </a>
