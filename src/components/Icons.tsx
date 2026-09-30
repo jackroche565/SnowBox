@@ -38,10 +38,13 @@ export function MapIcon(props: IconProps) {
   );
 }
 
-export function CompareIcon(props: IconProps) {
+/** A trail signpost: two arrows pointing different ways. */
+export function DecideIcon(props: IconProps) {
   return (
     <Icon {...props}>
-      <path d="M5 20 V11 M12 20 V4 M19 20 V14" />
+      <path d="M12 3 V21 M9 21 H15" />
+      <path d="M12 5 H19 L21 7 L19 9 H12" />
+      <path d="M12 11 H5 L3 13 L5 15 H12" />
     </Icon>
   );
 }
@@ -59,15 +62,6 @@ export function WindIcon(props: IconProps) {
     <Icon {...props}>
       <path d="M3 9 H14 A3 3 0 1 0 11 6" />
       <path d="M3 15 H18 A3 3 0 1 1 15 18" />
-    </Icon>
-  );
-}
-
-export function SnowflakeIcon(props: IconProps) {
-  return (
-    <Icon {...props}>
-      <path d="M12 3 V21 M4.2 7.5 L19.8 16.5 M4.2 16.5 L19.8 7.5" />
-      <path d="M9.5 4.5 L12 7 L14.5 4.5 M9.5 19.5 L12 17 L14.5 19.5" />
     </Icon>
   );
 }

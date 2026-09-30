@@ -16,12 +16,12 @@ const bebas = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
-  title: "Snowline",
-  description: "Snowfall and forecasts for ski resorts, starting in the Northeast.",
-  applicationName: "Snowline",
+  title: "Snowbox",
+  description: "Snow forecasts for Northeast ski resorts.",
+  applicationName: "Snowbox",
   openGraph: {
-    title: "Snowline",
-    description: "Snowfall and forecasts for ski resorts, starting in the Northeast.",
+    title: "Snowbox",
+    description: "Snow forecasts for Northeast ski resorts.",
     type: "website",
   },
 };

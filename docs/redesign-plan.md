@@ -99,3 +99,12 @@ What changed from the v2 plan during the build:
 - Charts with no snow show a one-line note instead of an empty plot.
 
 Data weight: the all-resort summary is about 44 KB, and each resort page adds about 20 KB.
+
+## 7. Second pass: Snowbox, one job per tab
+
+Feedback: the tabs overlapped, Home made it hard to see more than one or two mountains, and the headlines ("Waiting on Winter", "Watching Week Two") read as generated. Changes:
+- Renamed to **Snowbox**. The only title is the name in the bar; no changing headlines.
+- **Home**: starred mountains as compact rows (6+ visible on a phone), one best-bet card, first-visit mountain picker.
+- **Explore**: map + list for browsing, leading to resort detail pages. Featured card and compare buttons removed.
+- **Decide** (replaces Compare): day, passes, starting point and max drive give a ranked list with plain reasons; tick 2–3 for a side-by-side. Resorts off your passes are simply hidden, not labelled. Drive times are estimates from distance, without traffic.
+- Passes and starting point are saved settings shared by every tab.

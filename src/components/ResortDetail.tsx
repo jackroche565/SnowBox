@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
-import { COMPARE_LIMIT, useAppState } from "@/components/AppState";
+import { useAppState } from "@/components/AppState";
 import CountUp from "@/components/CountUp";
 import DailySnow from "@/components/DailySnow";
 import Estimate from "@/components/Estimate";
@@ -33,10 +33,10 @@ function Card({ title, aside, children, className = "" }: { title: string; aside
   return (
     <section className={`min-w-0 rounded-lg border border-line bg-white p-4 sm:p-5 ${className}`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="font-display text-2xl tracking-wider">{title}</h2>
+        <h2 className="text-[11px] font-semibold tracking-wider text-ink-muted uppercase">{title}</h2>
         {aside}
       </div>
-      <div className="mt-4">{children}</div>
+      <div className="mt-3">{children}</div>
     </section>
   );
 }
@@ -66,9 +66,9 @@ function Pending({ state, what = "forecast" }: { state: "loading" | "error" | "r
 }
 
 const LINKS = [
-  { field: "snowReportUrl", label: "Snow Report", blurb: "Lifts and trails open, grooming and the resort's own snow totals." },
-  { field: "webcamUrl", label: "Live Webcams", blurb: "See the snow and the lift lines for yourself." },
-  { field: "trailMapUrl", label: "Trail Map", blurb: "The resort's current trail map." },
+  { field: "snowReportUrl", label: "Snow report", blurb: "Lifts, trails, grooming, base depth." },
+  { field: "webcamUrl", label: "Webcams", blurb: "Live mountain cams." },
+  { field: "trailMapUrl", label: "Trail map", blurb: "Current trail map." },
 ] as const;
 
 // ── Tabs ──────────────────────────────────────────────────────────────
@@ -121,22 +121,22 @@ function useResortDetail(id: string): DetailState {
 const SNOW_LINE: Record<SnowLine, { title: string; detail: string; tone: string }> = {
   "all-snow": {
     title: "Snow top to bottom",
-    detail: "Everything forecast to fall in the next 72 hours is snow at both the summit and the base.",
+    detail: "All precipitation in the next 72 hours falls as snow at summit and base.",
     tone: "border-glacier bg-glacier/10",
   },
   "rain-below": {
-    title: "Rain down low, snow up top",
-    detail: "The base sees rain or mixed precipitation while the summit stays snow. Ski high.",
+    title: "Rain at the base, snow at the summit",
+    detail: "Rain or mix at the base; snow at the summit.",
     tone: "border-[#9a7fc4] bg-[#9a7fc4]/10",
   },
   "all-rain": {
     title: "Rain or mix to the summit",
-    detail: "Temperatures reach above freezing at the top of the mountain during precipitation.",
+    detail: "Above freezing at the summit during precipitation.",
     tone: "border-[#7a8699] bg-[#7a8699]/10",
   },
   dry: {
     title: "Dry for 72 hours",
-    detail: "No precipitation in the forecast at the summit or base.",
+    detail: "No precipitation forecast at summit or base.",
     tone: "border-line bg-snow",
   },
 };
@@ -221,8 +221,7 @@ function Outlook({ forecast, detail }: { forecast: ResortForecast; detail: Detai
       )}
       <SnowfallChart days={days} longRangeFrom={7} />
       <p className="mt-3 text-xs text-ink-muted">
-        Bars show the main forecast. Whiskers show the range across three global models: the wider the spread, the
-        lower the confidence. Tap a day for details.
+        Bars: main forecast. Whiskers: range across the GFS, ECMWF and GEM models. Wider means less certain.
       </p>
 
       {detail.data && (
@@ -340,10 +339,7 @@ function ReportTab({ resort, forecast, forecastState }: { resort: Resort; foreca
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <Card title="Official Report" className="lg:col-span-2">
-        <p className="mb-4 max-w-2xl text-sm text-ink-muted">
-          Lift and trail counts, grooming and base depth come from {resort.name} itself. We link straight to the source
-          rather than guess.
-        </p>
+        <p className="mb-4 max-w-2xl text-sm text-ink-muted">Lift, trail and base depth figures come from {resort.name}.</p>
         <OfficialLinks resort={resort} />
       </Card>
 
@@ -426,14 +422,12 @@ function MountainTab({ resort }: { resort: Resort }) {
 // ── Page ──────────────────────────────────────────────────────────────
 
 export default function ResortDetail({ resort }: { resort: Resort }) {
-  const { forecasts, forecastState, distanceTo, compareIds, toggleCompare } = useAppState();
+  const { forecasts, forecastState, distanceTo } = useAppState();
   const [tab, setTab] = useHashTab();
   // Fetched here, not in the tab, so switching tabs doesn't download it again.
   const detail = useResortDetail(resort.id);
   const forecast = forecasts?.[resort.id];
   const distance = distanceTo(resort);
-  const inCompare = compareIds.includes(resort.id);
-  const compareFull = !inCompare && compareIds.length >= COMPARE_LIMIT;
 
   const facts = [
     resort.summitFt && `${formatFeet(resort.summitFt)} summit`,
@@ -443,37 +437,22 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
 
   return (
     <>
-      <SiteHeader
-        eyebrow={
-          <>
-            <Link href="/explore" className="hover:text-snow">
-              ← Explore
-            </Link>
-            <span className="text-snow/40"> · </span>
-            {US_STATES[resort.state] ?? resort.state}
-          </>
-        }
-        title={resort.name}
-        subtitle={facts.join(" · ")}
-      >
-        <div className="mt-4 flex items-center gap-3">
+      <SiteHeader>
+        <div className="text-xs font-semibold tracking-[0.2em] text-glacier uppercase">
+          <Link href="/explore" className="hover:text-snow">
+            ← Explore
+          </Link>
+          <span className="text-snow/40"> · </span>
+          {US_STATES[resort.state] ?? resort.state}
+        </div>
+        <h1 className="mt-1 font-display text-5xl leading-none tracking-wide sm:text-7xl">{resort.name}</h1>
+        <p className="mt-2 text-sm text-snow/70 tabular-nums sm:text-base">{facts.join(" · ")}</p>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <PassTags passes={resort.passes} />
           {distance !== null && <span className="text-sm text-snow/70 tabular-nums">{Math.round(distance)} mi away</span>}
         </div>
         <div className="mt-5 flex flex-wrap gap-2">
           <FavoriteButton id={resort.id} name={resort.name} tone="dark" withLabel />
-          <button
-            type="button"
-            onClick={() => toggleCompare(resort.id)}
-            disabled={compareFull}
-            title={compareFull ? `Compare holds up to ${COMPARE_LIMIT} resorts` : undefined}
-            aria-pressed={inCompare}
-            className={`rounded-md px-4 py-2.5 text-sm font-semibold transition-colors disabled:opacity-50 ${
-              inCompare ? "border border-barn bg-transparent text-snow hover:bg-barn/20" : "bg-barn text-white hover:brightness-110"
-            }`}
-          >
-            {inCompare ? "✓ In compare" : "+ Add to compare"}
-          </button>
           {resort.snowReportUrl && (
             <a
               href={resort.snowReportUrl}
@@ -487,13 +466,6 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
             </a>
           )}
         </div>
-        {inCompare && (
-          <p className="mt-3 text-sm text-snow/70">
-            <Link href="/compare" className="font-medium text-snow underline underline-offset-2">
-              Go to Compare ({compareIds.length})
-            </Link>
-          </p>
-        )}
       </SiteHeader>
 
       <div className="sticky top-0 z-[1100] border-b border-line bg-snow/95 backdrop-blur">

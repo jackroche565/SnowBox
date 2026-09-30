@@ -4,14 +4,23 @@ import { useState, type FormEvent } from "react";
 import type { GeocodeResult } from "@/app/api/geocode/route";
 import { useAppState, type Origin } from "@/components/AppState";
 
-export default function LocationSearch({ onLocated }: { onLocated?: (origin: Origin) => void }) {
+type Props = {
+  onLocated?: (origin: Origin) => void;
+  className?: string;
+};
+
+/** Set where you're starting from. Once set it collapses to a one-line summary with a Change button. */
+export default function LocationSearch({ onLocated, className = "" }: Props) {
   const { origin, setOrigin } = useAppState();
+  const [editing, setEditing] = useState(false);
   const [query, setQuery] = useState("");
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function located(next: Origin) {
     setOrigin(next);
+    setEditing(false);
+    setQuery("");
     onLocated?.(next);
   }
 
@@ -43,45 +52,71 @@ export default function LocationSearch({ onLocated }: { onLocated?: (origin: Ori
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setLocating(false);
-        located({ lat: pos.coords.latitude, lon: pos.coords.longitude, label: "your location" });
+        located({ lat: pos.coords.latitude, lon: pos.coords.longitude, label: "Your location" });
       },
       () => {
         setLocating(false);
-        setError("Couldn't get your location. Try typing a city or zip instead.");
+        setError("Couldn't get your location. Type a city or zip instead.");
       },
     );
   }
 
+  if (origin && !editing) {
+    return (
+      <div className={`flex items-center gap-2 text-sm ${className}`}>
+        <span className="min-w-0 truncate">
+          From <span className="font-semibold">{origin.label}</span>
+        </span>
+        <button
+          type="button"
+          onClick={() => setEditing(true)}
+          className="shrink-0 font-medium text-glacier hover:underline"
+        >
+          Change
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="mt-6 max-w-2xl">
+    <div className={className}>
       <form onSubmit={handleSearch} className="flex flex-wrap gap-2">
-        <label htmlFor="location" className="sr-only">City or zip code</label>
+        <label htmlFor="location" className="sr-only">
+          City or zip code
+        </label>
         <input
           id="location"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="City or zip, e.g. Boston, MA or 05672"
-          className="w-full min-w-0 rounded-md bg-snow px-3 py-2.5 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-glacier focus:outline-none sm:w-auto sm:flex-1"
+          placeholder="City or zip"
+          className="min-w-0 flex-1 basis-40 rounded-md border border-line bg-white px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-glacier focus:outline-none"
         />
         <button
           type="submit"
           disabled={locating}
-          className="rounded-md bg-alpenglow px-5 py-2.5 text-sm font-semibold text-white hover:brightness-110 disabled:opacity-60"
+          className="rounded-md bg-alpenglow px-4 py-2 text-sm font-semibold text-white hover:brightness-110 disabled:opacity-60"
         >
-          {locating ? "Finding…" : "Search"}
+          {locating ? "Finding…" : "Set"}
         </button>
         <button
           type="button"
           onClick={handleUseMyLocation}
           disabled={locating}
-          className="rounded-md border border-snow/30 px-4 py-2.5 text-sm font-medium text-snow hover:border-snow/60 hover:bg-white/5 disabled:opacity-60"
+          className="rounded-md border border-line bg-white px-3 py-2 text-sm font-medium text-ink hover:border-ink/40 disabled:opacity-60"
         >
           Use my location
         </button>
+        {origin && (
+          <button type="button" onClick={() => setEditing(false)} className="px-1 text-sm text-ink-muted hover:text-ink">
+            Cancel
+          </button>
+        )}
       </form>
-      <p aria-live="polite" className={`mt-2 min-h-5 text-sm ${error ? "text-[#ff9b85]" : "text-snow/70"}`}>
-        {error ?? (origin ? `Showing resorts near ${origin.label}.` : null)}
-      </p>
+      {error && (
+        <p aria-live="polite" className="mt-1.5 text-sm text-barn">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

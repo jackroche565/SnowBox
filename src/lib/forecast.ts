@@ -7,6 +7,8 @@ export type DailyForecast = {
   lowF: number | null;
   /** Strongest wind gust of the day at the grid point, in mph. */
   gustMph: number | null;
+  /** Liquid rain (not snow) for the day, in inches. */
+  rainIn: number | null;
 };
 
 export type ResortForecast = {
@@ -44,7 +46,7 @@ export function buildForecastUrl(list: Resort[]): string {
     latitude: list.map((r) => r.lat).join(","),
     longitude: list.map((r) => r.lon).join(","),
     current: "temperature_2m,snow_depth",
-    daily: "snowfall_sum,temperature_2m_max,temperature_2m_min,wind_gusts_10m_max",
+    daily: "snowfall_sum,rain_sum,temperature_2m_max,temperature_2m_min,wind_gusts_10m_max",
     past_days: "7",
     forecast_days: String(OUTLOOK_DAYS),
     timezone: TIMEZONE,
@@ -81,8 +83,9 @@ type OpenMeteoLocation = {
     temperature_2m_max?: (number | null)[];
     temperature_2m_min?: (number | null)[];
     wind_gusts_10m_max?: (number | null)[];
+    rain_sum?: (number | null)[];
   };
-  daily_units?: { snowfall_sum?: string };
+  daily_units?: { snowfall_sum?: string; rain_sum?: string };
 };
 
 export function todayInTimezone(now: Date): string {
@@ -105,6 +108,7 @@ export function parseLocation(loc: OpenMeteoLocation, now = new Date()): ResortF
     highF: daily?.temperature_2m_max?.[i] ?? null,
     lowF: daily?.temperature_2m_min?.[i] ?? null,
     gustMph: daily?.wind_gusts_10m_max?.[i] ?? null,
+    rainIn: toInches(daily?.rain_sum?.[i], loc.daily_units?.rain_sum),
   }));
   const past = days.filter((d) => d.date < today);
   const outlook = days.filter((d) => d.date >= today);

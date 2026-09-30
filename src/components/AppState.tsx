@@ -5,38 +5,47 @@ import { CountUpContext } from "@/components/CountUp";
 import type { SortKey } from "@/components/SortControl";
 import type { ForecastResponse, ResortForecast } from "@/lib/forecast";
 import { distanceMiles, type LatLon } from "@/lib/geo";
-import type { Pass } from "@/lib/resorts";
+import { PASSES, type Pass } from "@/lib/resorts";
 
 export type Origin = LatLon & { label: string };
-export type PassFilter = Pass | "All";
 export type ForecastState = "loading" | "error" | "ready";
 
 export const COMPARE_LIMIT = 3;
 const COUNT_UP_WINDOW_MS = 1500;
-const COMPARE_STORAGE_KEY = "snowline:compare";
-const FAVORITES_STORAGE_KEY = "snowline:favorites";
+
+// Storage keys predate the Snowbox name. Renaming them would drop everyone's saved lists.
+const STORAGE = {
+  compare: "snowline:compare",
+  favorites: "snowline:favorites",
+  passes: "snowline:passes",
+  origin: "snowline:origin",
+};
 
 type AppState = {
   forecasts: Record<string, ResortForecast> | null;
   forecastState: ForecastState;
 
+  /** Where the user starts from, saved in this browser. */
   origin: Origin | null;
   setOrigin: (origin: Origin | null) => void;
   distanceTo: (point: LatLon) => number | null;
 
+  /** Resorts picked for a head-to-head in Decide. */
   compareIds: string[];
   toggleCompare: (id: string) => void;
-  clearCompare: () => void;
 
-  /** Starred resorts, in the order they were starred. Shown first on Home. */
+  /** Starred resorts, in the order they were starred. Shown on Home. */
   favoriteIds: string[];
   toggleFavorite: (id: string) => void;
-  /** False until saved lists are read from this browser, so pages can avoid flashing an empty state. */
+
+  /** Passes the user holds. Empty means "show every resort". */
+  myPasses: Pass[];
+  togglePass: (pass: Pass) => void;
+
+  /** False until saved settings are read from this browser, so pages can avoid flashing an empty state. */
   savedListsReady: boolean;
 
-  // Overview settings live here so they survive a trip to a detail page and back.
-  passFilter: PassFilter;
-  setPassFilter: (filter: PassFilter) => void;
+  // Explore's sort lives here so it survives a trip to a resort page and back.
   sortKey: SortKey;
   setSortKey: (key: SortKey) => void;
 };
@@ -49,20 +58,31 @@ export function useAppState(): AppState {
   return state;
 }
 
-function readStoredIds(key: string): string[] {
+function readStored(key: string): unknown {
   try {
-    const parsed: unknown = JSON.parse(localStorage.getItem(key) ?? "[]");
-    return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
+    return JSON.parse(localStorage.getItem(key) ?? "null");
   } catch {
-    return [];
+    return null;
   }
 }
 
-function writeStoredIds(key: string, ids: string[]) {
+function readStoredIds(key: string): string[] {
+  const parsed = readStored(key);
+  return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
+}
+
+function readStoredOrigin(): Origin | null {
+  const o = readStored(STORAGE.origin) as Partial<Origin> | null;
+  return o && typeof o.lat === "number" && typeof o.lon === "number" && typeof o.label === "string"
+    ? { lat: o.lat, lon: o.lon, label: o.label }
+    : null;
+}
+
+function writeStored(key: string, value: unknown) {
   try {
-    localStorage.setItem(key, JSON.stringify(ids));
+    localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // Storage can be unavailable (private mode, blocked site data); the list still works for this visit.
+    // Storage can be unavailable (private mode, blocked site data); settings still work for this visit.
   }
 }
 
@@ -74,8 +94,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [origin, setOrigin] = useState<Origin | null>(null);
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+  const [myPasses, setMyPasses] = useState<Pass[]>([]);
   const [storageLoaded, setStorageLoaded] = useState(false);
-  const [passFilter, setPassFilter] = useState<PassFilter>("All");
   const [sortKey, setSortKey] = useState<SortKey>("next7");
 
   useEffect(() => {
@@ -92,32 +112,36 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Compare and favorites are remembered in this browser. They're read after mount so the
-  // server-rendered HTML (which can't see localStorage) matches the first client render.
+  // Saved settings are read after mount so the server-rendered HTML (which can't see
+  // localStorage) matches the first client render.
   useEffect(() => {
     queueMicrotask(() => {
-      setCompareIds(readStoredIds(COMPARE_STORAGE_KEY).slice(0, COMPARE_LIMIT));
-      setFavoriteIds(readStoredIds(FAVORITES_STORAGE_KEY));
+      setCompareIds(readStoredIds(STORAGE.compare).slice(0, COMPARE_LIMIT));
+      setFavoriteIds(readStoredIds(STORAGE.favorites));
+      setMyPasses(readStoredIds(STORAGE.passes).filter((p): p is Pass => (PASSES as readonly string[]).includes(p)));
+      setOrigin(readStoredOrigin());
       setStorageLoaded(true);
     });
   }, []);
 
   useEffect(() => {
-    if (storageLoaded) writeStoredIds(COMPARE_STORAGE_KEY, compareIds);
-  }, [compareIds, storageLoaded]);
-
-  useEffect(() => {
-    if (storageLoaded) writeStoredIds(FAVORITES_STORAGE_KEY, favoriteIds);
-  }, [favoriteIds, storageLoaded]);
+    if (!storageLoaded) return;
+    writeStored(STORAGE.compare, compareIds);
+    writeStored(STORAGE.favorites, favoriteIds);
+    writeStored(STORAGE.passes, myPasses);
+    writeStored(STORAGE.origin, origin);
+  }, [compareIds, favoriteIds, myPasses, origin, storageLoaded]);
 
   const toggleCompare = useCallback((id: string) => {
     setCompareIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : prev.length < COMPARE_LIMIT ? [...prev, id] : prev,
     );
   }, []);
-  const clearCompare = useCallback(() => setCompareIds([]), []);
   const toggleFavorite = useCallback((id: string) => {
     setFavoriteIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }, []);
+  const togglePass = useCallback((pass: Pass) => {
+    setMyPasses((prev) => (prev.includes(pass) ? prev.filter((p) => p !== pass) : PASSES.filter((p) => p === pass || prev.includes(p))));
   }, []);
 
   const distanceTo = useCallback((point: LatLon) => (origin ? distanceMiles(origin, point) : null), [origin]);
@@ -131,12 +155,11 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       distanceTo,
       compareIds,
       toggleCompare,
-      clearCompare,
       favoriteIds,
       toggleFavorite,
+      myPasses,
+      togglePass,
       savedListsReady: storageLoaded,
-      passFilter,
-      setPassFilter,
       sortKey,
       setSortKey,
     }),
@@ -147,11 +170,11 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       distanceTo,
       compareIds,
       toggleCompare,
-      clearCompare,
       favoriteIds,
       toggleFavorite,
+      myPasses,
+      togglePass,
       storageLoaded,
-      passFilter,
       sortKey,
     ],
   );
@@ -161,4 +184,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       <CountUpContext.Provider value={countingUp}>{children}</CountUpContext.Provider>
     </AppStateContext.Provider>
   );
+}
+
+/** Whether a resort takes any of the user's passes. With no passes chosen, every resort counts. */
+export function onMyPasses(passes: readonly Pass[], myPasses: Pass[]): boolean {
+  return myPasses.length === 0 || passes.some((p) => myPasses.includes(p));
 }

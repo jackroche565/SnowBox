@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Explore from "@/components/Explore";
 
 export const metadata: Metadata = {
-  title: "Explore resorts · Snowline",
+  title: "Explore · Snowbox",
 };
 
 export default function ExplorePage() {

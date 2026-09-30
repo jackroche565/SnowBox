@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: PageProps<"/resorts/[id]">): 
   const resort = getResort((await params).id);
   if (!resort) return {};
   return {
-    title: `${resort.name} snow forecast · Snowline`,
-    description: `Snowfall, 7-day forecast, trail map and webcams for ${resort.name}, ${resort.state}.`,
+    title: `${resort.name} · Snowbox`,
+    description: `Snow forecast, trail map and webcams for ${resort.name}, ${resort.state}.`,
   };
 }
 
