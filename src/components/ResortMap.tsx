@@ -207,8 +207,9 @@ export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onH
       popup.current?.setLngLat([resort.lon, resort.lat]).setDOMContent(label).addTo(map);
     }
     return () => {
-      map.setFeatureState({ source: "resorts", id: hoveredId }, { hover: false });
       popup.current?.remove();
+      // Leaving the page removes the map before this runs; then there's nothing to un-highlight.
+      if (mapRef.current === map) map.setFeatureState({ source: "resorts", id: hoveredId }, { hover: false });
     };
   }, [ready, hoveredId, forecasts]);
 
