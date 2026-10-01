@@ -24,7 +24,7 @@ const NOTE_TONE = {
 /** The Green Mountains in 3D relief, fading into the page. */
 function TerrainBand() {
   return (
-    <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[250px] overflow-hidden sm:h-[300px]">
+    <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[200px] overflow-hidden sm:h-[260px]">
       {/* eslint-disable-next-line @next/next/no-img-element -- static decorative render */}
       <img src="/terrain/green-mountains.jpg" alt="" className="h-full w-full object-cover" />
       <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgb(243 245 248 / 0) 55%, var(--snow) 100%)" }} />
@@ -100,11 +100,11 @@ function MountainRow({ resort, forecast }: { resort: Resort; forecast: ResortFor
         {forecast && (
           <span className="flex items-end gap-2">
             <SnowStake inches={snow} height={34} />
-            <span className="w-[58px] text-right">
+            <span className="w-[66px] text-right">
               <span className={`type-figure block text-[26px] ${snow >= 0.1 ? "text-ink" : "text-ink-zero"}`}>
                 {formatInches(snow)}
               </span>
-              <span className="mt-[3px] block text-[11px] text-ink-faint">7 days</span>
+              <span className="mt-[3px] block text-[11px] whitespace-nowrap text-ink-faint">next 7 days</span>
             </span>
           </span>
         )}
@@ -271,11 +271,12 @@ export default function Home() {
   const today = forecasts ? Object.values(forecasts)[0]?.outlook[0]?.date : undefined;
 
   return (
-    <div className="relative flex flex-1 flex-col">
-      <TerrainBand />
-      <SiteHeader variant="overlay" aside={today ? formatShortDate(today) : undefined} />
+    <div className="flex flex-1 flex-col">
+      <SiteHeader aside={today ? formatShortDate(today) : undefined} />
 
-      <main className="relative mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-3 pt-[176px] pb-10 sm:pt-[220px]">
+      <main className="relative flex flex-1 flex-col">
+        <TerrainBand />
+        <div className="relative mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-3 pt-[124px] pb-10 sm:pt-[180px]">
         <h1 className="sr-only">Your mountains</h1>
 
         <div className="flex min-h-[34px] items-center px-2">
@@ -322,6 +323,7 @@ export default function Home() {
             {forecasts && <BestBet forecasts={forecasts} />}
           </>
         )}
+        </div>
       </main>
 
       <footer className="mx-auto w-full max-w-2xl px-5 pb-8 text-xs text-ink-faint">

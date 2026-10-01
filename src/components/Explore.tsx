@@ -10,8 +10,8 @@ import { ResortRow } from "@/components/ResortEntries";
 import type { MapFocus } from "@/components/ResortMap";
 import SiteHeader from "@/components/SiteHeader";
 import SortControl from "@/components/SortControl";
-import { SNOW_SCALE } from "@/lib/format";
-import { resorts, resortPath } from "@/lib/resorts";
+import { INDEPENDENT_COLOR, PASS_COLORS } from "@/lib/format";
+import { PASSES, resorts, resortPath } from "@/lib/resorts";
 import { US_STATES } from "@/lib/usStates";
 
 // WebGL only runs in the browser, so the map loads client-side.
@@ -66,14 +66,14 @@ export default function Explore() {
 
   return (
     <div className="relative flex flex-1 flex-col">
-      <SiteHeader hideOnPhone />
+      <SiteHeader />
       <h1 className="sr-only">Explore resorts</h1>
 
       <div className="mx-auto w-full max-w-[1400px] flex-1 lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start lg:gap-4 lg:px-5 lg:pb-8">
         {/* Map, with search and filters floating over it */}
         <section
           aria-label="Resort map"
-          className="relative h-[62vh] min-h-[420px] overflow-hidden bg-[#eef2f6] lg:sticky lg:top-4 lg:h-[calc(100vh-6rem)] lg:rounded-[18px] lg:shadow-[0_1px_2px_rgb(15_26_42/0.05),0_10px_30px_rgb(15_26_42/0.06)]"
+          className="relative h-[58vh] min-h-[400px] overflow-hidden bg-[#eef2f6] lg:sticky lg:top-4 lg:h-[calc(100vh-6rem)] lg:rounded-[18px] lg:shadow-[0_1px_2px_rgb(15_26_42/0.05),0_10px_30px_rgb(15_26_42/0.06)]"
         >
           <ResortMap
             resorts={visible.map((v) => v.resort)}
@@ -126,15 +126,17 @@ export default function Explore() {
           </div>
 
           <div className="pointer-events-none absolute bottom-8 left-3 z-10 rounded-[10px] bg-white/94 px-2.5 py-2 shadow-[0_1px_4px_rgb(15_26_42/0.10)] lg:bottom-4">
-            <div className="text-[11px] font-semibold text-ink-muted">Snow next 7 days</div>
-            <ul className="mt-1 flex items-center gap-2 text-[11px] tabular-nums">
-              {SNOW_SCALE.map((s) => (
-                <li key={s.from} className="flex items-center gap-[3px]">
-                  <span className="h-[9px] w-[9px] rounded-full" style={{ backgroundColor: s.color }} />
-                  {s.label}
-                </li>
-              ))}
+            <ul className="flex items-center gap-2.5 text-[11px] font-medium">
+              {[...PASSES.map((p) => ({ label: p, color: PASS_COLORS[p] })), { label: "Independent", color: INDEPENDENT_COLOR }].map(
+                (k) => (
+                  <li key={k.label} className="flex items-center gap-1">
+                    <span className="h-[9px] w-[9px] rounded-full" style={{ backgroundColor: k.color }} />
+                    {k.label}
+                  </li>
+                ),
+              )}
             </ul>
+            <div className="mt-1 text-[11px] text-ink-faint">Bigger dot = more snow in the next 7 days</div>
           </div>
         </section>
 

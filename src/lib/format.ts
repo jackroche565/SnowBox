@@ -5,6 +5,12 @@ export const PASS_COLORS: Record<Pass, string> = {
   Ikon: "#2563eb",
   Indy: "#16a34a",
 };
+/** Resorts on none of the three passes: ink, so they read as part of the map, not greyed out. */
+export const INDEPENDENT_COLOR = "#0f1a2a";
+
+export function resortColor(passes: Pass[]): string {
+  return passes.length ? PASS_COLORS[passes[0]] : INDEPENDENT_COLOR;
+}
 
 export function formatInches(value: number | null | undefined): string {
   if (value == null) return "—";
@@ -42,18 +48,4 @@ export const PRECIP_COLORS = {
 export function formatHour(time: string): string {
   const hour = Number(time.slice(11, 13));
   return `${hour % 12 || 12}${hour < 12 ? "am" : "pm"}`;
-}
-
-/** Map pin colors by 7-day forecast snow: grey for none, deepening blues as it piles up. */
-export const SNOW_SCALE = [
-  { from: 0, color: "#8f9bab", label: "0\"" },
-  { from: 0.5, color: "#9fcbe6", label: "½\"" },
-  { from: 3, color: "#4a90b8", label: "3\"" },
-  { from: 6, color: "#24618f", label: "6\"" },
-  { from: 12, color: "#101826", label: "12\"+" },
-] as const;
-
-export function snowColor(inches: number | null | undefined): string {
-  const v = inches ?? 0;
-  return [...SNOW_SCALE].reverse().find((s) => v >= s.from)!.color;
 }

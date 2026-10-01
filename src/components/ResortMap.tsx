@@ -4,10 +4,10 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl, { type GeoJSONSource, type Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 import type { ResortForecast } from "@/lib/forecast";
-import { SNOW_SCALE, formatInches } from "@/lib/format";
+import { formatInches, resortColor } from "@/lib/format";
 import type { LatLon } from "@/lib/geo";
 import { resorts as allResorts, type Resort } from "@/lib/resorts";
-import { BASEMAP_STYLE, ELEVATION, SHADING, hillshadeLayer } from "@/lib/terrain";
+import { BASEMAP_STYLE } from "@/lib/terrain";
 
 export type MapFocus = LatLon & { zoom: number; key: number };
 
@@ -21,8 +21,12 @@ type Props = {
   focus: MapFocus | null;
 };
 
-const PITCH_3D = 50;
-const EXAGGERATION = 1.4;
+/** Below this, a week's snow gets no label on the map. */
+const LABEL_INCHES = 0.5;
+
+// Basemap layers that add detail but not orientation: buildings, small roads, rail, airports,
+// villages and road names. What's left: water, woods, major highways, borders, towns and cities.
+const CLUTTER = /^(building|landuse_residential|park|aeroway|airport|road_|highway_path|highway_minor|railway|highway-name|highway-shield-non-us|road_shield_us|label_other|label_village|waterway_line_label)/;
 
 function bounds(list: Resort[]): [[number, number], [number, number]] {
   const lons = list.map((r) => r.lon);
@@ -36,11 +40,20 @@ function bounds(list: Resort[]): [[number, number], [number, number]] {
 function resortFeatures(list: Resort[], forecasts: Record<string, ResortForecast> | null) {
   return {
     type: "FeatureCollection" as const,
-    features: list.map((r) => ({
-      type: "Feature" as const,
-      geometry: { type: "Point" as const, coordinates: [r.lon, r.lat] },
-      properties: { id: r.id, name: r.name, snow: forecasts?.[r.id]?.next7In ?? 0 },
-    })),
+    features: list.map((r) => {
+      const snow = forecasts?.[r.id]?.next7In ?? 0;
+      return {
+        type: "Feature" as const,
+        geometry: { type: "Point" as const, coordinates: [r.lon, r.lat] },
+        properties: {
+          id: r.id,
+          name: r.name,
+          snow,
+          color: resortColor(r.passes),
+          label: snow >= LABEL_INCHES ? formatInches(snow) : "",
+        },
+      };
+    }),
   };
 }
 
@@ -53,13 +66,7 @@ function originFeatures(origin: LatLon | null) {
   };
 }
 
-// Pin color steps up the snow scale; size grows with snow (square root keeps big storms in check).
-const SNOW_COLOR = [
-  "step",
-  ["get", "snow"],
-  SNOW_SCALE[0].color,
-  ...SNOW_SCALE.slice(1).flatMap((s) => [s.from, s.color]),
-] as unknown as maplibregl.ExpressionSpecification;
+// Dots grow with the week's snow (square root keeps big storms in check).
 const SNOW_RADIUS = ["min", 13, ["+", 5, ["*", 2, ["sqrt", ["get", "snow"]]]]] as unknown as maplibregl.ExpressionSpecification;
 const HOVERED = ["boolean", ["feature-state", "hover"], false] as unknown as maplibregl.ExpressionSpecification;
 
@@ -68,7 +75,6 @@ export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onH
   const mapRef = useRef<MapLibreMap | null>(null);
   const popup = useRef<maplibregl.Popup | null>(null);
   const [ready, setReady] = useState(false);
-  const [threeD, setThreeD] = useState(true);
   // Handlers change every render; the map's listeners read the latest through a ref.
   const handlers = useRef({ onSelect, onHover });
   useEffect(() => {
@@ -83,22 +89,23 @@ export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onH
       bounds: bounds(allResorts),
       // Extra room at the top for the floating search and pass filters.
       fitBoundsOptions: { padding: { top: 120, bottom: 48, left: 24, right: 56 } },
-      pitch: PITCH_3D,
-      maxPitch: 70,
+      // Flat and north-up: no tilting or rotating.
+      maxPitch: 0,
+      dragRotate: false,
+      touchPitch: false,
+      pitchWithRotate: false,
       attributionControl: { compact: true },
     });
+    map.touchZoomRotate.disableRotation();
     mapRef.current = map;
     popup.current = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 12 });
 
     // "style.load" fires as soon as the basemap style is in; "load" waits for a first full render,
     // which a background tab can hold back.
     map.once("style.load", () => {
-      map.addSource("terrain", ELEVATION);
-      map.addSource("shading", SHADING);
-      // Relief sits under roads and labels so the map stays readable.
-      const firstSymbol = map.getStyle().layers.find((l) => l.type === "symbol")?.id;
-      map.addLayer(hillshadeLayer(0.5), firstSymbol);
-      map.setTerrain({ source: "terrain", exaggeration: EXAGGERATION });
+      for (const layer of map.getStyle().layers) {
+        if (CLUTTER.test(layer.id)) map.removeLayer(layer.id);
+      }
 
       map.addSource("origin", { type: "geojson", data: originFeatures(null) });
       map.addLayer({
@@ -110,7 +117,6 @@ export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onH
           "circle-color": "#e0532f",
           "circle-stroke-color": "#ffffff",
           "circle-stroke-width": 2.5,
-          "circle-pitch-alignment": "map",
         },
       });
 
@@ -121,11 +127,25 @@ export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onH
         source: "resorts",
         paint: {
           "circle-radius": ["case", HOVERED, ["+", SNOW_RADIUS, 3], SNOW_RADIUS],
-          "circle-color": SNOW_COLOR,
+          "circle-color": ["get", "color"],
           "circle-stroke-color": ["case", HOVERED, "#0f1a2a", "#ffffff"],
           "circle-stroke-width": ["case", HOVERED, 2.5, 2],
-          "circle-pitch-alignment": "map",
         },
+      });
+      // The week's snow beside any resort expecting some.
+      map.addLayer({
+        id: "resort-snow",
+        type: "symbol",
+        source: "resorts",
+        layout: {
+          "text-field": ["get", "label"],
+          "text-font": ["Noto Sans Bold"],
+          "text-size": 12,
+          "text-anchor": "left",
+          "text-offset": [0.9, 0],
+          "text-allow-overlap": false,
+        },
+        paint: { "text-color": "#0f1a2a", "text-halo-color": "#ffffff", "text-halo-width": 1.5 },
       });
 
       map.on("click", "resorts", (e) => {
@@ -162,7 +182,7 @@ export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onH
     (mapRef.current?.getSource("origin") as GeoJSONSource | undefined)?.setData(originFeatures(origin));
   }, [ready, origin]);
 
-  // Hover from either side (map or list): highlight the pin and label it.
+  // Hover from either side (map or list): highlight the dot and label it.
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map || !hoveredId) return;
@@ -170,9 +190,9 @@ export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onH
     map.setFeatureState({ source: "resorts", id: hoveredId }, { hover: true });
     if (resort) {
       const label = document.createElement("span");
-      label.innerHTML = "<strong></strong>";
-      label.querySelector("strong")!.textContent = resort.name;
-      label.append(` · ${formatInches(forecasts?.[resort.id]?.next7In)} next 7 days`);
+      const name = document.createElement("strong");
+      name.textContent = resort.name;
+      label.append(name, ` · ${formatInches(forecasts?.[resort.id]?.next7In)} next 7 days`);
       popup.current?.setLngLat([resort.lon, resort.lat]).setDOMContent(label).addTo(map);
     }
     return () => {
@@ -186,28 +206,10 @@ export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onH
     mapRef.current?.flyTo({ center: [focus.lon, focus.lat], zoom: focus.zoom, duration: 900 });
   }, [focus]);
 
-  function toggle3D() {
-    const map = mapRef.current;
-    if (!map) return;
-    const next = !threeD;
-    setThreeD(next);
-    map.setTerrain(next ? { source: "terrain", exaggeration: EXAGGERATION } : null);
-    map.easeTo({ pitch: next ? PITCH_3D : 0, duration: 600 });
-  }
-
   return (
     <div className="relative h-full w-full">
       <div ref={container} className="h-full w-full" />
       <div className="absolute right-3 bottom-8 z-10 flex flex-col overflow-hidden rounded-[10px] bg-white shadow-[0_1px_4px_rgb(15_26_42/0.12)]">
-        <button
-          type="button"
-          onClick={toggle3D}
-          aria-pressed={threeD}
-          aria-label={threeD ? "Flatten map" : "Tilt map to 3D"}
-          className="h-10 w-10 border-b border-hairline text-xs font-bold text-ink"
-        >
-          {threeD ? "2D" : "3D"}
-        </button>
         <button
           type="button"
           aria-label="Zoom in"

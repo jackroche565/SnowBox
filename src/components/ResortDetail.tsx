@@ -357,17 +357,17 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
 
   return (
     <div className="relative flex flex-1 flex-col">
+      <SiteHeader />
       {/* Hero: the mountain in 3D, fading into the page. */}
-      <div className="relative h-[440px] overflow-hidden bg-[#e8eef4]">
+      <div className="relative h-[400px] overflow-hidden bg-[#e8eef4]">
         <TerrainHero lat={resort.lat} lon={resort.lon} />
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
           style={{ background: "linear-gradient(to bottom, rgb(243 245 248 / 0) 45%, rgb(243 245 248 / 0.85) 80%, var(--snow) 100%)" }}
         />
-        <SiteHeader variant="overlay" hideOnPhone />
 
-        <div className="absolute inset-x-4 top-4 flex justify-between sm:hidden">
+        <div className="absolute inset-x-4 top-3 flex justify-between sm:hidden">
           <FloatingButton href="/explore" label="Back to Explore">
             <svg aria-hidden="true" viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 5 L8 12 L15 19" />
