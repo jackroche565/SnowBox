@@ -1,93 +1,114 @@
 @import "tailwindcss";
 
+/* Snowbox, alpine editorial: a cool snow ground, white sheets, deep ink, glacier blue for snow,
+   alpenglow only for powder. */
 :root {
-  --navy: #101826;
-  --navy-2: #1a2538;
-  --snow: #f5f7fa;
-  --glacier: #4a90b8;
-  --alpenglow: #e85d3d;
-  --barn: #b5482e;
+  --snow: #f3f5f8; /* page */
+  --sheet: #ffffff; /* surfaces */
+  --ink: #0f1a2a; /* text, active controls */
+  --navy: #0f1a2a;
+  --navy-2: #1d2a3e;
+  --ink-muted: #4b5668; /* secondary text */
+  --ink-faint: #6b7585; /* captions */
+  --ink-zero: #a3acb9; /* a zero snow figure */
+  --line: #e3e8ee; /* control borders */
+  --hairline: #edf1f5; /* dividers inside sheets */
+  --chip: #eef1f5; /* quiet fills */
+  --glacier: #2f76a3; /* snow figures, links */
+  --ice: #e6f0f7; /* snow tint */
+  --alpenglow: #e0532f; /* powder only */
+  --barn: #a9442b; /* wind holds, rain, errors */
   --gold: #e0a526; /* favorites star only */
-  --ink: #101826;
-  --ink-muted: #5a6475;
-  --line: #dde3ea;
 }
 
 @theme inline {
+  --color-snow: var(--snow);
+  --color-sheet: var(--sheet);
+  --color-ink: var(--ink);
   --color-navy: var(--navy);
   --color-navy-2: var(--navy-2);
-  --color-snow: var(--snow);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-ink-zero: var(--ink-zero);
+  --color-line: var(--line);
+  --color-hairline: var(--hairline);
+  --color-chip: var(--chip);
   --color-glacier: var(--glacier);
+  --color-ice: var(--ice);
   --color-alpenglow: var(--alpenglow);
   --color-barn: var(--barn);
   --color-gold: var(--gold);
-  --color-ink: var(--ink);
-  --color-ink-muted: var(--ink-muted);
-  --color-line: var(--line);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-bebas);
+  --font-sans: var(--font-instrument);
+  --font-display: var(--font-archivo);
 }
 
 body {
   background: var(--snow);
   color: var(--ink);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-instrument), system-ui, sans-serif;
 }
 
-/* Map chrome: light and quiet, so the snow pins carry the color. */
-.leaflet-container {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  background: #eef1f4;
-}
-.leaflet-bar {
-  border: 1px solid var(--line) !important;
-  box-shadow: 0 1px 2px rgb(16 24 38 / 0.08) !important;
-}
-.leaflet-bar a,
-.leaflet-bar a:hover {
-  background: #fff;
-  color: var(--ink);
-  border-bottom-color: var(--line);
-}
-.leaflet-bar a:hover {
-  background: var(--snow);
-}
-.leaflet-tooltip {
-  background: var(--navy);
-  color: var(--snow);
-  border: none;
-  border-radius: 4px;
-  font-variant-numeric: tabular-nums;
-  box-shadow: 0 2px 6px rgb(16 24 38 / 0.3);
-}
-.leaflet-tooltip-top::before {
-  border-top-color: var(--navy);
-}
-.leaflet-control-attribution {
-  font-size: 10px;
-  background: rgb(255 255 255 / 0.8) !important;
-}
-
-/* Pass tags styled like a stitched trail patch. */
-.pass-patch {
-  display: inline-flex;
-  padding: 2px;
-  border-radius: 4px;
-  box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.18);
-}
-.pass-patch > span {
-  border: 1px dashed rgb(255 255 255 / 0.7);
-  border-radius: 2px;
-  padding: 1px 5px;
-  font-size: 10px;
-  line-height: 1.2;
+/* Archivo is a variable-width face: condensed reads like trail signage. */
+@utility type-hero {
+  font-family: var(--font-archivo), sans-serif;
+  font-stretch: 75%;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #fff;
+  line-height: 0.95;
+  letter-spacing: -0.015em;
+}
+@utility type-name {
+  font-family: var(--font-archivo), sans-serif;
+  font-stretch: 85%;
+  font-weight: 650;
+}
+@utility type-figure {
+  font-family: var(--font-archivo), sans-serif;
+  font-stretch: 85%;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Compare dialog. */
-dialog.compare-dialog::backdrop {
-  background: rgb(16 24 38 / 0.55);
+/* White surfaces: one soft shadow, hairlines inside. */
+@utility sheet {
+  background: var(--sheet);
+  border-radius: 18px;
+  box-shadow:
+    0 1px 2px rgb(15 26 42 / 0.05),
+    0 10px 30px rgb(15 26 42 / 0.06);
+}
+
+/* Snow stake: a ruled pole that fills from the bottom, like the stake cams resorts point at. */
+@utility stake {
+  position: relative;
+  width: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: repeating-linear-gradient(to top, #d3dbe4 0 1px, #f3f6f9 1px 6px);
+}
+
+/* Map chrome. */
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
+}
+.maplibregl-popup-content {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--snow);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 8px rgb(15 26 42 / 0.3);
+}
+.maplibregl-popup-tip {
+  border-top-color: var(--ink) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }

@@ -6,13 +6,15 @@ import { useAppState, type Origin } from "@/components/AppState";
 
 type Props = {
   onLocated?: (origin: Origin) => void;
+  /** Open on the search form even when a starting point is already saved. */
+  startEditing?: boolean;
   className?: string;
 };
 
 /** Set where you're starting from. Once set it collapses to a one-line summary with a Change button. */
-export default function LocationSearch({ onLocated, className = "" }: Props) {
+export default function LocationSearch({ onLocated, startEditing = false, className = "" }: Props) {
   const { origin, setOrigin } = useAppState();
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(startEditing);
   const [query, setQuery] = useState("");
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -89,12 +91,12 @@ export default function LocationSearch({ onLocated, className = "" }: Props) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="City or zip"
-          className="min-w-0 flex-1 basis-40 rounded-md border border-line bg-white px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-glacier focus:outline-none"
+          className="min-w-0 flex-1 basis-40 rounded-[10px] bg-chip px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:ring-2 focus:ring-glacier focus:outline-none"
         />
         <button
           type="submit"
           disabled={locating}
-          className="rounded-md bg-alpenglow px-4 py-2 text-sm font-semibold text-white hover:brightness-110 disabled:opacity-60"
+          className="rounded-[10px] bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-navy-2 disabled:opacity-60"
         >
           {locating ? "Finding…" : "Set"}
         </button>
@@ -102,7 +104,7 @@ export default function LocationSearch({ onLocated, className = "" }: Props) {
           type="button"
           onClick={handleUseMyLocation}
           disabled={locating}
-          className="rounded-md border border-line bg-white px-3 py-2 text-sm font-medium text-ink hover:border-ink/40 disabled:opacity-60"
+          className="rounded-[10px] bg-chip px-3 py-2 text-sm font-medium text-ink hover:bg-line disabled:opacity-60"
         >
           Use my location
         </button>

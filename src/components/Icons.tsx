@@ -66,6 +66,14 @@ export function WindIcon(props: IconProps) {
   );
 }
 
+export function SnowflakeIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 3 V21 M4.2 7.5 L19.8 16.5 M4.2 16.5 L19.8 7.5" />
+    </Icon>
+  );
+}
+
 export function ExternalIcon(props: IconProps) {
   return (
     <Icon {...props}>

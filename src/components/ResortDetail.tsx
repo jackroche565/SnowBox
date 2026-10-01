@@ -1,19 +1,20 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { useAppState } from "@/components/AppState";
 import CountUp from "@/components/CountUp";
-import Estimate from "@/components/Estimate";
 import FavoriteButton from "@/components/FavoriteButton";
 import HourlyChart, { HourlyLegend } from "@/components/HourlyChart";
-import { ExternalIcon, WindIcon } from "@/components/Icons";
+import { ExternalIcon, SnowflakeIcon, WindIcon } from "@/components/Icons";
 import PassTags from "@/components/PassTags";
 import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
+import SnowStake from "@/components/SnowStake";
 import { sum, type DailyForecast, type ResortForecast } from "@/lib/forecast";
 import { formatDay, formatFeet, formatInches, formatTemp } from "@/lib/format";
-import { last48In } from "@/lib/outlook";
+import { POWDER_INCHES, last48In } from "@/lib/outlook";
 import {
   MODELS,
   WIND_HOLD_MPH,
@@ -23,37 +24,61 @@ import {
   type SnowLine,
 } from "@/lib/resortForecast";
 import { isEstimate, type Resort } from "@/lib/resorts";
+import { TERRAIN_CREDIT } from "@/lib/terrain";
 import { US_STATES } from "@/lib/usStates";
+
+// WebGL only runs in the browser, so the 3D header loads client-side.
+const TerrainHero = dynamic(() => import("@/components/TerrainHero"), { ssr: false });
 
 // One page, most-checked first: recent snow, base, the next few days, wind, and where to find
 // lifts and trails. Deeper detail (hour by hour) is folded away.
 
 /** Total model spread over days 8–16 above this reads as "models disagree". */
 const DISAGREE_INCHES = 2;
-/** Bars in the 7-day list share a floor so a dusting doesn't fill the row. */
-const DAY_SCALE_INCHES = 6;
 
-function Card({ label, aside, children, className = "" }: { label: string; aside?: ReactNode; children: ReactNode; className?: string }) {
+function Sheet({ label, aside, children }: { label: string; aside?: ReactNode; children: ReactNode }) {
   return (
-    <section aria-label={label} className={`min-w-0 rounded-lg border border-line bg-white p-4 sm:p-5 ${className}`}>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-[11px] font-semibold tracking-wider text-ink-muted uppercase">{label}</h2>
+    <section aria-label={label} className="sheet min-w-0 p-[18px]">
+      <div className="flex items-baseline justify-between gap-2">
+        <h2 className="text-[15px] font-semibold">{label}</h2>
         {aside}
       </div>
-      <div className="mt-3">{children}</div>
+      <div className="mt-3.5">{children}</div>
     </section>
   );
 }
 
-function Stat({ label, value, sub, hint }: { label: string; value: ReactNode; sub?: ReactNode; hint?: string }) {
+function Figure({
+  label,
+  value,
+  unit,
+  stake,
+  zero,
+  sub,
+  hint,
+}: {
+  label: string;
+  value: ReactNode;
+  unit?: string;
+  /** Inches for a snow stake beside the figure. */
+  stake?: number;
+  zero?: boolean;
+  sub?: ReactNode;
+  hint?: string;
+}) {
   return (
-    <div>
-      <dt className="text-xs text-ink-muted" title={hint}>
-        {label}
-        {hint && <span className="ml-0.5 cursor-help">ⓘ</span>}
-      </dt>
-      <dd className="mt-0.5 text-3xl font-semibold tabular-nums">{value}</dd>
-      {sub && <dd className="text-xs">{sub}</dd>}
+    <div className="flex items-end gap-2.5">
+      {stake !== undefined && <SnowStake inches={stake} height={44} />}
+      <div className="min-w-0">
+        <dt className="text-xs text-ink-muted" title={hint}>
+          {label}
+        </dt>
+        <dd className={`type-figure mt-1 text-[34px] ${zero ? "text-ink-zero" : "text-ink"}`}>
+          {value}
+          {unit && <span className="ml-1 font-sans text-[11px] font-medium text-ink-faint">{unit}</span>}
+        </dd>
+        {sub && <dd className="mt-1 text-xs">{sub}</dd>}
+      </div>
     </div>
   );
 }
@@ -85,11 +110,11 @@ function useResortDetail(id: string): DetailState {
   return state;
 }
 
-const SNOW_LINE: Record<SnowLine, { text: string; tone: string }> = {
-  "all-snow": { text: "Snow top to bottom", tone: "border-glacier bg-glacier/10" },
-  "rain-below": { text: "Rain at the base, snow at the summit", tone: "border-[#9a7fc4] bg-[#9a7fc4]/10" },
-  "all-rain": { text: "Rain or mix up to the summit", tone: "border-[#7a8699] bg-[#7a8699]/10" },
-  dry: { text: "Dry", tone: "border-line bg-snow" },
+const SNOW_LINE: Record<SnowLine, { text: string; tint: string; icon: string }> = {
+  "all-snow": { text: "snow top to bottom", tint: "bg-ice", icon: "text-glacier" },
+  "rain-below": { text: "rain at the base, snow at the summit", tint: "bg-[#efeaf7]", icon: "text-[#7a62a8]" },
+  "all-rain": { text: "rain or mix up to the summit", tint: "bg-chip", icon: "text-ink-faint" },
+  dry: { text: "dry", tint: "bg-chip", icon: "text-ink-faint" },
 };
 
 // ── Sections ──────────────────────────────────────────────────────────
@@ -98,34 +123,45 @@ function Conditions({ resort, forecast, detail }: { resort: Resort; forecast: Re
   const gust = forecast.upcoming[0]?.gustMph ?? null;
   const report = resort.snowReportUrl ?? resort.websiteUrl;
   const line = detail.data && SNOW_LINE[snowLine(detail.data.summit, detail.data.base)];
+  const fresh = last48In(forecast);
 
   return (
-    <Card label="Conditions" aside={<span className="text-sm text-ink-muted tabular-nums">Now <span className="font-semibold text-ink"><CountUp value={forecast.tempF} format={formatTemp} /></span></span>}>
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-5">
-        <Stat label="Last 48 hrs" value={formatInches(last48In(forecast))} />
-        <Stat label="Last 7 days" value={formatInches(forecast.past7In)} />
-        <Stat
+    <Sheet
+      label="Conditions"
+      aside={
+        <span className="text-[13px] text-ink-muted tabular-nums">
+          Now{" "}
+          <span className="font-semibold text-ink">
+            <CountUp value={forecast.tempF} format={formatTemp} />
+          </span>
+        </span>
+      }
+    >
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-[18px]">
+        <Figure label="Last 48 hrs" value={formatInches(fresh)} stake={fresh} zero={fresh < 0.1} />
+        <Figure label="Next 3 days" value={formatInches(forecast.next3In)} stake={forecast.next3In} zero={forecast.next3In < 0.1} />
+        <Figure
           label="Base"
+          unit="est."
           hint="Modeled snow on the ground from Open-Meteo, not the resort's reported base depth."
-          value={
-            <>
-              <CountUp value={forecast.snowDepthIn} format={formatInches} />
-              <Estimate note="Modeled, not resort-reported" />
-            </>
-          }
+          value={<CountUp value={forecast.snowDepthIn} format={formatInches} />}
+          stake={forecast.snowDepthIn ?? 0}
+          zero={(forecast.snowDepthIn ?? 0) < 0.1}
         />
-        <Stat label="Next 3 days" value={formatInches(forecast.next3In)} />
-        <Stat
+        <Figure
           label="Wind today"
-          value={gust == null ? "—" : `${Math.round(gust)} mph`}
-          sub={gust != null && gust >= WIND_HOLD_MPH ? <span className="font-semibold text-barn">Lift holds possible</span> : "Peak gusts"}
+          value={gust == null ? "—" : Math.round(gust)}
+          unit="mph gusts"
+          sub={gust != null && gust >= WIND_HOLD_MPH ? <span className="font-semibold text-barn">Lift holds possible</span> : undefined}
         />
       </dl>
 
       {line && (
-        <p className={`mt-4 rounded-md border-l-4 px-3 py-2 text-sm ${line.tone}`}>
-          <span className="text-ink-muted">Next 72 hours: </span>
-          <span className="font-semibold">{line.text}</span>
+        <p className={`mt-4 flex items-center gap-2 rounded-[10px] px-3 py-[9px] text-[13px] ${line.tint}`}>
+          <SnowflakeIcon className={`h-3.5 w-3.5 shrink-0 ${line.icon}`} />
+          <span>
+            <span className="text-ink-muted">Next 72 hours:</span> <span className="font-semibold">{line.text}</span>
+          </span>
         </p>
       )}
 
@@ -134,18 +170,19 @@ function Conditions({ resort, forecast, detail }: { resort: Resort; forecast: Re
           href={report}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 flex items-center justify-between gap-3 rounded-md border border-line px-3 py-2.5 hover:border-glacier"
+          className="mt-2.5 flex items-center justify-between gap-3 rounded-xl border border-line px-3.5 py-3 hover:border-glacier"
         >
           <span>
-            <span className="block text-sm font-semibold">Lifts & trails open</span>
-            <span className="block text-xs text-ink-muted">Reported by {resort.name}</span>
+            <span className="block text-sm font-semibold">Lifts &amp; trails open</span>
+            <span className="block text-xs text-ink-faint">Reported by {resort.name}</span>
           </span>
           <span className="flex shrink-0 items-center gap-1 text-sm font-medium text-glacier">
             Official report <ExternalIcon className="h-3.5 w-3.5" />
           </span>
+          <span className="sr-only">(opens in a new tab)</span>
         </a>
       )}
-    </Card>
+    </Sheet>
   );
 }
 
@@ -154,27 +191,19 @@ function DayRow({ day, index }: { day: DailyForecast; index: number }) {
   const rain = day.rainIn ?? 0;
   const windy = day.gustMph != null && day.gustMph >= WIND_HOLD_MPH;
   return (
-    <li className="grid grid-cols-[3rem_minmax(0,1fr)_4.5rem_4.5rem] items-center gap-2 border-b border-line py-2.5 text-sm tabular-nums last:border-b-0 sm:grid-cols-[4rem_minmax(0,1fr)_5rem_6rem]">
-      <span className="font-medium">{formatDay(day.date, index)}</span>
+    <li className="grid grid-cols-[52px_minmax(0,1fr)_76px_50px] items-center gap-2 border-t border-hairline py-2.5 text-sm tabular-nums">
+      <span className="font-semibold">{formatDay(day.date, index)}</span>
       <span className="flex min-w-0 items-center gap-2">
-        <span className={`w-9 shrink-0 font-semibold ${snow >= 0.1 ? "text-ink" : "text-ink-muted"}`}>{formatInches(day.snowIn)}</span>
-        <span className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-line/50">
-          {snow > 0 && (
-            <span
-              className="block h-full rounded-full bg-glacier"
-              style={{ width: `${Math.min(100, Math.max(4, (snow / DAY_SCALE_INCHES) * 100))}%` }}
-            />
-          )}
-        </span>
-        {rain >= 0.05 && <span className="shrink-0 text-xs text-[#5f6b7c]">Rain {rain.toFixed(2)}&Prime;</span>}
+        <span className={`type-figure w-11 text-[17px] ${snow >= 0.1 ? "text-ink" : "text-ink-zero"}`}>{formatInches(day.snowIn)}</span>
+        {snow >= POWDER_INCHES && <span className="text-xs font-semibold text-alpenglow">Powder</span>}
+        {rain >= 0.05 && <span className="truncate text-xs text-ink-muted">Rain {rain.toFixed(2)}&Prime;</span>}
       </span>
-      <span className="text-right text-ink-muted">
-        <span className="text-ink">{formatTemp(day.highF)}</span> / {formatTemp(day.lowF)}
+      <span className="text-right">
+        {formatTemp(day.highF)} <span className="text-ink-zero">{formatTemp(day.lowF)}</span>
       </span>
-      <span className={`flex items-center justify-end gap-1 ${windy ? "font-semibold text-barn" : "text-ink-muted"}`}>
-        <WindIcon className="h-3.5 w-3.5" />
+      <span className={`flex items-center justify-end gap-[3px] ${windy ? "font-semibold text-barn" : "text-ink-faint"}`}>
+        <WindIcon className="h-[13px] w-[13px]" />
         {day.gustMph == null ? "—" : Math.round(day.gustMph)}
-        <span className="hidden sm:inline">mph</span>
       </span>
     </li>
   );
@@ -187,33 +216,34 @@ function Forecast({ forecast, detail }: { forecast: ResortForecast; detail: Deta
   const spread = totals.length ? Math.max(...totals) - Math.min(...totals) : 0;
 
   return (
-    <Card label="Next 7 days">
-      <ul>
+    <Sheet label="Next 7 days">
+      <ul className="-mt-1.5">
         {forecast.upcoming.map((d, i) => (
           <DayRow key={d.date} day={d} index={i} />
         ))}
       </ul>
-      <p className="mt-3 text-sm text-ink-muted">
-        Days 8–16: <span className="font-semibold text-ink tabular-nums">{formatInches(forecast.days8to16In)}</span>
-        {detail.data && (spread >= DISAGREE_INCHES ? " · models disagree" : " · models agree")}
-        <span> · long range, low confidence</span>
+      <p className="border-t border-hairline pt-2.5 text-[13px] text-ink-muted">
+        Days 8–16 <span className="type-figure text-[15px] text-ink">{formatInches(forecast.days8to16In)}</span>
+        {detail.data && (spread >= DISAGREE_INCHES ? " · models disagree" : " · models agree")} · long range
       </p>
-      <p className="mt-1 text-xs text-ink-muted">Temperatures and wind at the mountain&apos;s grid point. Wind shows peak gusts.</p>
-    </Card>
+    </Sheet>
   );
 }
 
 function HourByHour({ resort, detail }: { resort: Resort; detail: DetailState }) {
   const [elevation, setElevation] = useState<"summit" | "base">("summit");
   return (
-    <details className="group rounded-lg border border-line bg-white">
-      <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold sm:px-5">
-        Hour by hour, next 72 hours
-        <span aria-hidden="true" className="text-ink-muted transition-transform group-open:rotate-180">
-          ▾
+    <details className="group sheet">
+      <summary className="flex cursor-pointer list-none items-center justify-between px-[18px] py-4 text-[15px] font-semibold">
+        Hour by hour
+        <span className="flex items-center gap-1.5 text-[13px] font-normal text-ink-faint">
+          Summit &amp; base, 72 hrs
+          <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 9 L12 15 L18 9" />
+          </svg>
         </span>
       </summary>
-      <div className="border-t border-line px-4 pt-3 pb-4 sm:px-5">
+      <div className="border-t border-hairline px-[18px] pt-3 pb-4">
         {detail.data ? (
           <>
             <SegmentedControl
@@ -250,26 +280,29 @@ const LINKS = [
 
 function MountainFacts({ resort }: { resort: Resort }) {
   const facts = [
-    { field: "summitFt", label: "Summit", value: formatFeet(resort.summitFt) },
-    { field: "baseFt", label: "Base", value: formatFeet(resort.baseFt) },
-    { field: "verticalFt", label: "Vertical", value: formatFeet(resort.verticalFt) },
+    { field: "summitFt", label: "Summit", value: resort.summitFt?.toLocaleString("en-US") ?? "—" },
+    { field: "baseFt", label: "Base", value: resort.baseFt?.toLocaleString("en-US") ?? "—" },
+    { field: "verticalFt", label: "Vertical", value: resort.verticalFt?.toLocaleString("en-US") ?? "—" },
     { field: "trails", label: "Trails", value: resort.trails ?? "—" },
   ] as const;
 
   return (
-    <Card label="The mountain">
-      <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <Sheet label="The mountain">
+      <dl className="grid grid-cols-4 gap-2 tabular-nums">
         {facts.map((f) => (
           <div key={f.field}>
-            <dt className="text-xs text-ink-muted">{f.label}</dt>
-            <dd className="mt-0.5 font-semibold tabular-nums">
+            <dt className="text-xs text-ink-faint">
+              {f.label}
+              {f.field !== "trails" && " (ft)"}
+            </dt>
+            <dd className="font-semibold">
               {f.value}
-              {isEstimate(resort, f.field) && <Estimate />}
+              {isEstimate(resort, f.field) && <span className="text-[10px] font-normal text-ink-zero"> est.</span>}
             </dd>
           </div>
         ))}
       </dl>
-      <ul className="mt-4 flex flex-wrap gap-2">
+      <ul className="mt-3.5 flex flex-wrap gap-2">
         {LINKS.map(({ field, label }) => {
           const href = resort[field];
           if (!href) return null;
@@ -279,27 +312,40 @@ function MountainFacts({ resort }: { resort: Resort }) {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 text-sm font-medium hover:border-glacier"
+                className="flex items-center gap-1.5 rounded-[10px] bg-chip px-3 py-2 text-[13px] font-medium hover:bg-line"
               >
                 {label}
-                <ExternalIcon className="h-3.5 w-3.5 text-ink-muted" />
+                <ExternalIcon className="h-3.5 w-3.5 text-ink-faint" />
                 <span className="sr-only">(opens {resort.name}&apos;s website in a new tab)</span>
               </a>
             </li>
           );
         })}
       </ul>
-    </Card>
+    </Sheet>
   );
 }
 
 // ── Page ──────────────────────────────────────────────────────────────
 
+function FloatingButton({ children, label, href }: { children: ReactNode; label: string; href: string }) {
+  return (
+    <Link
+      href={href}
+      aria-label={label}
+      className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-ink shadow-[0_1px_3px_rgb(15_26_42/0.12)] backdrop-blur-sm"
+    >
+      {children}
+    </Link>
+  );
+}
+
 export default function ResortDetail({ resort }: { resort: Resort }) {
-  const { forecasts, forecastState, distanceTo } = useAppState();
+  const { forecasts, forecastState, distanceTo, origin } = useAppState();
   const detail = useResortDetail(resort.id);
   const forecast = forecasts?.[resort.id];
   const distance = distanceTo(resort);
+  const powder = forecast?.upcoming.findIndex((d) => (d.snowIn ?? 0) >= POWDER_INCHES) ?? -1;
 
   const facts = (
     [
@@ -310,53 +356,83 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
   ).flatMap(([field, text]) => (text ? [{ field, text }] : []));
 
   return (
-    <>
-      <SiteHeader>
-        <div className="text-xs font-semibold tracking-[0.2em] text-glacier uppercase">
-          <Link href="/explore" className="hover:text-snow">
-            ← Explore
-          </Link>
-          <span className="text-snow/40"> · </span>
-          {US_STATES[resort.state] ?? resort.state}
-        </div>
-        <h1 className="mt-1 font-display text-5xl leading-none tracking-wide sm:text-7xl">{resort.name}</h1>
-        <p className="mt-2 text-sm text-snow/70 tabular-nums sm:text-base">
-          {facts.map(({ field, text }, i) => (
-            <span key={field}>
-              {i > 0 && " · "}
-              {text}
-              {isEstimate(resort, field) && <span className="ml-1 text-xs text-snow/50">est.</span>}
-            </span>
-          ))}
-        </p>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <PassTags passes={resort.passes} />
-          {distance !== null && <span className="text-sm text-snow/70 tabular-nums">{Math.round(distance)} mi away</span>}
-          <FavoriteButton id={resort.id} name={resort.name} tone="dark" withLabel />
-        </div>
-      </SiteHeader>
+    <div className="relative flex flex-1 flex-col">
+      {/* Hero: the mountain in 3D, fading into the page. */}
+      <div className="relative h-[440px] overflow-hidden bg-[#e8eef4]">
+        <TerrainHero lat={resort.lat} lon={resort.lon} />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{ background: "linear-gradient(to bottom, rgb(243 245 248 / 0) 45%, rgb(243 245 248 / 0.85) 80%, var(--snow) 100%)" }}
+        />
+        <SiteHeader variant="overlay" hideOnPhone />
 
-      <main className="mx-auto grid w-full max-w-4xl flex-1 gap-4 px-4 pt-4 pb-12">
+        <div className="absolute inset-x-4 top-4 flex justify-between sm:hidden">
+          <FloatingButton href="/explore" label="Back to Explore">
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 5 L8 12 L15 19" />
+            </svg>
+          </FloatingButton>
+          {forecast && powder !== -1 && (
+            <span className="flex h-8 items-center gap-1.5 self-center rounded-full bg-alpenglow px-3 text-[13px] font-semibold text-white shadow-[0_2px_8px_rgb(224_83_47/0.35)]">
+              <SnowflakeIcon className="h-[13px] w-[13px]" />
+              Powder {formatDay(forecast.upcoming[powder].date, powder)} · {formatInches(forecast.upcoming[powder].snowIn)}
+            </span>
+          )}
+          <FavoriteButton id={resort.id} name={resort.name} variant="floating" />
+        </div>
+
+        <div className="absolute inset-x-5 bottom-[18px] mx-auto max-w-2xl">
+          <div className="flex flex-wrap items-center gap-2.5 text-[13px] text-ink-muted">
+            <Link href="/explore" className="hidden hover:text-ink sm:inline">
+              ← Explore
+            </Link>
+            <span>{US_STATES[resort.state] ?? resort.state}</span>
+            <PassTags passes={resort.passes} />
+            {distance !== null && origin && (
+              <span className="tabular-nums">
+                {Math.round(distance)} mi from {origin.label.split(",")[0]}
+              </span>
+            )}
+            <span className="hidden sm:inline">
+              <FavoriteButton id={resort.id} name={resort.name} withLabel />
+            </span>
+          </div>
+          <h1 className="type-hero mt-0.5 text-[64px] sm:text-[80px]">{resort.name}</h1>
+          <p className="mt-1.5 text-sm text-ink-muted tabular-nums">
+            {facts.map(({ field, text }, i) => (
+              <span key={field}>
+                {i > 0 && " · "}
+                {text}
+                {isEstimate(resort, field) && <span className="ml-1 text-xs text-ink-zero">est.</span>}
+              </span>
+            ))}
+          </p>
+        </div>
+      </div>
+
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-3 px-3 pt-1 pb-10">
         {forecast ? (
           <>
             <Conditions resort={resort} forecast={forecast} detail={detail} />
             <Forecast forecast={forecast} detail={detail} />
           </>
         ) : (
-          <div className="rounded-lg border border-line bg-white p-4">
+          <div className="sheet p-[18px]">
             <Pending state={forecastState} />
           </div>
         )}
         <HourByHour resort={resort} detail={detail} />
         <MountainFacts resort={resort} />
-        <p className="text-xs text-ink-muted">
+        <p className="px-2 text-xs text-ink-faint">
           Forecasts from{" "}
           <a className="underline" href="https://open-meteo.com/">
             Open-Meteo
           </a>{" "}
-          (GFS, ECMWF and GEM models), refreshed every 30 minutes. Snow and base are modeled, not resort-reported.
+          (GFS, ECMWF and GEM models), refreshed every 30 minutes. Snow and base are modeled, not resort-reported.{" "}
+          {TERRAIN_CREDIT}
         </p>
       </main>
-    </>
+    </div>
   );
 }

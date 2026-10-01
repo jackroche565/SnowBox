@@ -22,17 +22,19 @@ Run `npm run lint`, `npx tsc --noEmit` and `npm run build`. All must pass.
 - `src/app/api/resort/[id]/route.ts` is the heavy per-resort forecast, fetched only on a resort page: 72 hours at summit and base elevation, and 16 days from three models (GFS, ECMWF, GEM) for a confidence range. `src/lib/resortForecast.ts` parses it and derives rain/snow type and wind holds. Keep heavy data here, not in the all-resort summary.
 - `src/lib/outlook.ts` makes Home's one-line note per mountain (powder day, next snow, flurries, or none). `src/lib/decide.ts` scores a resort for a day (weights at the top of the file) and estimates drive time from straight-line distance. Drive times are always labelled as estimates without traffic.
 - `src/components/AppState.tsx` is shared state across pages: forecasts, favorites, the passes you hold, your starting point and the Decide side-by-side list (all saved in localStorage under the older `snowline:` keys, kept so saved lists survive), plus Explore's sort. `PassPicker` and `LocationSearch` edit the shared passes and location from any page.
-- `src/components/SiteHeader.tsx` is the navy bar on every page (Snowbox name and tabs). Resort pages pass children for a banner with the ridgeline art.
-- The map is Leaflet (`ResortMap.tsx`), loaded client-side only, on Esri's light gray canvas tiles (no API key; CARTO now needs one). Pins are colored and sized by 7-day snow (`SNOW_SCALE` in `src/lib/format.ts`).
+- `src/components/SiteHeader.tsx` is the light top bar (Snowbox wordmark, tabs from tablet width up). `variant="overlay"` floats it over terrain imagery (Home, resort pages); `hideOnPhone` hides it where a page floats its own buttons.
+- The Explore map is MapLibre (`ResortMap.tsx`), loaded client-side only: OpenFreeMap basemap with 3D terrain and hillshade, resort dots colored and sized by 7-day snow (`SNOW_SCALE` in `src/lib/format.ts`), a 2D/3D toggle. Layers are added on `style.load` (not `load`, which a background tab can hold back).
 - Lifts and trails open: no free reliable source (Liftie blocks server requests; OnTheSnow's feed is paid), so resort pages link to the official report. Don't fake these numbers.
 
 ## Design language
 
-Keep new UI consistent with these:
-- Colors in `src/app/globals.css`: navy `#101826` (hero, map chrome), snow `#F5F7FA` (page), glacier `#4A90B8`, alpenglow `#E85D3D` (search button, user pin), barn red `#B5482E` (sparingly: wind-hold and rain warnings, errors), gold `#E0A526` (favorites star only). Rain/mix/snow colors are in `PRECIP_COLORS` in `src/lib/format.ts`. Epic/Ikon/Indy tag colors are fixed in `src/lib/format.ts`.
-- Headings use Bebas Neue (`font-display`); body is Inter; numbers use `tabular-nums`.
-- Motion stays restrained, and respects reduced-motion.
-- Everything must work at phone width (390px) with no horizontal scroll.
+"Alpine editorial": light only, calm and spacious, with real terrain as the signature image. Keep new UI consistent with these:
+- Tokens in `src/app/globals.css`: snow `#F3F5F8` (page), sheet white (surfaces), ink `#0F1A2A` (text, active controls), slate `#4B5668` / faint `#6B7585` (secondary text), zero `#A3ACB9` (a 0" figure, so real snow stands out), hairline `#EDF1F5` (dividers in sheets), glacier `#2F76A3` (snow figures, links), ice `#E6F0F7` (snow tint), alpenglow `#E0532F` (powder only), barn `#A9442B` (wind holds, rain, errors), gold (favorites star only). Pass dot colors are fixed in `src/lib/format.ts`.
+- Type: Archivo (variable width) for names and numbers via the `type-hero` (75% width, resort names on imagery), `type-name` (85%, list names) and `type-figure` (85%, tabular snow figures) utilities; Instrument Sans for everything you read. Sentence case, no all-caps labels. Three text sizes: 15 body, 13 secondary, 11 captions.
+- Surfaces: `sheet` utility (white, 18px corners, one soft shadow) with hairline dividers inside, not bordered boxes. Controls: 10–12px corners or full pills; selected = ink fill.
+- Signature pieces: the snow stake (`SnowStake.tsx`, fills against 24"), trail-marker shapes (◆ ● ■) as icons in ink only, never meaning difficulty.
+- Terrain: 3D maps use MapLibre with free, keyless sources in `src/lib/terrain.ts` (AWS Terrain Tiles elevation, OpenFreeMap Positron basemap). Resort pages render a live 3D hero (`TerrainHero.tsx`, auto-aims at the high ground); Home uses a pre-rendered panorama (`public/terrain/green-mountains.jpg`).
+- Motion stays restrained and respects reduced-motion. Everything must work at phone width (390px) with no horizontal scroll; phones get the bottom tab bar, wider screens the top tabs.
 
 ## Roadmap
 

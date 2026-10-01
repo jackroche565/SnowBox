@@ -7,7 +7,6 @@ import Estimate from "@/components/Estimate";
 import LocationSearch from "@/components/LocationSearch";
 import PassPicker from "@/components/PassPicker";
 import PassTags from "@/components/PassTags";
-import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
 import { RANK_BY, formatDrive, rankDay, scoreDay, type Pick, type RankBy } from "@/lib/decide";
 import type { DailyForecast } from "@/lib/forecast";
@@ -15,15 +14,6 @@ import { formatDay, formatFeet, formatInches, formatTemp } from "@/lib/format";
 import { getResort, isEstimate, resortPath, resorts } from "@/lib/resorts";
 
 type MaxDrive = "any" | "1" | "2" | "3" | "4";
-
-function Field({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="grid gap-1.5 sm:grid-cols-[6rem_minmax(0,1fr)] sm:items-center sm:gap-3">
-      <div className="text-[11px] font-semibold tracking-wider text-ink-muted uppercase">{label}</div>
-      <div className="min-w-0">{children}</div>
-    </div>
-  );
-}
 
 function longDay(date: string, index: number): string {
   if (index === 0) return "today";
@@ -33,7 +23,7 @@ function longDay(date: string, index: number): string {
 
 function DayPicker({ days, value, onChange }: { days: DailyForecast[]; value: number; onChange: (i: number) => void }) {
   return (
-    <div role="radiogroup" aria-label="Day" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1">
+    <div role="radiogroup" aria-label="Day" className="flex gap-1.5">
       {days.map((d, i) => {
         const on = i === value;
         return (
@@ -43,12 +33,49 @@ function DayPicker({ days, value, onChange }: { days: DailyForecast[]; value: nu
             role="radio"
             aria-checked={on}
             onClick={() => onChange(i)}
-            className={`flex min-w-12 shrink-0 flex-col items-center rounded-md border px-2 py-1.5 tabular-nums transition-colors ${
-              on ? "border-navy bg-navy text-snow" : "border-line bg-white text-ink hover:border-ink/30"
+            className={`flex min-w-0 flex-1 flex-col items-center rounded-[10px] border py-[7px] tabular-nums transition-colors ${
+              on ? "border-ink bg-ink text-white" : "border-line bg-white text-ink hover:border-ink/30"
             }`}
           >
             <span className="text-xs font-semibold">{formatDay(d.date, i)}</span>
-            <span className={`text-[11px] ${on ? "text-snow/70" : "text-ink-muted"}`}>{Number(d.date.slice(8))}</span>
+            <span className="text-[11px] opacity-70">{Number(d.date.slice(8))}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Trail-marker shapes as icons for the three ways to rank. Always ink; never a difficulty. */
+const RANK_ICON: Record<RankBy, ReactNode> = {
+  overall: <path d="M12 2 L22 12 L12 22 L2 12 Z" />,
+  snow: <circle cx="12" cy="12" r="10" />,
+  closest: <rect x="3" y="3" width="18" height="18" rx="1" />,
+};
+
+function RankPicker({ value, onChange, closestAvailable }: { value: RankBy; onChange: (v: RankBy) => void; closestAvailable: boolean }) {
+  return (
+    <div role="radiogroup" aria-label="Rank by" className="grid grid-cols-3 gap-1.5">
+      {(Object.keys(RANK_BY) as RankBy[]).map((v) => {
+        const on = v === value;
+        const disabled = v === "closest" && !closestAvailable;
+        return (
+          <button
+            key={v}
+            type="button"
+            role="radio"
+            aria-checked={on}
+            disabled={disabled}
+            title={disabled ? "Set where you're starting from first" : undefined}
+            onClick={() => onChange(v)}
+            className={`flex flex-col items-start gap-1.5 rounded-xl border p-2.5 text-left transition-colors disabled:opacity-40 ${
+              on ? "border-ink bg-ink text-white" : "border-line bg-white text-ink hover:border-ink/30"
+            }`}
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
+              {RANK_ICON[v]}
+            </svg>
+            <span className="text-[13px] font-semibold">{RANK_BY[v]}</span>
           </button>
         );
       })}
@@ -63,26 +90,19 @@ function ResultRow({ pick, rank, highlight }: { pick: Pick; rank: number; highli
   const full = !inCompare && compareIds.length >= COMPARE_LIMIT;
 
   return (
-    <li className={`flex items-center gap-3 border-b border-line px-4 py-3 last:border-b-0 ${highlight ? "bg-glacier/[.07]" : ""}`}>
-      <input
-        type="checkbox"
-        checked={inCompare}
-        disabled={full}
-        onChange={() => toggleCompare(resort.id)}
-        aria-label={`Compare ${resort.name}`}
-        title={full ? `Compare up to ${COMPARE_LIMIT} at a time` : "Compare side by side"}
-        className="h-4 w-4 shrink-0 accent-navy disabled:opacity-40"
-      />
-      <span className="w-6 shrink-0 font-display text-2xl leading-none text-ink-muted">{rank}</span>
+    <li className={`flex items-center gap-3 border-t border-hairline px-4 py-3 first:border-t-0 ${highlight ? "bg-ice/60" : ""}`}>
+      <span className={`type-hero w-6 shrink-0 text-[26px] tabular-nums ${highlight ? "text-glacier" : "text-ink-zero"}`}>{rank}</span>
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-2">
-          <Link href={resortPath(resort.id)} className="truncate font-semibold hover:text-glacier">
+          <Link href={resortPath(resort.id)} className="type-name truncate text-lg hover:text-glacier">
             {resort.name}
           </Link>
           <PassTags passes={resort.passes} />
         </span>
-        <span className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs">
-          {pick.driveHours != null && <span className="text-ink-muted tabular-nums">{formatDrive(pick.driveHours)} drive</span>}
+        <span className="mt-0.5 flex flex-wrap gap-x-2.5 gap-y-0.5 text-xs">
+          {pick.driveHours != null && (
+            <span className="text-ink-faint tabular-nums">{formatDrive(pick.driveHours)} drive · est., no traffic</span>
+          )}
           {pick.reasons.map((r) => (
             <span key={r.text} className={`font-medium ${r.tone === "good" ? "text-glacier" : "text-barn"}`}>
               {r.text}
@@ -90,10 +110,19 @@ function ResultRow({ pick, rank, highlight }: { pick: Pick; rank: number; highli
           ))}
         </span>
       </span>
-      <span className="shrink-0 text-right tabular-nums">
-        <span className="block text-2xl font-semibold">{formatInches(pick.snowIn)}</span>
-        <span className="block text-[10px] tracking-wide text-ink-muted uppercase">New snow</span>
+      <span className="shrink-0 text-right">
+        <span className={`type-figure block text-[22px] ${pick.snowIn >= 0.1 ? "text-ink" : "text-ink-zero"}`}>{formatInches(pick.snowIn)}</span>
+        <span className="mt-0.5 block text-[11px] text-ink-faint">new snow</span>
       </span>
+      <input
+        type="checkbox"
+        checked={inCompare}
+        disabled={full}
+        onChange={() => toggleCompare(resort.id)}
+        aria-label={`Compare ${resort.name} side by side`}
+        title={full ? `Compare up to ${COMPARE_LIMIT} at a time` : "Compare side by side"}
+        className="h-4 w-4 shrink-0 accent-[#0f1a2a] disabled:opacity-40"
+      />
     </li>
   );
 }
@@ -158,7 +187,7 @@ function HeadToHead({ picks, dayLabel }: { picks: Pick[]; dayLabel: string }) {
   }
 
   return (
-    <section aria-label="Side by side" className="overflow-x-auto rounded-lg border border-line bg-white p-3 sm:p-5">
+    <section aria-label="Side by side" className="sheet overflow-x-auto p-3 sm:p-5">
       <table className="w-full table-fixed border-collapse text-sm tabular-nums">
         <colgroup>
           <col className="w-28 sm:w-36" />
@@ -173,7 +202,7 @@ function HeadToHead({ picks, dayLabel }: { picks: Pick[]; dayLabel: string }) {
             </th>
             {picks.map((p) => (
               <th key={p.resort.id} scope="col" className="px-2 pb-3 text-left align-top font-normal">
-                <Link href={resortPath(p.resort.id)} className="font-display text-xl leading-none tracking-wide hover:text-glacier sm:text-2xl">
+                <Link href={resortPath(p.resort.id)} className="type-name text-lg leading-tight hover:text-glacier sm:text-xl">
                   {p.resort.name}
                 </Link>
                 <button
@@ -192,7 +221,7 @@ function HeadToHead({ picks, dayLabel }: { picks: Pick[]; dayLabel: string }) {
           {rows.map((row) => {
             const lead = leader(row);
             return (
-              <tr key={row.label} className="border-t border-line">
+              <tr key={row.label} className="border-t border-hairline">
                 <th scope="row" className="py-2.5 pr-2 text-left text-xs font-medium text-ink-muted">
                   {row.label}
                 </th>
@@ -215,6 +244,7 @@ export default function Decide() {
   const [dayIndex, setDayIndex] = useState(0);
   const [maxDrive, setMaxDrive] = useState<MaxDrive>("any");
   const [chosenRank, setRankBy] = useState<RankBy>("overall");
+  const [settingFrom, setSettingFrom] = useState(false);
   // "Closest" needs a starting point; without one, fall back to the blend.
   const rankBy = chosenRank === "closest" && !origin ? "overall" : chosenRank;
 
@@ -239,56 +269,62 @@ export default function Decide() {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 px-4 pt-4 pb-10">
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-3 px-3 pb-10">
         <h1 className="sr-only">Decide where to ski</h1>
 
-        <section aria-label="Options" className="flex flex-col gap-4 rounded-lg border border-line bg-white p-4 sm:p-5">
-          <Field label="Day">
-            {days.length ? <DayPicker days={days} value={dayIndex} onChange={setDayIndex} /> : <span className="text-sm text-ink-muted">Loading…</span>}
-          </Field>
-          <Field label="Rank by">
-            <SegmentedControl
-              label="Rank by"
-              value={rankBy}
-              onChange={setRankBy}
-              className="w-fit"
-              segments={(Object.keys(RANK_BY) as RankBy[]).map((v) => ({
-                value: v,
-                label: RANK_BY[v],
-                disabled: v === "closest" && !origin,
-                title: v === "closest" && !origin ? "Set where you're starting from first" : undefined,
-              }))}
-            />
-          </Field>
-          <Field label="Passes">
+        <section aria-label="Options" className="sheet flex flex-col gap-3.5 p-4">
+          {days.length ? <DayPicker days={days} value={dayIndex} onChange={setDayIndex} /> : <p className="text-sm text-ink-muted">Loading…</p>}
+          <RankPicker value={rankBy} onChange={setRankBy} closestAvailable={origin !== null} />
+
+          <div className="flex flex-col gap-2.5 border-t border-hairline pt-3">
+            <div className="flex flex-wrap items-center gap-2 text-[13px]">
+              <button
+                type="button"
+                onClick={() => setSettingFrom((v) => !v)}
+                aria-expanded={settingFrom}
+                className="rounded-full bg-chip px-2.5 py-1.5 hover:bg-line"
+              >
+                {origin ? (
+                  <>
+                    From <span className="font-semibold">{origin.label.split(",")[0]}</span>
+                  </>
+                ) : (
+                  <span className="font-medium text-glacier">Set where you&apos;re starting from</span>
+                )}
+              </button>
+              {origin && (
+                <label className="relative flex items-center rounded-full bg-chip py-1.5 pr-6 pl-2.5 hover:bg-line">
+                  <span className="sr-only">Maximum drive</span>
+                  <select
+                    value={maxDrive}
+                    onChange={(e) => setMaxDrive(e.target.value as MaxDrive)}
+                    className="cursor-pointer appearance-none bg-transparent font-semibold focus:outline-none"
+                  >
+                    <option value="any">Any drive</option>
+                    {(["1", "2", "3", "4"] as const).map((h) => (
+                      <option key={h} value={h}>
+                        Up to {h} hr{h === "1" ? "" : "s"}
+                      </option>
+                    ))}
+                  </select>
+                  <svg aria-hidden="true" viewBox="0 0 24 24" className="pointer-events-none absolute right-2 h-3 w-3" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 9 L12 15 L18 9" />
+                  </svg>
+                </label>
+              )}
+            </div>
+            {settingFrom && <LocationSearch onLocated={() => setSettingFrom(false)} startEditing />}
             <PassPicker />
-          </Field>
-          <Field label="From">
-            <LocationSearch />
-          </Field>
-          {origin && (
-            <Field label="Max drive">
-              <SegmentedControl
-                label="Max drive"
-                value={maxDrive}
-                onChange={setMaxDrive}
-                className="w-fit"
-                segments={(["any", "1", "2", "3", "4"] as MaxDrive[]).map((v) => ({
-                  value: v,
-                  label: v === "any" ? "Any" : `${v}h`,
-                }))}
-              />
-            </Field>
-          )}
+          </div>
         </section>
 
-        {forecastState === "error" && <p className="text-sm text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>}
-        {forecastState === "loading" && <p className="text-sm text-ink-muted">Loading forecast…</p>}
+        {forecastState === "error" && <p className="px-2 text-sm text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>}
+        {forecastState === "loading" && <p className="px-2 text-sm text-ink-muted">Loading forecast…</p>}
 
         {forecasts && day && (
           <>
             {!anySnow && picks.length > 0 && (
-              <p className="text-sm text-ink-muted">
+              <p className="px-2 pt-1 text-[13px] text-ink-muted">
                 No new snow forecast {longDay(day.date, dayIndex)}.
                 {rankBy !== "closest" &&
                   (origin ? " Ranked by drive time." : " Set where you're starting from to rank by drive time.")}
@@ -296,23 +332,24 @@ export default function Decide() {
             )}
 
             {picks.length > 0 ? (
-              <ol className="overflow-hidden rounded-lg border border-line bg-white">
+              <ol className="sheet overflow-hidden">
                 {picks.map((p, i) => (
                   <ResultRow key={p.resort.id} pick={p} rank={i + 1} highlight={i === 0 && p.snowIn >= 0.1} />
                 ))}
               </ol>
             ) : (
-              <p className="rounded-lg border border-line bg-white p-4 text-sm text-ink-muted">
-                No resorts within {maxDrive}h on {myPasses.length ? "your passes" : "any pass"}. Try a longer drive.
+              <p className="sheet p-4 text-sm text-ink-muted">
+                No resorts within {maxDrive} hr{maxDrive === "1" ? "" : "s"} on {myPasses.length ? "your passes" : "any pass"}. Try a
+                longer drive.
               </p>
             )}
 
-            {compared.length === 1 && <p className="text-sm text-ink-muted">Tick one more to compare side by side.</p>}
+            {compared.length === 1 && <p className="px-2 text-[13px] text-ink-muted">Tick one more to compare side by side.</p>}
             {compared.length >= 2 && <HeadToHead picks={compared} dayLabel={dayIndex === 0 ? "today" : formatDay(day.date, dayIndex)} />}
           </>
         )}
 
-        <p className="text-xs text-ink-muted">
+        <p className="px-2 text-xs text-ink-faint">
           Drive times are estimated from distance and don&apos;t include traffic. Best overall: new snow on the day
           counts most, snow in the 2 days before adds half as much, and rain, gusts of 40+ mph and each hour of
           driving count against. Forecasts from{" "}

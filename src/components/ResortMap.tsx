@@ -1,13 +1,13 @@
 "use client";
 
-import "leaflet/dist/leaflet.css";
-import { latLngBounds, type CircleMarker as LeafletCircleMarker } from "leaflet";
-import { useEffect, useRef } from "react";
-import { CircleMarker, MapContainer, TileLayer, Tooltip, ZoomControl, useMap } from "react-leaflet";
-import type { LatLon } from "@/lib/geo";
+import "maplibre-gl/dist/maplibre-gl.css";
+import maplibregl, { type GeoJSONSource, type Map as MapLibreMap } from "maplibre-gl";
+import { useEffect, useRef, useState } from "react";
 import type { ResortForecast } from "@/lib/forecast";
-import { formatInches, snowColor } from "@/lib/format";
+import { SNOW_SCALE, formatInches } from "@/lib/format";
+import type { LatLon } from "@/lib/geo";
 import { resorts as allResorts, type Resort } from "@/lib/resorts";
+import { BASEMAP_STYLE, ELEVATION, SHADING, hillshadeLayer } from "@/lib/terrain";
 
 export type MapFocus = LatLon & { zoom: number; key: number };
 
@@ -21,125 +21,205 @@ type Props = {
   focus: MapFocus | null;
 };
 
-const ALL_RESORT_BOUNDS = latLngBounds(allResorts.map((r) => [r.lat, r.lon]));
-const BOUNDS_PADDING: [number, number] = [24, 24];
+const PITCH_3D = 50;
+const EXAGGERATION = 1.4;
 
-// Pins grow and darken with the week's forecast snow so the snowiest corner of the map stands out.
-// Square root keeps a 20" storm from swallowing its neighbors.
-const PIN_RADIUS = 5;
-const MAX_PIN_RADIUS = 14;
-function pinRadius(next7In: number | undefined): number {
-  if (!next7In) return PIN_RADIUS;
-  return Math.min(MAX_PIN_RADIUS, PIN_RADIUS + Math.sqrt(next7In) * 2);
+function bounds(list: Resort[]): [[number, number], [number, number]] {
+  const lons = list.map((r) => r.lon);
+  const lats = list.map((r) => r.lat);
+  return [
+    [Math.min(...lons), Math.min(...lats)],
+    [Math.max(...lons), Math.max(...lats)],
+  ];
 }
 
-function FocusController({ focus }: { focus: MapFocus | null }) {
-  const map = useMap();
+function resortFeatures(list: Resort[], forecasts: Record<string, ResortForecast> | null) {
+  return {
+    type: "FeatureCollection" as const,
+    features: list.map((r) => ({
+      type: "Feature" as const,
+      geometry: { type: "Point" as const, coordinates: [r.lon, r.lat] },
+      properties: { id: r.id, name: r.name, snow: forecasts?.[r.id]?.next7In ?? 0 },
+    })),
+  };
+}
 
-  const hasFocused = useRef(false);
+function originFeatures(origin: LatLon | null) {
+  return {
+    type: "FeatureCollection" as const,
+    features: origin
+      ? [{ type: "Feature" as const, geometry: { type: "Point" as const, coordinates: [origin.lon, origin.lat] }, properties: {} }]
+      : [],
+  };
+}
 
-  // The panel's final size isn't known when Leaflet first measures it, so re-measure on
-  // resize, and keep every resort in frame until the user picks a place to look at.
+// Pin color steps up the snow scale; size grows with snow (square root keeps big storms in check).
+const SNOW_COLOR = [
+  "step",
+  ["get", "snow"],
+  SNOW_SCALE[0].color,
+  ...SNOW_SCALE.slice(1).flatMap((s) => [s.from, s.color]),
+] as unknown as maplibregl.ExpressionSpecification;
+const SNOW_RADIUS = ["min", 13, ["+", 5, ["*", 2, ["sqrt", ["get", "snow"]]]]] as unknown as maplibregl.ExpressionSpecification;
+const HOVERED = ["boolean", ["feature-state", "hover"], false] as unknown as maplibregl.ExpressionSpecification;
+
+export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onHover, origin, focus }: Props) {
+  const container = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<MapLibreMap | null>(null);
+  const popup = useRef<maplibregl.Popup | null>(null);
+  const [ready, setReady] = useState(false);
+  const [threeD, setThreeD] = useState(true);
+  // Handlers change every render; the map's listeners read the latest through a ref.
+  const handlers = useRef({ onSelect, onHover });
   useEffect(() => {
-    const observer = new ResizeObserver(() => {
-      map.invalidateSize();
-      if (!hasFocused.current) map.fitBounds(ALL_RESORT_BOUNDS, { padding: BOUNDS_PADDING });
+    handlers.current = { onSelect, onHover };
+  });
+
+  useEffect(() => {
+    if (!container.current) return;
+    const map = new maplibregl.Map({
+      container: container.current,
+      style: BASEMAP_STYLE,
+      bounds: bounds(allResorts),
+      // Extra room at the top for the floating search and pass filters.
+      fitBoundsOptions: { padding: { top: 120, bottom: 48, left: 24, right: 56 } },
+      pitch: PITCH_3D,
+      maxPitch: 70,
+      attributionControl: { compact: true },
     });
-    observer.observe(map.getContainer());
-    return () => observer.disconnect();
-  }, [map]);
+    mapRef.current = map;
+    popup.current = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 12 });
+
+    // "style.load" fires as soon as the basemap style is in; "load" waits for a first full render,
+    // which a background tab can hold back.
+    map.once("style.load", () => {
+      map.addSource("terrain", ELEVATION);
+      map.addSource("shading", SHADING);
+      // Relief sits under roads and labels so the map stays readable.
+      const firstSymbol = map.getStyle().layers.find((l) => l.type === "symbol")?.id;
+      map.addLayer(hillshadeLayer(0.5), firstSymbol);
+      map.setTerrain({ source: "terrain", exaggeration: EXAGGERATION });
+
+      map.addSource("origin", { type: "geojson", data: originFeatures(null) });
+      map.addLayer({
+        id: "origin",
+        type: "circle",
+        source: "origin",
+        paint: {
+          "circle-radius": 6,
+          "circle-color": "#e0532f",
+          "circle-stroke-color": "#ffffff",
+          "circle-stroke-width": 2.5,
+          "circle-pitch-alignment": "map",
+        },
+      });
+
+      map.addSource("resorts", { type: "geojson", data: resortFeatures([], null), promoteId: "id" });
+      map.addLayer({
+        id: "resorts",
+        type: "circle",
+        source: "resorts",
+        paint: {
+          "circle-radius": ["case", HOVERED, ["+", SNOW_RADIUS, 3], SNOW_RADIUS],
+          "circle-color": SNOW_COLOR,
+          "circle-stroke-color": ["case", HOVERED, "#0f1a2a", "#ffffff"],
+          "circle-stroke-width": ["case", HOVERED, 2.5, 2],
+          "circle-pitch-alignment": "map",
+        },
+      });
+
+      map.on("click", "resorts", (e) => {
+        const id = e.features?.[0]?.properties?.id;
+        if (typeof id === "string") handlers.current.onSelect(id);
+      });
+      map.on("mousemove", "resorts", (e) => {
+        map.getCanvas().style.cursor = "pointer";
+        const id = e.features?.[0]?.properties?.id;
+        if (typeof id === "string") handlers.current.onHover(id);
+      });
+      map.on("mouseleave", "resorts", () => {
+        map.getCanvas().style.cursor = "";
+        handlers.current.onHover(null);
+      });
+      setReady(true);
+    });
+
+    return () => {
+      popup.current?.remove();
+      map.remove();
+      mapRef.current = null;
+    };
+  }, []);
+
+  // The visible resorts and their snow.
+  useEffect(() => {
+    if (!ready) return;
+    (mapRef.current?.getSource("resorts") as GeoJSONSource | undefined)?.setData(resortFeatures(resorts, forecasts));
+  }, [ready, resorts, forecasts]);
+
+  useEffect(() => {
+    if (!ready) return;
+    (mapRef.current?.getSource("origin") as GeoJSONSource | undefined)?.setData(originFeatures(origin));
+  }, [ready, origin]);
+
+  // Hover from either side (map or list): highlight the pin and label it.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map || !hoveredId) return;
+    const resort = allResorts.find((r) => r.id === hoveredId);
+    map.setFeatureState({ source: "resorts", id: hoveredId }, { hover: true });
+    if (resort) {
+      const label = document.createElement("span");
+      label.innerHTML = "<strong></strong>";
+      label.querySelector("strong")!.textContent = resort.name;
+      label.append(` · ${formatInches(forecasts?.[resort.id]?.next7In)} next 7 days`);
+      popup.current?.setLngLat([resort.lon, resort.lat]).setDOMContent(label).addTo(map);
+    }
+    return () => {
+      map.setFeatureState({ source: "resorts", id: hoveredId }, { hover: false });
+      popup.current?.remove();
+    };
+  }, [ready, hoveredId, forecasts]);
 
   useEffect(() => {
     if (!focus) return;
-    hasFocused.current = true;
-    map.flyTo([focus.lat, focus.lon], focus.zoom, { duration: 0.8 });
-  }, [map, focus]);
-  return null;
-}
+    mapRef.current?.flyTo({ center: [focus.lon, focus.lat], zoom: focus.zoom, duration: 900 });
+  }, [focus]);
 
-export default function ResortMap({
-  resorts,
-  forecasts,
-  hoveredId,
-  onSelect,
-  onHover,
-  origin,
-  focus,
-}: Props) {
-  const markers = useRef(new Map<string, LeafletCircleMarker>());
-
-  // Hovering a card in the list lifts its pin above its neighbors and shows its label.
-  useEffect(() => {
-    if (!hoveredId) return;
-    const marker = markers.current.get(hoveredId);
-    marker?.bringToFront();
-    marker?.openTooltip();
-    return () => {
-      marker?.closeTooltip();
-    };
-  }, [hoveredId]);
+  function toggle3D() {
+    const map = mapRef.current;
+    if (!map) return;
+    const next = !threeD;
+    setThreeD(next);
+    map.setTerrain(next ? { source: "terrain", exaggeration: EXAGGERATION } : null);
+    map.easeTo({ pitch: next ? PITCH_3D : 0, duration: 600 });
+  }
 
   return (
-    <MapContainer
-      bounds={ALL_RESORT_BOUNDS}
-      boundsOptions={{ padding: BOUNDS_PADDING }}
-      scrollWheelZoom
-      zoomControl={false}
-      className="h-full w-full"
-    >
-      {/* Esri's light gray canvas (no API key): muted greys so the snow pins carry the color.
-          Place names come from a separate label layer drawn on top. */}
-      <TileLayer
-        attribution="Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors"
-        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
-        maxZoom={16}
-      />
-      <TileLayer
-        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
-        maxZoom={16}
-      />
-      <ZoomControl position="bottomright" />
-      <FocusController focus={focus} />
-      {origin && (
-        <CircleMarker
-          center={[origin.lat, origin.lon]}
-          radius={6}
-          pathOptions={{ color: "#ffffff", weight: 2.5, fillColor: "#e85d3d", fillOpacity: 1 }}
+    <div className="relative h-full w-full">
+      <div ref={container} className="h-full w-full" />
+      <div className="absolute right-3 bottom-8 z-10 flex flex-col overflow-hidden rounded-[10px] bg-white shadow-[0_1px_4px_rgb(15_26_42/0.12)]">
+        <button
+          type="button"
+          onClick={toggle3D}
+          aria-pressed={threeD}
+          aria-label={threeD ? "Flatten map" : "Tilt map to 3D"}
+          className="h-10 w-10 border-b border-hairline text-xs font-bold text-ink"
         >
-          <Tooltip>Your location</Tooltip>
-        </CircleMarker>
-      )}
-      {resorts.map((resort) => {
-        const active = resort.id === hoveredId;
-        const next7 = forecasts?.[resort.id]?.next7In;
-        return (
-          <CircleMarker
-            key={resort.id}
-            ref={(marker) => {
-              if (marker) markers.current.set(resort.id, marker);
-              else markers.current.delete(resort.id);
-            }}
-            center={[resort.lat, resort.lon]}
-            radius={pinRadius(next7) + (active ? 4 : 0)}
-            pathOptions={{
-              color: active ? "#101826" : "#ffffff",
-              weight: active ? 2.5 : 1.5,
-              fillColor: snowColor(next7),
-              fillOpacity: 1,
-            }}
-            eventHandlers={{
-              click: () => onSelect(resort.id),
-              mouseover: () => onHover(resort.id),
-              mouseout: () => onHover(null),
-            }}
-          >
-            <Tooltip direction="top" offset={[0, -10]}>
-              <strong>{resort.name}</strong>
-              {next7 !== undefined && <> · {formatInches(next7)} next 7 days</>}
-            </Tooltip>
-          </CircleMarker>
-        );
-      })}
-    </MapContainer>
+          {threeD ? "2D" : "3D"}
+        </button>
+        <button
+          type="button"
+          aria-label="Zoom in"
+          onClick={() => mapRef.current?.zoomIn()}
+          className="h-10 w-10 border-b border-hairline text-lg leading-none text-ink"
+        >
+          +
+        </button>
+        <button type="button" aria-label="Zoom out" onClick={() => mapRef.current?.zoomOut()} className="h-10 w-10 text-lg leading-none text-ink">
+          −
+        </button>
+      </div>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -13,11 +12,12 @@ import SiteHeader from "@/components/SiteHeader";
 import SortControl from "@/components/SortControl";
 import { SNOW_SCALE } from "@/lib/format";
 import { resorts, resortPath } from "@/lib/resorts";
+import { US_STATES } from "@/lib/usStates";
 
-// Leaflet touches `window`, so the map only renders in the browser.
+// WebGL only runs in the browser, so the map loads client-side.
 const ResortMap = dynamic(() => import("@/components/ResortMap"), {
   ssr: false,
-  loading: () => <div className="flex h-full items-center justify-center text-sm text-ink-muted">Loading map…</div>,
+  loading: () => <div className="flex h-full items-center justify-center text-sm text-ink-faint">Loading map…</div>,
 });
 
 // Wide enough from any Northeast town to take in the nearest resorts, which are often 100+ miles out.
@@ -28,17 +28,25 @@ export default function Explore() {
   const { forecasts, forecastState, origin, distanceTo, myPasses, sortKey, setSortKey } = useAppState();
 
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  // The map frames every resort until the user searches a new starting point.
+  const [query, setQuery] = useState("");
+  const [settingFrom, setSettingFrom] = useState(false);
+  // The map frames every resort until the user sets a new starting point.
   const [focus, setFocus] = useState<MapFocus | null>(null);
 
   function handleLocated(next: Origin) {
     setSortKey("distance");
+    setSettingFrom(false);
     // `key` changes on every search so the map re-centers even on the same spot.
     setFocus((prev) => ({ lat: next.lat, lon: next.lon, zoom: NEARBY_ZOOM, key: (prev?.key ?? 0) + 1 }));
   }
 
   const visible = useMemo(() => {
-    const filtered = resorts.filter((r) => onMyPasses(r.passes, myPasses));
+    const q = query.trim().toLowerCase();
+    const filtered = resorts.filter(
+      (r) =>
+        onMyPasses(r.passes, myPasses) &&
+        (!q || r.name.toLowerCase().includes(q) || (US_STATES[r.state] ?? r.state).toLowerCase().startsWith(q)),
+    );
     const withDistance = filtered.map((resort) => ({ resort, distance: distanceTo(resort) }));
     return withDistance.sort((a, b) => {
       switch (sortKey) {
@@ -52,96 +60,119 @@ export default function Explore() {
           return a.resort.name.localeCompare(b.resort.name);
       }
     });
-  }, [myPasses, distanceTo, sortKey, forecasts]);
+  }, [query, myPasses, distanceTo, sortKey, forecasts]);
+
+  const passLabel = myPasses.length ? `${myPasses.join(" & ")} ` : "";
 
   return (
-    <MotionConfig reducedMotion="user">
-      <SiteHeader />
+    <div className="relative flex flex-1 flex-col">
+      <SiteHeader hideOnPhone />
+      <h1 className="sr-only">Explore resorts</h1>
 
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 pt-4 pb-10">
-        <h1 className="sr-only">Explore resorts</h1>
+      <div className="mx-auto w-full max-w-[1400px] flex-1 lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start lg:gap-4 lg:px-5 lg:pb-8">
+        {/* Map, with search and filters floating over it */}
+        <section
+          aria-label="Resort map"
+          className="relative h-[62vh] min-h-[420px] overflow-hidden bg-[#eef2f6] lg:sticky lg:top-4 lg:h-[calc(100vh-6rem)] lg:rounded-[18px] lg:shadow-[0_1px_2px_rgb(15_26_42/0.05),0_10px_30px_rgb(15_26_42/0.06)]"
+        >
+          <ResortMap
+            resorts={visible.map((v) => v.resort)}
+            forecasts={forecasts}
+            hoveredId={hoveredId}
+            onSelect={(id) => router.push(resortPath(id))}
+            onHover={setHoveredId}
+            origin={origin}
+            focus={focus}
+          />
 
-        <div className="z-[1100] -mx-4 flex flex-col gap-3 px-4 py-2 sm:sticky sm:top-0 sm:bg-snow/95 sm:backdrop-blur lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
-            <PassPicker />
-            <LocationSearch onLocated={handleLocated} className="min-w-0 sm:max-w-md sm:flex-1" />
-          </div>
-          <SortControl value={sortKey} onChange={setSortKey} distanceAvailable={origin !== null} className="w-full sm:w-auto" />
-        </div>
-
-        <div className="grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_520px]">
-          <section
-            aria-label="Resort map"
-            className="relative h-96 overflow-hidden rounded-lg border border-line bg-white lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)]"
-          >
-            <ResortMap
-              resorts={visible.map((v) => v.resort)}
-              forecasts={forecasts}
-              hoveredId={hoveredId}
-              onSelect={(id) => router.push(resortPath(id))}
-              onHover={setHoveredId}
-              origin={origin}
-              focus={focus}
-            />
-            {/* Legend floats over the map, above Leaflet's panes (z-index 400s). */}
-            <div className="pointer-events-none absolute top-3 left-3 z-[500] rounded-md bg-white/95 px-2.5 py-2 shadow-sm ring-1 ring-line">
-              <div className="text-[10px] font-semibold tracking-wider text-ink-muted uppercase">Snow next 7 days</div>
-              <ul className="mt-1 flex items-center gap-2.5 text-[11px] text-ink tabular-nums">
-                {SNOW_SCALE.map((s) => (
-                  <li key={s.from} className="flex items-center gap-1">
-                    <span className="h-2.5 w-2.5 rounded-full ring-1 ring-white" style={{ backgroundColor: s.color }} />
-                    {s.label}
-                  </li>
-                ))}
-              </ul>
+          <div className="absolute inset-x-3 top-3.5 z-10 flex flex-col gap-2">
+            <div className="flex h-[46px] items-center gap-2.5 rounded-[14px] bg-white px-3.5 shadow-[0_2px_10px_rgb(15_26_42/0.10)]">
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-[18px] w-[18px] shrink-0 text-ink-faint" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+                <circle cx="11" cy="11" r="7" />
+                <path d="M20 20 L16 16" />
+              </svg>
+              <label htmlFor="resort-search" className="sr-only">
+                Search mountains
+              </label>
+              <input
+                id="resort-search"
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={`Search ${resorts.length} mountains`}
+                className="min-w-0 flex-1 bg-transparent text-[15px] placeholder:text-ink-faint focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setSettingFrom((v) => !v)}
+                aria-expanded={settingFrom}
+                className="shrink-0 text-[13px] whitespace-nowrap text-ink-muted hover:text-ink"
+              >
+                {origin ? (
+                  <>
+                    From <span className="font-semibold text-ink">{origin.label.split(",")[0]}</span>
+                  </>
+                ) : (
+                  <span className="font-medium text-glacier">Set location</span>
+                )}
+              </button>
             </div>
-          </section>
-
-          <section aria-label="Resorts" className="flex flex-col gap-3">
-            <div className="overflow-hidden rounded-lg border border-line bg-white">
-              <div className="hidden grid-cols-[minmax(0,1fr)_repeat(4,3.25rem)] gap-x-2 border-b border-line py-2 pr-[3.25rem] pl-4 text-right text-[11px] font-semibold tracking-wide whitespace-nowrap text-ink-muted uppercase sm:grid">
-                <span className="text-left">{visible.length} resorts</span>
-                <span>Next 7</span>
-                <span>Last 7</span>
-                <span title="Modeled snow on the ground, not the resort-reported base">Depth ⓘ</span>
-                <span>Now</span>
+            {settingFrom && (
+              <div className="rounded-[14px] bg-white p-3 shadow-[0_2px_10px_rgb(15_26_42/0.10)]">
+                <LocationSearch onLocated={handleLocated} startEditing />
               </div>
-              <ul>
-                <AnimatePresence initial={false} mode="popLayout">
-                  {visible.map(({ resort, distance }) => (
-                    <motion.li
-                      key={resort.id}
-                      layout="position"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -24, transition: { duration: 0.18 } }}
-                      transition={{ duration: 0.25 }}
-                    >
-                      <ResortRow
-                        resort={resort}
-                        distance={distance}
-                        forecast={forecasts?.[resort.id]}
-                        forecastState={forecastState}
-                        href={resortPath(resort.id)}
-                        hovered={resort.id === hoveredId}
-                        onHover={(hovering) => setHoveredId(hovering ? resort.id : null)}
-                      />
-                    </motion.li>
-                  ))}
-                </AnimatePresence>
-              </ul>
-            </div>
+            )}
+            <PassPicker floating />
+          </div>
 
-            <p className="text-xs text-ink-muted">
-              Weather data from{" "}
-              <a className="underline" href="https://open-meteo.com/">
-                Open-Meteo
-              </a>
-              . Snow depth is modeled, not resort-reported. Forecasts refresh every 30 minutes.
-            </p>
-          </section>
-        </div>
-      </main>
-    </MotionConfig>
+          <div className="pointer-events-none absolute bottom-8 left-3 z-10 rounded-[10px] bg-white/94 px-2.5 py-2 shadow-[0_1px_4px_rgb(15_26_42/0.10)] lg:bottom-4">
+            <div className="text-[11px] font-semibold text-ink-muted">Snow next 7 days</div>
+            <ul className="mt-1 flex items-center gap-2 text-[11px] tabular-nums">
+              {SNOW_SCALE.map((s) => (
+                <li key={s.from} className="flex items-center gap-[3px]">
+                  <span className="h-[9px] w-[9px] rounded-full" style={{ backgroundColor: s.color }} />
+                  {s.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* The list: a sheet over the map on phones, a column beside it on desktop */}
+        <section aria-label="Resorts" className="sheet relative z-10 -mt-6 rounded-b-none pb-4 lg:mt-0 lg:rounded-b-[18px]">
+          <div aria-hidden="true" className="mx-auto mt-2 h-1 w-9 rounded-full bg-line lg:hidden" />
+          <div className="flex items-baseline justify-between px-[18px] pt-2.5 pb-1.5 lg:pt-4">
+            <h2 className="text-[15px] font-semibold">
+              {visible.length} {passLabel}
+              {visible.length === 1 ? "mountain" : "mountains"}
+            </h2>
+            <SortControl value={sortKey} onChange={setSortKey} distanceAvailable={origin !== null} />
+          </div>
+          <ul>
+            {visible.map(({ resort, distance }) => (
+              <li key={resort.id}>
+                <ResortRow
+                  resort={resort}
+                  distance={distance}
+                  forecast={forecasts?.[resort.id]}
+                  forecastState={forecastState}
+                  href={resortPath(resort.id)}
+                  hovered={resort.id === hoveredId}
+                  onHover={(hovering) => setHoveredId(hovering ? resort.id : null)}
+                />
+              </li>
+            ))}
+          </ul>
+          {visible.length === 0 && <p className="px-[18px] py-4 text-sm text-ink-muted">No mountains match “{query}”.</p>}
+          <p className="px-[18px] pt-4 text-xs text-ink-faint">
+            Forecasts from{" "}
+            <a className="underline" href="https://open-meteo.com/">
+              Open-Meteo
+            </a>
+            , refreshed every 30 minutes. Snow is modeled, not resort-reported.
+          </p>
+        </section>
+      </div>
+    </div>
   );
 }

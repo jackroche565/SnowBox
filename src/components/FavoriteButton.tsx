@@ -6,18 +6,23 @@ import { StarIcon } from "@/components/Icons";
 type Props = {
   id: string;
   name: string;
-  /** "light" sits on white cards; "dark" sits on the navy header. */
-  tone?: "light" | "dark";
-  /** Show "Save"/"Saved" beside the star, as an outlined button. */
+  /** "icon" sits in lists; "floating" is a white circle over imagery. */
+  variant?: "icon" | "floating";
+  /** Show "Save"/"Saved" beside the star, as a pill. */
   withLabel?: boolean;
   className?: string;
 };
 
-export default function FavoriteButton({ id, name, tone = "light", withLabel = false, className = "" }: Props) {
+export default function FavoriteButton({ id, name, variant = "icon", withLabel = false, className = "" }: Props) {
   const { favoriteIds, toggleFavorite } = useAppState();
   const starred = favoriteIds.includes(id);
-  const label = starred ? `Remove ${name} from My Mountains` : `Add ${name} to My Mountains`;
-  const idle = tone === "dark" ? "text-snow/60 hover:text-snow" : "text-ink-muted/70 hover:text-ink";
+  const label = starred ? `Remove ${name} from your mountains` : `Add ${name} to your mountains`;
+
+  const shape = withLabel
+    ? "gap-1.5 rounded-full bg-white/90 px-3 py-1 text-[13px] font-medium text-ink shadow-[0_1px_2px_rgb(15_26_42/0.08)] hover:bg-white"
+    : variant === "floating"
+      ? "h-10 w-10 rounded-full bg-white/90 shadow-[0_1px_3px_rgb(15_26_42/0.12)] backdrop-blur-sm"
+      : "h-8 w-8 rounded-full hover:bg-chip";
 
   return (
     <button
@@ -26,12 +31,10 @@ export default function FavoriteButton({ id, name, tone = "light", withLabel = f
       aria-pressed={starred}
       aria-label={label}
       title={label}
-      className={`flex shrink-0 items-center justify-center rounded-md transition-colors ${
-        withLabel ? "gap-1.5 border border-snow/30 px-3 py-2.5 text-sm font-medium hover:border-snow/60" : "h-8 w-8"
-      } ${starred ? "text-gold" : idle} ${className}`}
+      className={`flex shrink-0 items-center justify-center transition-colors ${shape} ${className}`}
     >
-      <StarIcon filled={starred} className={withLabel ? "h-4 w-4" : "h-5 w-5"} />
-      {withLabel && <span className={starred ? "text-snow" : undefined}>{starred ? "Saved" : "Save"}</span>}
+      <StarIcon filled={starred} className={`${withLabel ? "h-4 w-4" : "h-[18px] w-[18px]"} ${starred ? "text-gold" : "text-ink-faint"}`} />
+      {withLabel && <span>{starred ? "Saved" : "Save"}</span>}
     </button>
   );
 }

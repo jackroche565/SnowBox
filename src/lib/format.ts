@@ -46,7 +46,7 @@ export function formatHour(time: string): string {
 
 /** Map pin colors by 7-day forecast snow: grey for none, deepening blues as it piles up. */
 export const SNOW_SCALE = [
-  { from: 0, color: "#a7b1bf", label: "0\"" },
+  { from: 0, color: "#8f9bab", label: "0\"" },
   { from: 0.5, color: "#9fcbe6", label: "½\"" },
   { from: 3, color: "#4a90b8", label: "3\"" },
   { from: 6, color: "#24618f", label: "6\"" },

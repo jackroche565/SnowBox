@@ -32,14 +32,14 @@ export function TopTabs() {
             <Link
               href={tab.href}
               aria-current={current ? "page" : undefined}
-              className={`relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors ${
-                current ? "text-snow" : "text-snow/65 hover:text-snow"
+              className={`relative flex items-center gap-1.5 px-3 py-2 text-sm transition-colors ${
+                current ? "font-semibold text-ink" : "font-medium text-ink-faint hover:text-ink"
               }`}
             >
               {tab.label}
               <span
                 aria-hidden="true"
-                className={`absolute inset-x-3 -bottom-3 h-0.5 bg-alpenglow transition-opacity ${
+                className={`absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-alpenglow transition-opacity ${
                   current ? "opacity-100" : "opacity-0"
                 }`}
               />
@@ -57,7 +57,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Main"
-      className="fixed inset-x-0 bottom-0 z-[1200] border-t border-white/10 bg-navy/95 pb-[env(safe-area-inset-bottom)] text-snow backdrop-blur sm:hidden"
+      className="fixed inset-x-0 bottom-0 z-[1200] border-t border-line bg-white/92 pb-[env(safe-area-inset-bottom)] backdrop-blur-md sm:hidden"
     >
       <ul className="grid grid-cols-3">
         {TABS.map(({ href, label, icon: TabIcon }) => {
@@ -67,18 +67,16 @@ export function BottomNav() {
               <Link
                 href={href}
                 aria-current={current ? "page" : undefined}
-                className={`relative flex flex-col items-center gap-0.5 pt-2 pb-1.5 text-[11px] font-medium ${
-                  current ? "text-snow" : "text-snow/55"
+                className={`flex flex-col items-center gap-[3px] pt-2.5 pb-2 text-[11px] ${
+                  current ? "font-semibold text-ink" : "font-medium text-ink-faint"
                 }`}
               >
-                <span
-                  aria-hidden="true"
-                  className={`absolute inset-x-8 top-0 h-0.5 bg-alpenglow transition-opacity ${
-                    current ? "opacity-100" : "opacity-0"
-                  }`}
-                />
                 <TabIcon className="h-6 w-6" />
                 {label}
+                <span
+                  aria-hidden="true"
+                  className={`h-0.5 w-[18px] rounded-full bg-alpenglow ${current ? "opacity-100" : "opacity-0"}`}
+                />
               </Link>
             </li>
           );
