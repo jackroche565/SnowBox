@@ -6,20 +6,13 @@ import { onMyPasses, useAppState } from "@/components/AppState";
 import CountUp from "@/components/CountUp";
 import { StarIcon } from "@/components/Icons";
 import PassTags from "@/components/PassTags";
-import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
 import { bestThisWeek, formatDrive } from "@/lib/decide";
-import type { DailyForecast, ResortForecast } from "@/lib/forecast";
+import type { ResortForecast } from "@/lib/forecast";
 import { formatDay, formatInches, formatTemp } from "@/lib/format";
 import { snowNote } from "@/lib/outlook";
 import { getResort, resortPath, resorts, type Resort } from "@/lib/resorts";
 import { US_STATES } from "@/lib/usStates";
-
-type Order = "mine" | "snow";
-
-// Mini bars share a floor so a dusting doesn't look like a storm.
-const MINI_SCALE_INCHES = 6;
-const MINI_HEIGHT_PX = 28;
 
 const NOTE_TONE = {
   powder: "font-semibold text-alpenglow",
@@ -27,30 +20,11 @@ const NOTE_TONE = {
   none: "text-ink-muted",
 };
 
-function MiniBars({ days }: { days: DailyForecast[] }) {
-  const max = Math.max(MINI_SCALE_INCHES, ...days.map((d) => d.snowIn ?? 0));
-  return (
-    <span aria-hidden="true" className="flex items-end gap-[3px] border-b border-line" style={{ height: MINI_HEIGHT_PX }}>
-      {days.map((d, i) => {
-        const snow = d.snowIn ?? 0;
-        return (
-          <span
-            key={d.date}
-            title={`${formatDay(d.date, i)}: ${formatInches(d.snowIn)}`}
-            className={`w-[5px] rounded-t-[1px] ${i === 0 ? "bg-navy" : "bg-glacier"}`}
-            style={{ height: snow > 0 ? `max(${(snow / max) * 100}%, 2px)` : 0 }}
-          />
-        );
-      })}
-    </span>
-  );
-}
-
 function MountainRow({ resort, forecast }: { resort: Resort; forecast: ResortForecast | undefined }) {
   const note = forecast && snowNote(forecast);
   return (
     <li className="border-b border-line last:border-b-0">
-      <Link href={resortPath(resort.id)} className="flex items-center gap-3 px-4 py-3 hover:bg-glacier/[.05] sm:gap-5">
+      <Link href={resortPath(resort.id)} className="flex items-center gap-4 px-4 py-3.5 hover:bg-glacier/[.05]">
         <span className="min-w-0 flex-1">
           <span className="flex items-center gap-2">
             <span className="truncate text-[15px] font-semibold">{resort.name}</span>
@@ -67,17 +41,10 @@ function MountainRow({ resort, forecast }: { resort: Resort; forecast: ResortFor
           </span>
         </span>
         {forecast && (
-          <>
-            <MiniBars days={forecast.upcoming} />
-            <span className="hidden w-14 text-right tabular-nums md:block">
-              <span className="block text-lg">{formatInches(forecast.next3In)}</span>
-              <span className="block text-[10px] tracking-wide text-ink-muted uppercase">3 days</span>
-            </span>
-            <span className="w-14 text-right tabular-nums">
-              <span className="block text-xl font-semibold">{formatInches(forecast.next7In)}</span>
-              <span className="block text-[10px] tracking-wide text-ink-muted uppercase">7 days</span>
-            </span>
-          </>
+          <span className="shrink-0 text-right tabular-nums">
+            <span className="block text-2xl font-semibold">{formatInches(forecast.next7In)}</span>
+            <span className="block text-[10px] tracking-wide text-ink-muted uppercase">Next 7 days</span>
+          </span>
         )}
       </Link>
     </li>
@@ -85,7 +52,6 @@ function MountainRow({ resort, forecast }: { resort: Resort; forecast: ResortFor
 }
 
 const NEARBY_COUNT = 8;
-const QUICK_ADD_RESULTS = 6;
 
 /** Matches a resort by name or state ("stowe", "vt", "vermont"). */
 function matches(resort: Resort, query: string): boolean {
@@ -207,41 +173,6 @@ function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: ()
   );
 }
 
-/** A search box under the list: find a mountain and star it without opening Edit. */
-function QuickAdd() {
-  const { favoriteIds } = useAppState();
-  const [query, setQuery] = useState("");
-  const results = query.trim()
-    ? resorts.filter((r) => !favoriteIds.includes(r.id) && matches(r, query)).slice(0, QUICK_ADD_RESULTS)
-    : [];
-
-  return (
-    <div>
-      <label htmlFor="quick-add" className="sr-only">
-        Add a mountain
-      </label>
-      <input
-        id="quick-add"
-        type="search"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="+ Add a mountain"
-        className="w-full rounded-md border border-dashed border-line bg-white px-3 py-2.5 text-sm placeholder:text-ink-muted focus:border-solid focus:ring-2 focus:ring-glacier focus:outline-none"
-      />
-      {query.trim() && (
-        <ul className="mt-2 flex flex-wrap gap-2">
-          {results.map((r) => (
-            <li key={r.id}>
-              <StarChip resort={r} onToggle={() => setQuery("")} />
-            </li>
-          ))}
-          {results.length === 0 && <li className="text-sm text-ink-muted">No other mountains match.</li>}
-        </ul>
-      )}
-    </div>
-  );
-}
-
 function BestBet({ forecasts }: { forecasts: Record<string, ResortForecast> }) {
   const { myPasses, origin } = useAppState();
   const best = bestThisWeek(
@@ -250,33 +181,21 @@ function BestBet({ forecasts }: { forecasts: Record<string, ResortForecast> }) {
     origin,
   );
 
-  if (!best) {
-    return (
-      <Link href="/decide" className="text-sm font-medium text-glacier hover:underline">
-        Decide where to ski →
-      </Link>
-    );
-  }
+  if (!best) return null;
 
   const { pick, dayIndex } = best;
   return (
-    <Link
-      href="/decide"
-      className="group block rounded-lg border border-line bg-white p-4 hover:border-glacier sm:p-5"
-    >
-      <span className="text-[11px] font-semibold tracking-wider text-ink-muted uppercase">Best bet this week</span>
-      <span className="mt-1 flex items-baseline justify-between gap-3">
-        <span className="truncate font-display text-3xl tracking-wide">{pick.resort.name}</span>
-        <span className="shrink-0 text-2xl font-semibold tabular-nums">
-          {formatInches(pick.snowIn)} <span className="text-base font-medium text-ink-muted">{formatDay(pick.day.date, dayIndex)}</span>
+    <Link href="/decide" className="group flex items-baseline justify-between gap-3 px-1 text-sm">
+      <span className="min-w-0 truncate">
+        <span className="text-ink-muted">Best bet this week: </span>
+        <span className="font-semibold">{pick.resort.name}</span>
+        <span className="text-ink-muted tabular-nums">
+          {" "}
+          · {formatInches(pick.snowIn)} {formatDay(pick.day.date, dayIndex)}
+          {pick.driveHours != null && ` · ${formatDrive(pick.driveHours)} drive`}
         </span>
       </span>
-      <span className="mt-1 block text-sm text-ink-muted">
-        {[pick.driveHours != null && `${formatDrive(pick.driveHours)} drive`, ...pick.reasons.map((r) => r.text)]
-          .filter(Boolean)
-          .join(" · ")}
-      </span>
-      <span className="mt-3 block text-sm font-medium text-glacier group-hover:underline">Compare options in Decide →</span>
+      <span className="shrink-0 font-medium text-glacier group-hover:underline">Decide →</span>
     </Link>
   );
 }
@@ -284,13 +203,12 @@ function BestBet({ forecasts }: { forecasts: Record<string, ResortForecast> }) {
 export default function Home() {
   const { forecasts, forecastState, favoriteIds, savedListsReady } = useAppState();
   const [editing, setEditing] = useState(false);
-  const [order, setOrder] = useState<Order>("mine");
 
   const favorites = favoriteIds.flatMap((id) => getResort(id) ?? []);
-  const sorted =
-    order === "snow" && forecasts
-      ? [...favorites].sort((a, b) => (forecasts[b.id]?.next7In ?? 0) - (forecasts[a.id]?.next7In ?? 0))
-      : favorites;
+  // Most snow coming first; starring order breaks ties.
+  const sorted = forecasts
+    ? [...favorites].sort((a, b) => (forecasts[b.id]?.next7In ?? 0) - (forecasts[a.id]?.next7In ?? 0))
+    : favorites;
   const picking = savedListsReady && (favorites.length === 0 || editing);
 
   return (
@@ -304,21 +222,9 @@ export default function Home() {
 
         {savedListsReady && favorites.length > 0 && !editing && (
           <>
-            <div className="flex items-center justify-between gap-3">
-              <SegmentedControl
-                label="Order"
-                value={order}
-                onChange={setOrder}
-                segments={[
-                  { value: "mine", label: "My order" },
-                  { value: "snow", label: "Most snow" },
-                ]}
-              />
-              <button
-                type="button"
-                onClick={() => setEditing(true)}
-                className="rounded-md border border-line bg-white px-3 py-1.5 text-sm font-medium text-ink-muted hover:text-ink"
-              >
+            <div className="flex items-baseline justify-between px-1">
+              <h2 className="text-[11px] font-semibold tracking-wider text-ink-muted uppercase">My mountains</h2>
+              <button type="button" onClick={() => setEditing(true)} className="text-sm font-medium text-glacier hover:underline">
                 Edit
               </button>
             </div>
@@ -327,8 +233,16 @@ export default function Home() {
               {sorted.map((r) => (
                 <MountainRow key={r.id} resort={r} forecast={forecasts?.[r.id]} />
               ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setEditing(true)}
+                  className="w-full px-4 py-3 text-left text-sm font-medium text-glacier hover:bg-glacier/[.05]"
+                >
+                  + Add mountain
+                </button>
+              </li>
             </ul>
-            <QuickAdd />
             {forecastState === "error" && (
               <p className="text-sm text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>
             )}

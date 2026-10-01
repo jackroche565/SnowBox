@@ -3,10 +3,10 @@
 import "leaflet/dist/leaflet.css";
 import { latLngBounds, type CircleMarker as LeafletCircleMarker } from "leaflet";
 import { useEffect, useRef } from "react";
-import { CircleMarker, MapContainer, TileLayer, Tooltip, useMap } from "react-leaflet";
+import { CircleMarker, MapContainer, TileLayer, Tooltip, ZoomControl, useMap } from "react-leaflet";
 import type { LatLon } from "@/lib/geo";
 import type { ResortForecast } from "@/lib/forecast";
-import { formatInches, passColor } from "@/lib/format";
+import { formatInches, snowColor } from "@/lib/format";
 import { resorts as allResorts, type Resort } from "@/lib/resorts";
 
 export type MapFocus = LatLon & { zoom: number; key: number };
@@ -24,10 +24,10 @@ type Props = {
 const ALL_RESORT_BOUNDS = latLngBounds(allResorts.map((r) => [r.lat, r.lon]));
 const BOUNDS_PADDING: [number, number] = [24, 24];
 
-// Pins grow with the week's forecast snow so the snowiest corner of the map stands out.
+// Pins grow and darken with the week's forecast snow so the snowiest corner of the map stands out.
 // Square root keeps a 20" storm from swallowing its neighbors.
-const PIN_RADIUS = 7;
-const MAX_PIN_RADIUS = 17;
+const PIN_RADIUS = 5;
+const MAX_PIN_RADIUS = 14;
 function pinRadius(next7In: number | undefined): number {
   if (!next7In) return PIN_RADIUS;
   return Math.min(MAX_PIN_RADIUS, PIN_RADIUS + Math.sqrt(next7In) * 2);
@@ -84,17 +84,27 @@ export default function ResortMap({
       bounds={ALL_RESORT_BOUNDS}
       boundsOptions={{ padding: BOUNDS_PADDING }}
       scrollWheelZoom
-      className="h-full w-full">
+      zoomControl={false}
+      className="h-full w-full"
+    >
+      {/* Esri's light gray canvas (no API key): muted greys so the snow pins carry the color.
+          Place names come from a separate label layer drawn on top. */}
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution="Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors"
+        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+        maxZoom={16}
       />
+      <TileLayer
+        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
+        maxZoom={16}
+      />
+      <ZoomControl position="bottomright" />
       <FocusController focus={focus} />
       {origin && (
         <CircleMarker
           center={[origin.lat, origin.lon]}
           radius={6}
-          pathOptions={{ color: "#ffffff", weight: 2, fillColor: "#e85d3d", fillOpacity: 1 }}
+          pathOptions={{ color: "#ffffff", weight: 2.5, fillColor: "#e85d3d", fillOpacity: 1 }}
         >
           <Tooltip>Your location</Tooltip>
         </CircleMarker>
@@ -113,9 +123,9 @@ export default function ResortMap({
             radius={pinRadius(next7) + (active ? 4 : 0)}
             pathOptions={{
               color: active ? "#101826" : "#ffffff",
-              weight: active ? 3 : 2,
-              fillColor: passColor(resort.passes),
-              fillOpacity: 0.95,
+              weight: active ? 2.5 : 1.5,
+              fillColor: snowColor(next7),
+              fillOpacity: 1,
             }}
             eventHandlers={{
               click: () => onSelect(resort.id),

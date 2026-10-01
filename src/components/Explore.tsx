@@ -11,13 +11,13 @@ import { ResortRow } from "@/components/ResortEntries";
 import type { MapFocus } from "@/components/ResortMap";
 import SiteHeader from "@/components/SiteHeader";
 import SortControl from "@/components/SortControl";
-import { PASS_COLORS } from "@/lib/format";
-import { PASSES, resorts, resortPath } from "@/lib/resorts";
+import { SNOW_SCALE } from "@/lib/format";
+import { resorts, resortPath } from "@/lib/resorts";
 
 // Leaflet touches `window`, so the map only renders in the browser.
 const ResortMap = dynamic(() => import("@/components/ResortMap"), {
   ssr: false,
-  loading: () => <div className="flex h-full items-center justify-center text-sm text-snow/60">Loading map…</div>,
+  loading: () => <div className="flex h-full items-center justify-center text-sm text-ink-muted">Loading map…</div>,
 });
 
 // Wide enough from any Northeast town to take in the nearest resorts, which are often 100+ miles out.
@@ -72,37 +72,28 @@ export default function Explore() {
         <div className="grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_520px]">
           <section
             aria-label="Resort map"
-            className="flex h-96 flex-col overflow-hidden rounded-lg bg-navy bg-[url(/topo.svg)] bg-cover bg-center p-2 lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)]"
+            className="relative h-96 overflow-hidden rounded-lg border border-line bg-white lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)]"
           >
-            <ul className="flex items-center justify-end gap-3 px-1.5 pt-0.5 pb-2 text-xs text-snow/80">
-              {PASSES.map((pass) => (
-                <li key={pass} className="flex items-center gap-1">
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: PASS_COLORS[pass] }} />
-                  {pass}
-                </li>
-              ))}
-              {origin && (
-                <li className="flex items-center gap-1">
-                  <span className="h-2.5 w-2.5 rounded-full bg-alpenglow ring-2 ring-white/80" />
-                  You
-                </li>
-              )}
-              <li className="text-snow/60">Bigger pin = more snow</li>
-            </ul>
-            <div className="relative min-h-0 flex-1 overflow-hidden rounded-md">
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 z-[401] bg-[url(/topo-map.svg)] bg-cover bg-center"
-              />
-              <ResortMap
-                resorts={visible.map((v) => v.resort)}
-                forecasts={forecasts}
-                hoveredId={hoveredId}
-                onSelect={(id) => router.push(resortPath(id))}
-                onHover={setHoveredId}
-                origin={origin}
-                focus={focus}
-              />
+            <ResortMap
+              resorts={visible.map((v) => v.resort)}
+              forecasts={forecasts}
+              hoveredId={hoveredId}
+              onSelect={(id) => router.push(resortPath(id))}
+              onHover={setHoveredId}
+              origin={origin}
+              focus={focus}
+            />
+            {/* Legend floats over the map, above Leaflet's panes (z-index 400s). */}
+            <div className="pointer-events-none absolute top-3 left-3 z-[500] rounded-md bg-white/95 px-2.5 py-2 shadow-sm ring-1 ring-line">
+              <div className="text-[10px] font-semibold tracking-wider text-ink-muted uppercase">Snow next 7 days</div>
+              <ul className="mt-1 flex items-center gap-2.5 text-[11px] text-ink tabular-nums">
+                {SNOW_SCALE.map((s) => (
+                  <li key={s.from} className="flex items-center gap-1">
+                    <span className="h-2.5 w-2.5 rounded-full ring-1 ring-white" style={{ backgroundColor: s.color }} />
+                    {s.label}
+                  </li>
+                ))}
+              </ul>
             </div>
           </section>
 

@@ -8,10 +8,19 @@ const MEASURABLE_INCHES = 0.5;
 
 export type SnowNote = { text: string; tone: "powder" | "snow" | "none" };
 
-/** One short line on what's coming for a resort: the next powder day, the next snow, or nothing. */
+/** Snow over the last two days, today excluded (today is still a forecast). */
+export function last48In(forecast: ResortForecast): number {
+  return forecast.past.slice(-2).reduce((t, d) => t + (d.snowIn ?? 0), 0);
+}
+
+/** One short line on a resort: fresh snow on the ground, the next powder day, the next snow, or nothing. */
 export function snowNote(forecast: ResortForecast): SnowNote {
   const label = (date: string, i: number) => (i < 7 ? formatDay(date, i) : formatShortDate(date));
 
+  const fresh = last48In(forecast);
+  if (fresh >= 1) {
+    return { text: `Fresh ${formatInches(fresh)} last 48 hrs`, tone: fresh >= POWDER_INCHES ? "powder" : "snow" };
+  }
   const powder = forecast.upcoming.findIndex((d) => (d.snowIn ?? 0) >= POWDER_INCHES);
   if (powder !== -1) {
     const d = forecast.upcoming[powder];

@@ -80,12 +80,32 @@ export function scoreDay(resort: Resort, forecast: ResortForecast, dayIndex: num
   return { resort, day, snowIn, priorIn, rainIn, gustMph, driveHours, score, reasons };
 }
 
+export type RankBy = "overall" | "snow" | "closest";
+
+export const RANK_BY: Record<RankBy, string> = {
+  overall: "Best overall",
+  snow: "Most snow",
+  closest: "Closest",
+};
+
+const byName = (a: Pick, b: Pick) => a.resort.name.localeCompare(b.resort.name);
+const byDrive = (a: Pick, b: Pick) => (a.driveHours ?? 0) - (b.driveHours ?? 0);
+
+const SORTS: Record<RankBy, (a: Pick, b: Pick) => number> = {
+  // The blend: snow, rain, wind and drive time together (weights above).
+  overall: (a, b) => b.score - a.score || byDrive(a, b) || byName(a, b),
+  // Snow on the day, then snow just before it; distance only breaks ties.
+  snow: (a, b) => b.snowIn - a.snowIn || b.priorIn - a.priorIn || byDrive(a, b) || byName(a, b),
+  closest: (a, b) => byDrive(a, b) || b.snowIn - a.snowIn || byName(a, b),
+};
+
 export function rankDay(
   list: Resort[],
   forecasts: Record<string, ResortForecast>,
   dayIndex: number,
   origin: LatLon | null,
   maxDriveHours: number | null,
+  rankBy: RankBy = "overall",
 ): Pick[] {
   return list
     .flatMap((resort) => {
@@ -95,12 +115,7 @@ export function rankDay(
       if (maxDriveHours != null && pick.driveHours != null && pick.driveHours > maxDriveHours) return [];
       return [pick];
     })
-    .sort(
-      (a, b) =>
-        b.score - a.score ||
-        (a.driveHours ?? 0) - (b.driveHours ?? 0) ||
-        a.resort.name.localeCompare(b.resort.name),
-    );
+    .sort(SORTS[rankBy]);
 }
 
 /** The best resort-and-day combination in the next 7 days, if any day has real snow. */

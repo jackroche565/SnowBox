@@ -5,11 +5,6 @@ export const PASS_COLORS: Record<Pass, string> = {
   Ikon: "#2563eb",
   Indy: "#16a34a",
 };
-const MULTI_PASS_COLOR = "#7c3aed";
-
-export function passColor(passes: Pass[]): string {
-  return passes.length === 1 ? PASS_COLORS[passes[0]] : MULTI_PASS_COLOR;
-}
 
 export function formatInches(value: number | null | undefined): string {
   if (value == null) return "—";
@@ -47,4 +42,18 @@ export const PRECIP_COLORS = {
 export function formatHour(time: string): string {
   const hour = Number(time.slice(11, 13));
   return `${hour % 12 || 12}${hour < 12 ? "am" : "pm"}`;
+}
+
+/** Map pin colors by 7-day forecast snow: grey for none, deepening blues as it piles up. */
+export const SNOW_SCALE = [
+  { from: 0, color: "#a7b1bf", label: "0\"" },
+  { from: 0.5, color: "#9fcbe6", label: "½\"" },
+  { from: 3, color: "#4a90b8", label: "3\"" },
+  { from: 6, color: "#24618f", label: "6\"" },
+  { from: 12, color: "#101826", label: "12\"+" },
+] as const;
+
+export function snowColor(inches: number | null | undefined): string {
+  const v = inches ?? 0;
+  return [...SNOW_SCALE].reverse().find((s) => v >= s.from)!.color;
 }

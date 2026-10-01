@@ -9,7 +9,7 @@ import PassPicker from "@/components/PassPicker";
 import PassTags from "@/components/PassTags";
 import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
-import { formatDrive, rankDay, scoreDay, type Pick } from "@/lib/decide";
+import { RANK_BY, formatDrive, rankDay, scoreDay, type Pick, type RankBy } from "@/lib/decide";
 import type { DailyForecast } from "@/lib/forecast";
 import { formatDay, formatFeet, formatInches, formatTemp } from "@/lib/format";
 import { getResort, isEstimate, resortPath, resorts } from "@/lib/resorts";
@@ -214,12 +214,15 @@ export default function Decide() {
   const { forecasts, forecastState, origin, myPasses, compareIds } = useAppState();
   const [dayIndex, setDayIndex] = useState(0);
   const [maxDrive, setMaxDrive] = useState<MaxDrive>("any");
+  const [chosenRank, setRankBy] = useState<RankBy>("overall");
+  // "Closest" needs a starting point; without one, fall back to the blend.
+  const rankBy = chosenRank === "closest" && !origin ? "overall" : chosenRank;
 
   const days = forecasts ? (Object.values(forecasts)[0]?.upcoming ?? []) : [];
   const day = days[dayIndex];
   const maxHours = origin && maxDrive !== "any" ? Number(maxDrive) : null;
   const picks = forecasts
-    ? rankDay(resorts.filter((r) => onMyPasses(r.passes, myPasses)), forecasts, dayIndex, origin, maxHours)
+    ? rankDay(resorts.filter((r) => onMyPasses(r.passes, myPasses)), forecasts, dayIndex, origin, maxHours, rankBy)
     : [];
   const anySnow = picks.some((p) => p.snowIn >= 0.1);
 
@@ -243,26 +246,40 @@ export default function Decide() {
           <Field label="Day">
             {days.length ? <DayPicker days={days} value={dayIndex} onChange={setDayIndex} /> : <span className="text-sm text-ink-muted">Loading…</span>}
           </Field>
+          <Field label="Rank by">
+            <SegmentedControl
+              label="Rank by"
+              value={rankBy}
+              onChange={setRankBy}
+              className="w-fit"
+              segments={(Object.keys(RANK_BY) as RankBy[]).map((v) => ({
+                value: v,
+                label: RANK_BY[v],
+                disabled: v === "closest" && !origin,
+                title: v === "closest" && !origin ? "Set where you're starting from first" : undefined,
+              }))}
+            />
+          </Field>
           <Field label="Passes">
             <PassPicker />
           </Field>
           <Field label="From">
             <LocationSearch />
           </Field>
-          <Field label="Max drive">
-            <SegmentedControl
-              label="Max drive"
-              value={maxDrive}
-              onChange={setMaxDrive}
-              className="w-fit"
-              segments={(["any", "1", "2", "3", "4"] as MaxDrive[]).map((v) => ({
-                value: v,
-                label: v === "any" ? "Any" : `${v}h`,
-                disabled: !origin && v !== "any",
-                title: !origin && v !== "any" ? "Set where you're starting from first" : undefined,
-              }))}
-            />
-          </Field>
+          {origin && (
+            <Field label="Max drive">
+              <SegmentedControl
+                label="Max drive"
+                value={maxDrive}
+                onChange={setMaxDrive}
+                className="w-fit"
+                segments={(["any", "1", "2", "3", "4"] as MaxDrive[]).map((v) => ({
+                  value: v,
+                  label: v === "any" ? "Any" : `${v}h`,
+                }))}
+              />
+            </Field>
+          )}
         </section>
 
         {forecastState === "error" && <p className="text-sm text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>}
@@ -272,8 +289,9 @@ export default function Decide() {
           <>
             {!anySnow && picks.length > 0 && (
               <p className="text-sm text-ink-muted">
-                No new snow forecast {longDay(day.date, dayIndex)}.{" "}
-                {origin ? "Ranked by drive time." : "Set where you're starting from to rank by drive time."}
+                No new snow forecast {longDay(day.date, dayIndex)}.
+                {rankBy !== "closest" &&
+                  (origin ? " Ranked by drive time." : " Set where you're starting from to rank by drive time.")}
               </p>
             )}
 
@@ -295,9 +313,9 @@ export default function Decide() {
         )}
 
         <p className="text-xs text-ink-muted">
-          Drive times are estimated from distance and don&apos;t include traffic. Ranking: new snow on the day counts
-          most, snow in the 2 days before adds half as much, and rain, gusts of 40+ mph and each hour of driving count
-          against. Forecasts from{" "}
+          Drive times are estimated from distance and don&apos;t include traffic. Best overall: new snow on the day
+          counts most, snow in the 2 days before adds half as much, and rain, gusts of 40+ mph and each hour of
+          driving count against. Forecasts from{" "}
           <a className="underline" href="https://open-meteo.com/">
             Open-Meteo
           </a>
