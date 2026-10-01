@@ -1,6 +1,6 @@
-# Snowline redesign: plan of attack
+# Snowbox redesign: plan of attack
 
-Goal: move Snowline from a one-page resort directory to an app a serious Northeast skier would open every day and eventually pay for. The model is OpenSnow, Surfline and OnTheSnow: a personal home screen, deep forecasts, and a resort page that answers "should I go, and when?"
+Goal: move Snowbox from a one-page resort directory to an app a serious Northeast skier would open every day and eventually pay for. The model is OpenSnow, Surfline and OnTheSnow: a personal home screen, deep forecasts, and a resort page that answers "should I go, and when?"
 
 ## 1. Draft plan (v1)
 
@@ -11,7 +11,7 @@ Goal: move Snowline from a one-page resort directory to an app a serious Northea
 5. **Map page.** A full-screen map with forecast-snow layers and radar.
 6. **Resort hub.** Four tabs as separate URLs: Forecast, Conditions, Cams & Maps, Info. Hourly, 16-day, model range, wind, rain/snow line, summit vs base.
 7. **Data.** Extend the one forecast request to include hourly and multi-model data for every resort.
-8. **Premium.** "Snowline Pro" badges and a paywall screen.
+8. **Premium.** "Snowbox Pro" badges and a paywall screen.
 9. **Powder alerts.**
 
 ## 2. Scoring v1

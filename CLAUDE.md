@@ -2,7 +2,7 @@
 
 # Snowbox
 
-Snowfall and forecasts for Northeast US ski resorts. (The project and repo were first called Snowline; the app is now Snowbox.) Next.js (App Router, TypeScript, Tailwind v4), deployed on Vercel. The owner is new to coding: explain things plainly and keep changes focused.
+Snowfall and forecasts for Northeast US ski resorts. (First called Snowline; the repo is now `SnowBox`.) Next.js (App Router, TypeScript, Tailwind v4), deployed on Vercel. The owner is new to coding: explain things plainly and keep changes focused.
 
 ## Deploying
 
