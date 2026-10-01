@@ -7,7 +7,7 @@ import type { ResortForecast } from "@/lib/forecast";
 import { formatInches, resortColor } from "@/lib/format";
 import type { LatLon } from "@/lib/geo";
 import { resorts as allResorts, type Resort } from "@/lib/resorts";
-import { BASEMAP_STYLE } from "@/lib/terrain";
+import { BASEMAP_STYLE, SHADING, hillshadeLayer } from "@/lib/terrain";
 
 export type MapFocus = LatLon & { zoom: number; key: number };
 
@@ -24,9 +24,11 @@ type Props = {
 /** Below this, a week's snow gets no label on the map. */
 const LABEL_INCHES = 0.5;
 
-// Basemap layers that add detail but not orientation: buildings, small roads, rail, airports,
-// villages and road names. What's left: water, woods, major highways, borders, towns and cities.
-const CLUTTER = /^(building|landuse_residential|park|aeroway|airport|road_|highway_path|highway_minor|railway|highway-name|highway-shield-non-us|road_shield_us|label_other|label_village|waterway_line_label)/;
+// Basemap layers that add detail but not orientation: buildings, every road and rail line, airports,
+// villages and road names. What's left: relief, water, woods, borders, towns and cities.
+const CLUTTER = /^(building|landuse_residential|park|aeroway|airport|road|highway|tunnel|railway|label_other|label_village|waterway_line_label)/;
+
+const DOT_RADIUS = 6;
 
 function bounds(list: Resort[]): [[number, number], [number, number]] {
   const lons = list.map((r) => r.lon);
@@ -66,8 +68,6 @@ function originFeatures(origin: LatLon | null) {
   };
 }
 
-// Dots grow with the week's snow (square root keeps big storms in check).
-const SNOW_RADIUS = ["min", 13, ["+", 5, ["*", 2, ["sqrt", ["get", "snow"]]]]] as unknown as maplibregl.ExpressionSpecification;
 const HOVERED = ["boolean", ["feature-state", "hover"], false] as unknown as maplibregl.ExpressionSpecification;
 
 export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onHover, origin, focus }: Props) {
@@ -106,6 +106,17 @@ export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onH
       for (const layer of map.getStyle().layers) {
         if (CLUTTER.test(layer.id)) map.removeLayer(layer.id);
       }
+      // A faint icy tint on water, and relief shading (flat, 2D) under the borders and labels.
+      map.setPaintProperty("water", "fill-color", "#d3dfe8");
+      map.addSource("shading", SHADING);
+      map.addLayer(hillshadeLayer(0.5), "boundary_3");
+      // State lines at every zoom (the basemap hides them below zoom 8 and mixes in counties).
+      map.setLayerZoomRange("boundary_3", 0, 24);
+      map.setFilter("boundary_3", ["all", ["==", ["get", "admin_level"], 4], ["!=", ["get", "maritime"], 1]]);
+      map.setPaintProperty("boundary_3", "line-color", "#8f9aab");
+      map.setPaintProperty("boundary_3", "line-dasharray", [3, 2]);
+      map.setPaintProperty("boundary_3", "line-width", ["interpolate", ["linear"], ["zoom"], 5, 1, 10, 1.6]);
+      map.setPaintProperty("boundary_2", "line-color", "#8f9aab");
 
       map.addSource("origin", { type: "geojson", data: originFeatures(null) });
       map.addLayer({
@@ -126,7 +137,7 @@ export default function ResortMap({ resorts, forecasts, hoveredId, onSelect, onH
         type: "circle",
         source: "resorts",
         paint: {
-          "circle-radius": ["case", HOVERED, ["+", SNOW_RADIUS, 3], SNOW_RADIUS],
+          "circle-radius": ["case", HOVERED, DOT_RADIUS + 3, DOT_RADIUS],
           "circle-color": ["get", "color"],
           "circle-stroke-color": ["case", HOVERED, "#0f1a2a", "#ffffff"],
           "circle-stroke-width": ["case", HOVERED, 2.5, 2],

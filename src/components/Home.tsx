@@ -21,13 +21,16 @@ const NOTE_TONE = {
   none: "text-ink-faint",
 };
 
-/** The Green Mountains in 3D relief, fading into the page. */
+/**
+ * The Mount Mansfield range in 3D relief. The render's sky is the page color, so the ridgeline rises
+ * straight out of the page; the foot fades into it too.
+ */
 function TerrainBand() {
   return (
-    <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[200px] overflow-hidden sm:h-[260px]">
+    <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[200px] overflow-hidden sm:h-[280px] lg:h-[340px]">
       {/* eslint-disable-next-line @next/next/no-img-element -- static decorative render */}
-      <img src="/terrain/green-mountains.jpg" alt="" className="h-full w-full object-cover" />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgb(243 245 248 / 0) 55%, var(--snow) 100%)" }} />
+      <img src="/terrain/green-mountains.jpg" alt="" className="h-full w-full object-cover object-[50%_35%]" />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgb(243 245 248 / 0) 60%, var(--snow) 100%)" }} />
     </div>
   );
 }
@@ -276,7 +279,7 @@ export default function Home() {
 
       <main className="relative flex flex-1 flex-col">
         <TerrainBand />
-        <div className="relative mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-3 pt-[124px] pb-10 sm:pt-[180px]">
+        <div className="relative mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-3 pt-[124px] pb-10 sm:pt-[190px] lg:pt-[240px]">
         <h1 className="sr-only">Your mountains</h1>
 
         <div className="flex min-h-[34px] items-center px-2">

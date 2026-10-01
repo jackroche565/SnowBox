@@ -136,7 +136,7 @@ export default function Explore() {
                 ),
               )}
             </ul>
-            <div className="mt-1 text-[11px] text-ink-faint">Bigger dot = more snow in the next 7 days</div>
+            <div className="mt-1 text-[11px] text-ink-faint">Numbers show snow in the next 7 days</div>
           </div>
         </section>
 
