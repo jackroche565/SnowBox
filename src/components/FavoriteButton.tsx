@@ -6,8 +6,8 @@ import { StarIcon } from "@/components/Icons";
 type Props = {
   id: string;
   name: string;
-  /** "icon" sits in lists; "floating" is a white circle over imagery. */
-  variant?: "icon" | "floating";
+  /** "icon" sits in lists; "floating" is a white circle over imagery; "tile" is a square beside a button. */
+  variant?: "icon" | "floating" | "tile";
   /** Show "Save"/"Saved" beside the star, as a pill. */
   withLabel?: boolean;
   className?: string;
@@ -22,7 +22,9 @@ export default function FavoriteButton({ id, name, variant = "icon", withLabel =
     ? "gap-1.5 rounded-full bg-white/90 px-3 py-1 text-[13px] font-medium text-ink shadow-[0_1px_2px_rgb(15_26_42/0.08)] hover:bg-white"
     : variant === "floating"
       ? "h-10 w-10 rounded-full bg-white/90 shadow-[0_1px_3px_rgb(15_26_42/0.12)] backdrop-blur-sm"
-      : "h-8 w-8 rounded-full hover:bg-chip";
+      : variant === "tile"
+        ? "h-11 w-11 rounded-xl bg-chip hover:bg-line"
+        : "h-8 w-8 rounded-full hover:bg-chip";
 
   return (
     <button

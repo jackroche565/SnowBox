@@ -1,25 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
-import { onMyPasses, useAppState } from "@/components/AppState";
-import CountUp from "@/components/CountUp";
-import { SnowflakeIcon, StarIcon } from "@/components/Icons";
-import PassTags from "@/components/PassTags";
+import { useState } from "react";
+import { useAppState } from "@/components/AppState";
+import { StarIcon } from "@/components/Icons";
 import SiteHeader from "@/components/SiteHeader";
-import SnowStake from "@/components/SnowStake";
-import { bestThisWeek, formatDrive } from "@/lib/decide";
-import type { ResortForecast } from "@/lib/forecast";
-import { formatDay, formatInches, formatShortDate, formatTemp } from "@/lib/format";
-import { POWDER_INCHES, snowNote } from "@/lib/outlook";
+import type { DailyForecast, ResortForecast } from "@/lib/forecast";
+import { formatDay, formatInches, formatShortDate, resortColor } from "@/lib/format";
 import { getResort, resortPath, resorts, type Resort } from "@/lib/resorts";
 import { US_STATES } from "@/lib/usStates";
-
-const NOTE_TONE = {
-  powder: "font-semibold text-alpenglow",
-  snow: "text-glacier",
-  none: "text-ink-faint",
-};
 
 /**
  * The Mount Mansfield range in 3D relief. The render's sky is the page color, so the ridgeline rises
@@ -27,94 +16,141 @@ const NOTE_TONE = {
  */
 function TerrainBand() {
   return (
-    <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[200px] overflow-hidden sm:h-[280px] lg:h-[340px]">
+    <div aria-hidden="true" className="relative h-[120px] overflow-hidden sm:h-[200px]">
       {/* eslint-disable-next-line @next/next/no-img-element -- static decorative render */}
-      <img src="/terrain/green-mountains.jpg" alt="" className="h-full w-full object-cover object-[50%_35%]" />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgb(243 245 248 / 0) 60%, var(--snow) 100%)" }} />
+      <img src="/terrain/green-mountains.jpg" alt="" className="h-full w-full object-cover object-[50%_30%]" />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgb(243 245 248 / 0) 55%, var(--snow) 100%)" }} />
     </div>
   );
 }
 
-type Status = { text: ReactNode; tone: "powder" | "snow" };
+// ── The headline: one number ──────────────────────────────────────────
 
-/** One fact for the top of the page: the next powder day, or the next snow, across your mountains. */
-function statusFor(list: Resort[], forecasts: Record<string, ResortForecast>): Status | null {
-  let powder: { resort: Resort; date: string; index: number; inches: number } | null = null;
-  let next: { date: string; index: number } | null = null;
-  let anyRecent = false;
-
+/** The one thing worth knowing first: who gets the most snow this week, or when the next snow is. */
+function Headline({ list, forecasts }: { list: Resort[]; forecasts: Record<string, ResortForecast> }) {
+  let best: { resort: Resort; total: number; day: DailyForecast; index: number } | null = null;
+  let next: { resort: Resort; day: DailyForecast; index: number } | null = null;
   for (const resort of list) {
     const f = forecasts[resort.id];
     if (!f) continue;
-    if (f.past7In >= 0.5) anyRecent = true;
-    for (let i = 0; i < f.upcoming.length; i++) {
-      const inches = f.upcoming[i].snowIn ?? 0;
-      const sooner = !powder || i < powder.index || (i === powder.index && inches > powder.inches);
-      if (inches >= POWDER_INCHES && sooner) powder = { resort, date: f.upcoming[i].date, index: i, inches };
+    if (f.next7In >= 0.5 && (!best || f.next7In > best.total)) {
+      const index = f.upcoming.reduce((m, d, i, all) => ((d.snowIn ?? 0) > (all[m].snowIn ?? 0) ? i : m), 0);
+      best = { resort, total: f.next7In, day: f.upcoming[index], index };
     }
     const n = f.outlook.findIndex((d) => (d.snowIn ?? 0) >= 0.5);
-    if (n !== -1 && (!next || n < next.index)) next = { date: f.outlook[n].date, index: n };
+    if (n !== -1 && (!next || n < next.index)) next = { resort, day: f.outlook[n], index: n };
   }
 
-  if (powder) {
-    return {
-      tone: "powder",
-      text: (
-        <>
-          Powder {formatDay(powder.date, powder.index)} at <span className="font-semibold">{powder.resort.name}</span> ·{" "}
-          {formatInches(powder.inches)}
-        </>
-      ),
-    };
-  }
-  if (!next) return null;
-  return {
-    tone: "snow",
-    text: (
-      <>
-        {anyRecent ? "Next snow" : "First snow in the forecast"}{" "}
-        <span className="font-semibold">{next.index < 7 ? formatDay(next.date, next.index) : formatShortDate(next.date)}</span>
-      </>
-    ),
-  };
-}
-
-function MountainRow({ resort, forecast }: { resort: Resort; forecast: ResortForecast | undefined }) {
-  const note = forecast && snowNote(forecast);
-  const snow = forecast?.next7In ?? 0;
+  const figure = best ? formatInches(best.total) : next ? formatInches(next.day.snowIn) : null;
+  if (!figure) return <p className="px-5 text-[13px] text-ink-muted">No snow in the forecast for your mountains.</p>;
   return (
-    <li className="border-t border-hairline">
-      <Link href={resortPath(resort.id)} className="flex items-center gap-3.5 px-[18px] py-[11px] hover:bg-snow/60">
-        <span className="min-w-0 flex-1">
-          <span className="flex items-center gap-2">
-            <span className="type-name truncate text-[19px] leading-tight tracking-[-0.005em]">{resort.name}</span>
-            <PassTags passes={resort.passes} />
-          </span>
-          <span className="mt-0.5 block truncate text-[13px] tabular-nums">
-            {note ? <span className={NOTE_TONE[note.tone]}>{note.text}</span> : <span className="text-ink-faint">Loading…</span>}
-            {forecast && (
-              <span className="text-ink-faint">
-                {" · "}
-                <CountUp value={forecast.tempF} format={formatTemp} />
-              </span>
-            )}
+    <div className="px-5">
+      <p className="text-[13px] text-ink-muted">{best ? "Most snow this week" : "Next snow"}</p>
+      <p className="mt-0.5 flex items-baseline gap-2.5">
+        <span className="type-hero text-[56px] leading-[0.9] tabular-nums">{figure}</span>
+        <span className="text-[15px]">
+          <span className="font-semibold">{(best ?? next)!.resort.name}</span>
+          <span className="text-ink-muted">
+            {best
+              ? ` · ${formatInches(best.day.snowIn)} on ${formatDay(best.day.date, best.index)}`
+              : ` · ${next!.index < 7 ? formatDay(next!.day.date, next!.index) : formatShortDate(next!.day.date)}`}
           </span>
         </span>
-        {forecast && (
-          <span className="flex items-end gap-2">
-            <SnowStake inches={snow} height={34} />
-            <span className="w-[66px] text-right">
-              <span className={`type-figure block text-[26px] ${snow >= 0.1 ? "text-ink" : "text-ink-zero"}`}>
-                {formatInches(snow)}
-              </span>
-              <span className="mt-[3px] block text-[11px] whitespace-nowrap text-ink-faint">next 7 days</span>
-            </span>
-          </span>
-        )}
+      </p>
+    </div>
+  );
+}
+
+// ── Your week: mountains × days ───────────────────────────────────────
+
+/** Deeper blue for more snow. Under half an inch reads as nothing. */
+function cellStyle(inches: number): { bg: string; fg: string } {
+  if (inches < 0.5) return { bg: "transparent", fg: "#c3cad4" };
+  if (inches < 2.5) return { bg: "#e6f0f7", fg: "#0f1a2a" };
+  if (inches < 5.5) return { bg: "#9fcbe6", fg: "#0f1a2a" };
+  if (inches < 9.5) return { bg: "#2f76a3", fg: "#ffffff" };
+  return { bg: "#1b4e75", fg: "#ffffff" };
+}
+
+const GRID = "grid grid-cols-[100px_repeat(7,minmax(0,1fr))_42px] items-center gap-1";
+
+function WeekRow({ resort, forecast }: { resort: Resort; forecast: ResortForecast | undefined }) {
+  return (
+    <li className="border-t border-hairline">
+      <Link href={resortPath(resort.id)} className={`${GRID} px-1 py-[5px] hover:bg-snow/70`}>
+        <span className="flex min-w-0 items-center gap-1.5">
+          <span aria-hidden="true" className="h-[7px] w-[7px] shrink-0 rounded-full" style={{ backgroundColor: resortColor(resort.passes) }} />
+          <span className="type-name truncate text-[15px]">{resort.name}</span>
+        </span>
+        {forecast
+          ? forecast.upcoming.map((d) => {
+              const inches = d.snowIn ?? 0;
+              const { bg, fg } = cellStyle(inches);
+              return (
+                <span
+                  key={d.date}
+                  className="type-figure flex h-[30px] items-center justify-center rounded-[7px] text-[13px]"
+                  style={{ backgroundColor: bg, color: fg }}
+                >
+                  {inches < 0.5 ? "·" : Math.round(inches)}
+                </span>
+              );
+            })
+          : Array.from({ length: 7 }, (_, i) => <span key={i} className="h-[30px] rounded-[7px] bg-snow" />)}
+        <span className={`type-figure text-right text-[17px] font-bold ${forecast && forecast.next7In >= 0.5 ? "" : "text-ink-zero"}`}>
+          {forecast ? formatInches(forecast.next7In) : ""}
+        </span>
       </Link>
     </li>
   );
 }
+
+function YourWeek({ list, forecasts, onEdit }: { list: Resort[]; forecasts: Record<string, ResortForecast> | null; onEdit: () => void }) {
+  const days = forecasts ? (Object.values(forecasts)[0]?.upcoming ?? []) : [];
+  return (
+    <section aria-labelledby="your-week" className="sheet px-3 pt-3.5 pb-2">
+      <div className="flex items-baseline justify-between px-1 pb-2.5">
+        <h2 id="your-week" className="text-[15px] font-semibold">
+          Your week
+        </h2>
+        <button type="button" onClick={onEdit} className="text-sm font-medium text-glacier hover:underline">
+          Edit
+        </button>
+      </div>
+      <div aria-hidden="true" className={`${GRID} px-1 pb-1.5 text-center text-[11px] text-ink-faint tabular-nums`}>
+        <span />
+        {days.map((d) => (
+          <span key={d.date}>
+            <span className="block font-semibold">{formatDay(d.date, -1).slice(0, 2)}</span>
+            {Number(d.date.slice(8))}
+          </span>
+        ))}
+        <span className="text-right">Total</span>
+      </div>
+      <ul>
+        {list.map((r) => (
+          <WeekRow key={r.id} resort={r} forecast={forecasts?.[r.id]} />
+        ))}
+      </ul>
+      <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 border-t border-hairline px-1 pt-2.5 pb-1 text-[11px] text-ink-faint">
+        <span>Snow per day, inches</span>
+        {[
+          ["1–2", "#e6f0f7"],
+          ["3–5", "#9fcbe6"],
+          ["6–9", "#2f76a3"],
+          ["10+", "#1b4e75"],
+        ].map(([label, color]) => (
+          <span key={label} className="flex items-center gap-1">
+            <span className="h-3 w-3 rounded-[3px]" style={{ backgroundColor: color }} />
+            {label}
+          </span>
+        ))}
+      </p>
+    </section>
+  );
+}
+
+// ── Choosing your mountains ───────────────────────────────────────────
 
 const NEARBY_COUNT = 8;
 
@@ -233,100 +269,44 @@ function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: ()
   );
 }
 
-function BestBet({ forecasts }: { forecasts: Record<string, ResortForecast> }) {
-  const { myPasses, origin } = useAppState();
-  const best = bestThisWeek(
-    resorts.filter((r) => onMyPasses(r.passes, myPasses)),
-    forecasts,
-    origin,
-  );
-  if (!best) return null;
-
-  const { pick, dayIndex } = best;
-  return (
-    <Link href="/decide" className="group flex items-baseline justify-between gap-3 px-2 text-sm">
-      <span className="min-w-0 truncate">
-        <span className="text-ink-muted">Best bet this week: </span>
-        <span className="font-semibold">{pick.resort.name}</span>
-        <span className="text-ink-muted tabular-nums">
-          {" "}
-          · {formatInches(pick.snowIn)} {formatDay(pick.day.date, dayIndex)}
-          {pick.driveHours != null && ` · ${formatDrive(pick.driveHours)} drive`}
-        </span>
-      </span>
-      <span className="shrink-0 font-medium text-glacier group-hover:underline">Decide →</span>
-    </Link>
-  );
-}
-
 export default function Home() {
   const { forecasts, forecastState, favoriteIds, savedListsReady } = useAppState();
   const [editing, setEditing] = useState(false);
 
   const favorites = favoriteIds.flatMap((id) => getResort(id) ?? []);
-  // Most snow coming first; starring order breaks ties.
+  // Most snow this week first; starring order breaks ties.
   const sorted = forecasts
     ? [...favorites].sort((a, b) => (forecasts[b.id]?.next7In ?? 0) - (forecasts[a.id]?.next7In ?? 0))
     : favorites;
   const picking = savedListsReady && (favorites.length === 0 || editing);
-  const status = forecasts && favorites.length > 0 ? statusFor(favorites, forecasts) : null;
   // The forecast's own "today" (resort time), so the server and browser never disagree on the date.
   const today = forecasts ? Object.values(forecasts)[0]?.outlook[0]?.date : undefined;
 
   return (
     <div className="flex flex-1 flex-col">
       <SiteHeader aside={today ? formatShortDate(today) : undefined} />
+      <h1 className="sr-only">Your mountains</h1>
+      <TerrainBand />
 
-      <main className="relative flex flex-1 flex-col">
-        <TerrainBand />
-        <div className="relative mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-3 pt-[124px] pb-10 sm:pt-[190px] lg:pt-[240px]">
-        <h1 className="sr-only">Your mountains</h1>
-
-        <div className="flex min-h-[34px] items-center px-2">
-          {status && (
-            <p className="flex items-center gap-2 rounded-full bg-white/88 py-[7px] pr-3 pl-2.5 text-[13px] shadow-[0_1px_2px_rgb(15_26_42/0.06)] backdrop-blur-sm">
-              <SnowflakeIcon className={`h-3.5 w-3.5 ${status.tone === "powder" ? "text-alpenglow" : "text-glacier"}`} />
-              <span>{status.text}</span>
-            </p>
-          )}
-        </div>
-
+      <main className="relative mx-auto -mt-5 flex w-full max-w-2xl flex-1 flex-col gap-4 pb-10">
         {/* Starring keeps the picker open (so a first visit can pick several) until Done. */}
-        {picking && <MountainPicker onToggle={() => setEditing(true)} onDone={() => setEditing(false)} />}
+        {picking && (
+          <div className="px-3">
+            <MountainPicker onToggle={() => setEditing(true)} onDone={() => setEditing(false)} />
+          </div>
+        )}
 
         {savedListsReady && favorites.length > 0 && !editing && (
           <>
-            <section aria-labelledby="your-mountains" className="sheet overflow-hidden">
-              <div className="flex items-baseline justify-between px-[18px] pt-4 pb-1.5">
-                <h2 id="your-mountains" className="text-[15px] font-semibold">
-                  Your mountains
-                </h2>
-                <button type="button" onClick={() => setEditing(true)} className="text-sm font-medium text-glacier hover:underline">
-                  Edit
-                </button>
-              </div>
-              <ul>
-                {sorted.map((r) => (
-                  <MountainRow key={r.id} resort={r} forecast={forecasts?.[r.id]} />
-                ))}
-                <li className="border-t border-hairline">
-                  <button
-                    type="button"
-                    onClick={() => setEditing(true)}
-                    className="w-full px-[18px] pt-[13px] pb-[15px] text-left text-sm font-medium text-glacier hover:bg-snow/60"
-                  >
-                    + Add mountain
-                  </button>
-                </li>
-              </ul>
-            </section>
+            {forecasts && <Headline list={favorites} forecasts={forecasts} />}
+            <div className="px-3">
+              <YourWeek list={sorted} forecasts={forecasts} onEdit={() => setEditing(true)} />
+            </div>
             {forecastState === "error" && (
-              <p className="px-2 text-sm text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>
+              <p className="px-5 text-sm text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>
             )}
-            {forecasts && <BestBet forecasts={forecasts} />}
           </>
         )}
-        </div>
       </main>
 
       <footer className="mx-auto w-full max-w-2xl px-5 pb-8 text-xs text-ink-faint">
@@ -334,7 +314,7 @@ export default function Home() {
         <a className="underline" href="https://open-meteo.com/">
           Open-Meteo
         </a>
-        , refreshed every 30 minutes. Snow totals are modeled, not resort-reported.
+        . Snow is modeled, not resort-reported.
       </footer>
     </div>
   );

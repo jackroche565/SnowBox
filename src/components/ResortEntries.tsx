@@ -2,7 +2,7 @@ import Link from "next/link";
 import FavoriteButton from "@/components/FavoriteButton";
 import PassTags from "@/components/PassTags";
 import type { ResortForecast } from "@/lib/forecast";
-import { formatInches, formatTemp, resortColor } from "@/lib/format";
+import { formatInches, formatTemp } from "@/lib/format";
 import type { Resort } from "@/lib/resorts";
 
 export type EntryProps = {
@@ -16,7 +16,7 @@ export type EntryProps = {
   onHover: (hovering: boolean) => void;
 };
 
-/** One resort in Explore's list: its map color, name, passes and the week's snow. */
+/** One resort in Explore's list: name, passes and the week's snow. */
 export function ResortRow({ resort, forecast, forecastState, distance, hovered, href, onHover }: EntryProps) {
   const snow = forecast?.next7In ?? 0;
   const meta = [
@@ -32,11 +32,6 @@ export function ResortRow({ resort, forecast, forecastState, distance, hovered, 
       onMouseLeave={() => onHover(false)}
       className={`flex items-center gap-3 border-t border-hairline pr-3 pl-[18px] transition-colors ${hovered ? "bg-snow" : ""}`}
     >
-      <span
-        aria-hidden="true"
-        className="h-2.5 w-2.5 shrink-0 rounded-full shadow-[0_0_0_2px_#fff,0_0_0_3px_var(--line)]"
-        style={{ backgroundColor: resortColor(resort.passes) }}
-      />
       <Link href={href} className="flex min-w-0 flex-1 items-center gap-3 py-2.5">
         <span className="min-w-0 flex-1">
           <span className="flex items-center gap-2">
