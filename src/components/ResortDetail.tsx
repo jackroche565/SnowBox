@@ -11,6 +11,7 @@ import { StarIcon, WindIcon } from "@/components/Icons";
 import { passText } from "@/components/PassTags";
 import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
+import { formatObservedEnd, useObserved } from "@/components/useObserved";
 import { STAKE_INCHES } from "@/components/SnowStake";
 import { sum, type DailyForecast, type ResortForecast } from "@/lib/forecast";
 import { formatDay, formatFeet, formatHour, formatInches, formatTemp } from "@/lib/format";
@@ -161,8 +162,17 @@ function SnowRow({ label, inches, color, note }: { label: ReactNode; inches: num
   );
 }
 
-function Snow({ forecast }: { forecast: ResortForecast }) {
-  const fresh = last48In(forecast);
+function Snow({ resort, forecast }: { resort: Resort; forecast: ResortForecast }) {
+  // NOAA's observed analysis when we have it; the model's own last two days otherwise.
+  const observed = useObserved();
+  const measured = observed?.last48[resort.id];
+  const fresh = measured ?? last48In(forecast);
+  const note =
+    measured != null
+      ? `Observed by NOAA, to ${formatObservedEnd(observed!.endsAt)}`
+      : fresh < 1
+        ? lastSnow(forecast)
+        : "Modeled";
   return (
     <Section
       label="Snow"
@@ -176,7 +186,7 @@ function Snow({ forecast }: { forecast: ResortForecast }) {
       }
     >
       <ul>
-        <SnowRow label="Last 48 hrs" inches={fresh} color="var(--glacier)" note={fresh < 1 ? lastSnow(forecast) : undefined} />
+        <SnowRow label="Last 48 hrs" inches={fresh} color="var(--glacier)" note={note} />
         <SnowRow label="Next 3 days" inches={forecast.next3In} color="var(--glacier)" />
         <SnowRow
           label={
@@ -579,7 +589,7 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
 
         {forecast && today ? (
           <>
-            <Snow forecast={forecast} />
+            <Snow resort={resort} forecast={forecast} />
             <NextSevenDays resort={resort} forecast={forecast} detail={detail} today={today} />
           </>
         ) : (

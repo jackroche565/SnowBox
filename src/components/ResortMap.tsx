@@ -1,7 +1,7 @@
 "use client";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import maplibregl, { type GeoJSONSource, type Map as MapLibreMap } from "maplibre-gl";
+import maplibregl, { type GeoJSONSource, type Map as MapLibreMap, type RasterTileSource } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 import { formatInches, snowBucketColor } from "@/lib/format";
 import type { LatLon } from "@/lib/geo";
@@ -21,7 +21,14 @@ type Props = {
   onSelect: (id: string | null) => void;
   origin: LatLon | null;
   focus: MapFocus | null;
+  /** Show the national radar under the dots. */
+  radar: boolean;
 };
+
+/** NOAA's national radar composite, tiled by the Iowa Environmental Mesonet (public domain). */
+const RADAR_TILES = "https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913/{z}/{x}/{y}.png";
+/** The composite updates every 5 minutes. */
+const RADAR_REFRESH_MS = 5 * 60 * 1000;
 
 const DOT_RADIUS = 5.5;
 const FAVORITE_RADIUS = 7;
@@ -69,7 +76,7 @@ function originFeatures(origin: LatLon | null) {
 const state = (key: "hover" | "selected") =>
   ["boolean", ["feature-state", key], false] as unknown as maplibregl.ExpressionSpecification;
 
-export default function ResortMap({ resorts, snow, favoriteIds, hoveredId, selectedId, onSelect, origin, focus }: Props) {
+export default function ResortMap({ resorts, snow, favoriteIds, hoveredId, selectedId, onSelect, origin, focus, radar }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const [ready, setReady] = useState(false);
@@ -86,8 +93,8 @@ export default function ResortMap({ resorts, snow, favoriteIds, hoveredId, selec
       style: QUIET_STYLE,
       // Open on where nearly all the mountains are; the two far-north Maine hills are a short pan away.
       bounds: bounds(allResorts.filter((r) => r.lat < FAR_NORTH_LAT)),
-      // Room at the top left for the legend.
-      fitBoundsOptions: { padding: { top: 56, bottom: 32, left: 24, right: 24 } },
+      // Room at the top for the layer switch and key.
+      fitBoundsOptions: { padding: { top: 84, bottom: 32, left: 24, right: 24 } },
       // Flat and north-up: no tilting or rotating.
       maxPitch: 0,
       dragRotate: false,
@@ -101,6 +108,20 @@ export default function ResortMap({ resorts, snow, favoriteIds, hoveredId, selec
     // "style.load" fires as soon as the style is in; "load" waits for a first full render,
     // which a background tab can hold back.
     map.once("style.load", () => {
+      map.addSource("radar", {
+        type: "raster",
+        tiles: [RADAR_TILES],
+        tileSize: 256,
+        attribution: '<a href="https://mesonet.agron.iastate.edu/">Radar: Iowa Environmental Mesonet</a>',
+      });
+      map.addLayer({
+        id: "radar",
+        type: "raster",
+        source: "radar",
+        layout: { visibility: "none" },
+        paint: { "raster-opacity": 0.7 },
+      });
+
       map.addSource("origin", { type: "geojson", data: originFeatures(null) });
       map.addLayer({
         id: "origin",
@@ -188,6 +209,18 @@ export default function ResortMap({ resorts, snow, favoriteIds, hoveredId, selec
       for (const [id, key] of marks) if (id) map.setFeatureState({ source: "resorts", id }, { [key]: false });
     };
   }, [ready, hoveredId, selectedId]);
+
+  // Radar on or off; while on, fetch fresh tiles as the composite updates.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map) return;
+    map.setLayoutProperty("radar", "visibility", radar ? "visible" : "none");
+    if (!radar) return;
+    const refresh = () => (map.getSource("radar") as RasterTileSource | undefined)?.setTiles([`${RADAR_TILES}?t=${Date.now()}`]);
+    refresh();
+    const timer = setInterval(refresh, RADAR_REFRESH_MS);
+    return () => clearInterval(timer);
+  }, [ready, radar]);
 
   useEffect(() => {
     if (!focus) return;

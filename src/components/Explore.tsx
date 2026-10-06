@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { onMyPasses, useAppState, type Origin } from "@/components/AppState";
 import LocationSearch from "@/components/LocationSearch";
 import PassPicker from "@/components/PassPicker";
@@ -12,6 +12,7 @@ import type { MapFocus } from "@/components/ResortMap";
 import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
 import SortControl from "@/components/SortControl";
+import { formatObservedEnd, useObserved } from "@/components/useObserved";
 import type { ResortForecast } from "@/lib/forecast";
 import { estimateDriveHours, formatDrive } from "@/lib/decide";
 import { SNOW_BUCKETS, formatInches, formatTemp } from "@/lib/format";
@@ -78,19 +79,56 @@ function PreviewPanel({
   );
 }
 
-/** Small key for the dot colors, top left of the map. */
-function Legend() {
+type Layer = "next7" | "fell" | "radar";
+
+const LAYERS: { value: Layer; label: string }[] = [
+  { value: "next7", label: "Next 7 days" },
+  { value: "fell", label: "Fell, 48 hrs" },
+  { value: "radar", label: "Radar" },
+];
+
+/** When the radar picture was taken, from the Iowa Environmental Mesonet. Refreshed every 5 minutes. */
+function useRadarTime(on: boolean): string | null {
+  const [time, setTime] = useState<string | null>(null);
+  useEffect(() => {
+    if (!on) return;
+    const load = () =>
+      fetch("https://mesonet.agron.iastate.edu/data/gis/images/4326/USCOMP/n0q_0.json")
+        .then((res) => res.json() as Promise<{ meta?: { valid?: string } }>)
+        .then((d) => d.meta?.valid && setTime(d.meta.valid))
+        .catch(() => {});
+    load();
+    const timer = setInterval(load, 5 * 60 * 1000);
+    return () => clearInterval(timer);
+  }, [on]);
+  return time;
+}
+
+/** Top left of the map: which layer, and a key for it. */
+function LayerPanel({ layer, onChange, observedEnd }: { layer: Layer; onChange: (l: Layer) => void; observedEnd: string | null }) {
+  const radarTime = useRadarTime(layer === "radar");
   return (
-    <div className="absolute top-3 left-3 z-10 bg-snow/90 px-2.5 py-2 text-[11px]">
-      <p className="font-semibold">Next 7 days</p>
-      <ul className="mt-1 flex flex-col gap-0.5">
-        {SNOW_BUCKETS.map((b) => (
-          <li key={b.label} className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full border border-white" style={{ backgroundColor: b.color }} />
-            {b.label}
-          </li>
-        ))}
-      </ul>
+    <div className="absolute top-0 right-0 left-0 z-10 bg-snow/90 px-3 pt-2.5 pb-2 text-[11px] lg:right-auto">
+      <SegmentedControl label="Map shows" value={layer} onChange={onChange} segments={LAYERS} />
+      {layer === "radar" ? (
+        <p className="mt-1.5 text-ink-muted">{radarTime ? `NOAA radar at ${formatObservedEnd(radarTime)}.` : "Loading radar…"}</p>
+      ) : (
+        <>
+          <ul className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5">
+            {SNOW_BUCKETS.map((b) => (
+              <li key={b.label} className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full border border-white" style={{ backgroundColor: b.color }} />
+                {b.label}
+              </li>
+            ))}
+          </ul>
+          {layer === "fell" && (
+            <p className="mt-1 text-ink-muted">
+              {observedEnd ? `Observed by NOAA, 48 hrs to ${formatObservedEnd(observedEnd)}.` : "Loading observed snow…"}
+            </p>
+          )}
+        </>
+      )}
     </div>
   );
 }
@@ -99,6 +137,8 @@ export default function Explore() {
   const { forecasts, forecastState, origin, distanceTo, myPasses, favoriteIds, sortKey, setSortKey } = useAppState();
 
   const [view, setView] = useState<"map" | "list">("map");
+  const [layer, setLayer] = useState<Layer>("next7");
+  const observed = useObserved();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -137,10 +177,14 @@ export default function Explore() {
 
   const selected = selectedId ? visible.find((v) => v.resort.id === selectedId) : undefined;
   const passLabel = myPasses.length ? `${myPasses.join(" & ")} ` : "";
-  const snow = useMemo(
-    () => Object.fromEntries(Object.entries(forecasts ?? {}).map(([id, f]) => [id, f.next7In])),
-    [forecasts],
-  );
+  // What the dots show: forecast snow, observed snow, or nothing while the radar is up.
+  const snow = useMemo((): Record<string, number> => {
+    if (layer === "radar") return {};
+    if (layer === "fell") {
+      return Object.fromEntries(Object.entries(observed?.last48 ?? {}).flatMap(([id, v]) => (v == null ? [] : [[id, v]])));
+    }
+    return Object.fromEntries(Object.entries(forecasts ?? {}).map(([id, f]) => [id, f.next7In]));
+  }, [layer, observed, forecasts]);
 
   // Rendered once above the map on phones and once above the list on desktop, so ids carry `where`.
   const controls = (where: "top" | "side") => (
@@ -217,8 +261,9 @@ export default function Explore() {
             onSelect={setSelectedId}
             origin={origin}
             focus={focus}
+            radar={layer === "radar"}
           />
-          <Legend />
+          <LayerPanel layer={layer} onChange={setLayer} observedEnd={observed?.endsAt ?? null} />
           {selected && (
             <PreviewPanel resort={selected.resort} forecast={forecasts?.[selected.resort.id]} onClose={() => setSelectedId(null)} />
           )}
