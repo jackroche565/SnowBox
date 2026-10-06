@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { useAppState } from "@/components/AppState";
+import AlertLine from "@/components/AlertLine";
 import CountUp from "@/components/CountUp";
 import HourlyChart, { HourlyLegend } from "@/components/HourlyChart";
 import { StarIcon, WindIcon } from "@/components/Icons";
@@ -26,6 +27,7 @@ import {
   type ResortDetailForecast,
   type SnowQuality,
 } from "@/lib/resortForecast";
+import { formatAlertTime, officeName, type ResortNws } from "@/lib/nws";
 import { isEstimate, type Resort } from "@/lib/resorts";
 import { formatOpening, isOpenOn } from "@/lib/season";
 import { TERRAIN_CREDIT } from "@/lib/terrain";
@@ -355,6 +357,61 @@ function NextSevenDays({ resort, forecast, detail, today }: { resort: Resort; fo
 
 // ── Hour by hour ──────────────────────────────────────────────────────
 
+// ── Weather service ───────────────────────────────────────────────────
+
+function useNws(id: string): ResortNws | null {
+  const [nws, setNws] = useState<ResortNws | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/nws/${id}`)
+      .then((res) => (res.ok ? (res.json() as Promise<ResortNws>) : null))
+      .then((data) => !cancelled && setNws(data))
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+  return nws;
+}
+
+function ForecasterNotes({ nws }: { nws: ResortNws }) {
+  const d = nws.discussion;
+  if (!d) return null;
+  return (
+    <details className="group rule-section">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5 text-[13px] font-semibold">
+        Forecaster notes
+        <span className="flex items-center gap-1.5 font-normal text-ink-muted">
+          NWS {officeName(d.office)}, {formatAlertTime(d.issued)}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="h-3.5 w-3.5 transition-transform group-open:rotate-180"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M6 9 L12 15 L18 9" />
+          </svg>
+        </span>
+      </summary>
+      <div className="px-4 pb-5 text-[15px] leading-relaxed">
+        <p className="text-[13px] text-ink-muted">{d.title}</p>
+        {d.paragraphs.map((p, i) => (
+          <p key={i} className="mt-2">
+            {p}
+          </p>
+        ))}
+        <a href={d.url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-[14px] text-glacier underline underline-offset-2">
+          Full discussion<span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      </div>
+    </details>
+  );
+}
+
 function HourByHour({ resort, detail }: { resort: Resort; detail: DetailState }) {
   const [elevation, setElevation] = useState<"summit" | "base">("summit");
   return (
@@ -472,6 +529,7 @@ function YourMountain({ resort }: { resort: Resort }) {
 export default function ResortDetail({ resort }: { resort: Resort }) {
   const { forecasts, forecastState, distanceTo, origin } = useAppState();
   const detail = useResortDetail(resort.id);
+  const nws = useNws(resort.id);
   const forecast = forecasts?.[resort.id];
   const distance = distanceTo(resort);
   const today = forecast?.upcoming[0]?.date;
@@ -509,6 +567,15 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
         </div>
 
         <SpecStrip resort={resort} />
+        {nws && nws.alerts.length > 0 && (
+          <ul aria-label="Weather service warnings" className="px-4 pt-3 pb-1 text-[15px]">
+            {nws.alerts.map((a) => (
+              <li key={a.event}>
+                <AlertLine alert={a} office={resort.nws?.office} />
+              </li>
+            ))}
+          </ul>
+        )}
 
         {forecast && today ? (
           <>
@@ -520,6 +587,7 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
             <Pending state={forecastState} />
           </div>
         )}
+        {nws && <ForecasterNotes nws={nws} />}
         <HourByHour resort={resort} detail={detail} />
         <Links resort={resort} />
         <p className="rule-row px-4 pt-3 pb-10 text-[11px] text-ink-faint">

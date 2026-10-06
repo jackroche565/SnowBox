@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { AlertsResponse } from "@/app/api/alerts/route";
+import AlertLine from "@/components/AlertLine";
 import { useAppState } from "@/components/AppState";
 import { StarIcon } from "@/components/Icons";
 import LocationSearch from "@/components/LocationSearch";
 import PassTags from "@/components/PassTags";
 import SiteHeader from "@/components/SiteHeader";
 import type { DailyForecast, ResortForecast } from "@/lib/forecast";
+import type { NwsAlert } from "@/lib/nws";
 import { formatDay, formatInches, formatShortDate } from "@/lib/format";
 import { getResort, resortPath, resorts, type Resort } from "@/lib/resorts";
 import { US_STATES } from "@/lib/usStates";
@@ -63,6 +66,47 @@ function Headline({ list, forecasts }: { list: Resort[]; forecasts: Record<strin
         </p>
       </div>
     </div>
+  );
+}
+
+// ── Weather service warnings ──────────────────────────────────────────
+
+function useAlerts(): Record<string, NwsAlert[]> | null {
+  const [alerts, setAlerts] = useState<Record<string, NwsAlert[]> | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/alerts")
+      .then((res) => (res.ok ? (res.json() as Promise<AlertsResponse>) : null))
+      .then((data) => !cancelled && data && setAlerts(data.alerts))
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  return alerts;
+}
+
+/** One line per warning across your mountains: "Winter Storm Warning for Stowe and Jay Peak until Thu 7pm." */
+function Warnings({ list, alerts }: { list: Resort[]; alerts: Record<string, NwsAlert[]> }) {
+  const groups = new Map<string, { alert: NwsAlert; names: string[] }>();
+  for (const resort of list) {
+    for (const alert of alerts[resort.id] ?? []) {
+      const key = `${alert.event}|${alert.until}`;
+      const group = groups.get(key) ?? { alert, names: [] };
+      group.names.push(resort.name);
+      groups.set(key, group);
+    }
+  }
+  if (groups.size === 0) return null;
+  const join = (names: string[]) => (names.length < 3 ? names.join(" and ") : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`);
+  return (
+    <ul aria-label="Weather service warnings" className="px-4 pb-4 text-[15px]">
+      {[...groups.values()].map(({ alert, names }) => (
+        <li key={`${alert.event}|${alert.until}`}>
+          <AlertLine alert={alert} where={join(names)} />
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -343,6 +387,7 @@ function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: ()
 export default function Home() {
   const { forecasts, forecastState, favoriteIds, savedListsReady } = useAppState();
   const [editing, setEditing] = useState(false);
+  const alerts = useAlerts();
 
   const favorites = favoriteIds.flatMap((id) => getResort(id) ?? []);
   // Most snow this week first; starring order breaks ties.
@@ -364,6 +409,7 @@ export default function Home() {
           <>
             <TerrainBand />
             {forecasts && <Headline list={favorites} forecasts={forecasts} />}
+            {alerts && <Warnings list={favorites} alerts={alerts} />}
             <YourWeek list={sorted} forecasts={forecasts} onEdit={() => setEditing(true)} />
             {forecastState === "error" && (
               <p className="px-4 pt-3 text-[14px] text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>

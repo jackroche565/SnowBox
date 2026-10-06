@@ -24,6 +24,8 @@ export type Resort = {
   websiteUrl?: string;
   /** Projected opening day this season (YYYY-MM-DD), from OnTheSnow. Not official; update each fall. */
   opensOn?: string;
+  /** Weather service office (e.g. "BTV") and the forecast zone and county the mountain sits in. */
+  nws?: { office: string; zone: string; county: string };
   /** Fields whose values are estimates or conflict between sources (or, for URLs, not a dedicated page). */
   estimates?: (keyof Resort)[];
 };
