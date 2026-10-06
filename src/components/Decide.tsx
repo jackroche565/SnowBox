@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { onMyPasses, useAppState } from "@/components/AppState";
 import { WindIcon } from "@/components/Icons";
 import LocationSearch from "@/components/LocationSearch";
 import PassPicker from "@/components/PassPicker";
 import SiteHeader from "@/components/SiteHeader";
 import { formatDrive, rankDay, type Pick } from "@/lib/decide";
+import { DEMO_PEAK_DAY, demoForecasts } from "@/lib/demo";
 import { formatDay, formatInches } from "@/lib/format";
 import { POWDER_INCHES } from "@/lib/outlook";
 import { WIND_HOLD_MPH } from "@/lib/resortForecast";
@@ -163,9 +164,10 @@ function Settings() {
   );
 }
 
-export default function Decide() {
-  const { forecasts, forecastState, origin, myPasses, savedListsReady } = useAppState();
-  const [dayIndex, setDayIndex] = useState(0);
+export default function Decide({ demo = false }: { demo?: boolean }) {
+  const { forecasts: real, forecastState, origin, myPasses, savedListsReady } = useAppState();
+  const forecasts = useMemo(() => (demo && real ? demoForecasts(real, resorts) : real), [demo, real]);
+  const [dayIndex, setDayIndex] = useState(demo ? DEMO_PEAK_DAY : 0);
 
   const days = forecasts ? (Object.values(forecasts)[0]?.upcoming ?? []) : [];
   const day = days[dayIndex];
@@ -196,6 +198,15 @@ export default function Decide() {
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col pb-10">
         <h1 className="sr-only">Where to ski</h1>
 
+        {demo && (
+          <p className="border-b border-ink bg-ink px-4 py-2.5 text-[14px] text-snow">
+            <span className="font-semibold">Demo:</span> a made-up storm in January, not a forecast.{" "}
+            <Link href="/decide" className="underline underline-offset-2">
+              Leave demo
+            </Link>
+          </p>
+        )}
+
         {days.length > 0 && <DayStrip days={strip} value={dayIndex} onChange={setDayIndex} />}
 
         {savedListsReady && !origin && <Setup />}
@@ -219,6 +230,14 @@ export default function Decide() {
                   {firstToOpen ? `Nothing's open yet ${dayIndex > 1 ? "on " : ""}${dayName}.` : `No open mountains ${dayName}.`}
                 </span>
                 {firstToOpen?.opensOn && ` ${firstToOpen.name} is projected to open first, on ${formatOpening(firstToOpen.opensOn)}.`}
+                {firstToOpen && !demo && (
+                  <>
+                    {" "}
+                    <Link href="/decide?demo=1" className="font-semibold underline underline-offset-4">
+                      Try it with a sample storm
+                    </Link>
+                  </>
+                )}
               </p>
             )}
           </div>
