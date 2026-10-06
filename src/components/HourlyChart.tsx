@@ -22,7 +22,14 @@ function dayLabel(time: string, index: number): string | null {
 }
 
 /** Hour-by-hour (in 3-hour blocks) snow, precipitation type, temperature and wind for one elevation. */
-export default function HourlyChart({ blocks }: { blocks: Block[] }) {
+export default function HourlyChart({
+  blocks,
+  isOpen,
+}: {
+  blocks: Block[];
+  /** Whether lifts run on a date: no wind holds before opening day. */
+  isOpen: (date: string) => boolean;
+}) {
   const [active, setActive] = useState<number | null>(null);
   const columns = { gridTemplateColumns: `repeat(${blocks.length}, minmax(0, 1fr))` };
   const snowMax = Math.max(MIN_SCALE_INCHES, ...blocks.map((b) => b.snowIn));
@@ -103,7 +110,7 @@ export default function HourlyChart({ blocks }: { blocks: Block[] }) {
       <div className="mt-1 grid" style={columns} aria-hidden="true">
         {blocks.map((b) => (
           <span key={b.start} className="flex h-4 justify-center">
-            {b.gustMph != null && b.gustMph >= WIND_HOLD_MPH && <WindIcon className="h-3.5 w-3.5 text-barn" />}
+            {isOpen(b.start.slice(0, 10)) && b.gustMph != null && b.gustMph >= WIND_HOLD_MPH && <WindIcon className="h-3.5 w-3.5 text-barn" />}
           </span>
         ))}
       </div>
@@ -154,7 +161,7 @@ export default function HourlyChart({ blocks }: { blocks: Block[] }) {
   );
 }
 
-export function HourlyLegend() {
+export function HourlyLegend({ windHolds }: { windHolds: boolean }) {
   return (
     <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-muted">
       {(["snow", "mix", "rain"] as const).map((k) => (
@@ -167,10 +174,12 @@ export function HourlyLegend() {
         <span className="h-0.5 w-3 bg-alpenglow" />
         Temperature
       </li>
-      <li className="flex items-center gap-1.5">
-        <WindIcon className="h-3.5 w-3.5 text-barn" />
-        Gusts {WIND_HOLD_MPH}+ mph (lift holds possible)
-      </li>
+      {windHolds && (
+        <li className="flex items-center gap-1.5">
+          <WindIcon className="h-3.5 w-3.5 text-barn" />
+          Gusts {WIND_HOLD_MPH}+ mph (lift holds possible)
+        </li>
+      )}
     </ul>
   );
 }

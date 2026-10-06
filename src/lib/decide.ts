@@ -4,6 +4,7 @@ import type { LatLon } from "@/lib/geo";
 import { distanceMiles } from "@/lib/geo";
 import type { Resort } from "@/lib/resorts";
 import { WIND_HOLD_MPH } from "@/lib/resortForecast";
+import { isOpenOn } from "@/lib/season";
 
 // Ranks resorts for one day. Every weight is here in plain sight so it's easy to tune,
 // and the page shows the raw numbers next to every rank.
@@ -46,6 +47,8 @@ export type Pick = {
   priorIn: number;
   rainIn: number;
   gustMph: number | null;
+  /** Whether the mountain is expected to be open that day (see season.ts). */
+  open: boolean;
   driveHours: number | null;
   score: number;
   reasons: Reason[];
@@ -62,7 +65,9 @@ export function scoreDay(resort: Resort, forecast: ResortForecast, dayIndex: num
   const priorIn = timeline.slice(Math.max(0, at - 2), at).reduce((t, d) => t + (d.snowIn ?? 0), 0);
   const rainIn = day.rainIn ?? 0;
   const gustMph = day.gustMph;
-  const windy = gustMph != null && gustMph >= WIND_HOLD_MPH;
+  const open = isOpenOn(resort, day.date);
+  // Wind only matters once lifts are running.
+  const windy = open && gustMph != null && gustMph >= WIND_HOLD_MPH;
   const driveHours = origin ? estimateDriveHours(origin, resort) : null;
 
   const score =
@@ -77,7 +82,7 @@ export function scoreDay(resort: Resort, forecast: ResortForecast, dayIndex: num
   if (rainIn >= 0.05) reasons.push({ text: `${rainIn.toFixed(2)}" rain`, tone: "bad" });
   if (windy) reasons.push({ text: `Gusts ${Math.round(gustMph)} mph, lift holds possible`, tone: "bad" });
 
-  return { resort, day, snowIn, priorIn, rainIn, gustMph, driveHours, score, reasons };
+  return { resort, day, snowIn, priorIn, rainIn, gustMph, open, driveHours, score, reasons };
 }
 
 export type RankBy = "overall" | "snow" | "closest";
@@ -111,7 +116,7 @@ export function rankDay(
     .flatMap((resort) => {
       const forecast = forecasts[resort.id];
       const pick = forecast && scoreDay(resort, forecast, dayIndex, origin);
-      if (!pick) return [];
+      if (!pick || !pick.open) return [];
       if (maxDriveHours != null && pick.driveHours != null && pick.driveHours > maxDriveHours) return [];
       return [pick];
     })

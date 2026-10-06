@@ -12,6 +12,7 @@ import { RANK_BY, formatDrive, rankDay, scoreDay, type Pick, type RankBy } from 
 import type { DailyForecast } from "@/lib/forecast";
 import { formatDay, formatFeet, formatInches, formatTemp } from "@/lib/format";
 import { getResort, isEstimate, resortPath, resorts } from "@/lib/resorts";
+import { formatOpening, isOpenOn, openingDate } from "@/lib/season";
 
 type MaxDrive = "any" | "1" | "2" | "3" | "4";
 
@@ -251,9 +252,16 @@ export default function Decide() {
   const days = forecasts ? (Object.values(forecasts)[0]?.upcoming ?? []) : [];
   const day = days[dayIndex];
   const maxHours = origin && maxDrive !== "any" ? Number(maxDrive) : null;
-  const picks = forecasts
-    ? rankDay(resorts.filter((r) => onMyPasses(r.passes, myPasses)), forecasts, dayIndex, origin, maxHours, rankBy)
-    : [];
+  const mine = resorts.filter((r) => onMyPasses(r.passes, myPasses));
+  const picks = forecasts ? rankDay(mine, forecasts, dayIndex, origin, maxHours, rankBy) : [];
+  // Before the season, say who opens first instead of showing an empty list.
+  const firstToOpen =
+    day && !mine.some((r) => isOpenOn(r, day.date))
+      ? mine.reduce<(typeof mine)[number] | null>(
+          (first, r) => (!first || openingDate(r, day.date) < openingDate(first, day.date) ? r : first),
+          null,
+        )
+      : null;
   const anySnow = picks.some((p) => p.snowIn >= 0.1);
 
   // Picked resorts stay in the head-to-head even if the filters above hide them from the list.
@@ -337,6 +345,17 @@ export default function Decide() {
                   <ResultRow key={p.resort.id} pick={p} rank={i + 1} highlight={i === 0 && p.snowIn >= 0.1} />
                 ))}
               </ol>
+            ) : firstToOpen ? (
+              <p className="sheet p-4 text-sm text-ink-muted">
+                {myPasses.length ? "None of your mountains are" : "No mountains are"} open yet {dayIndex > 1 && "on "}
+                {longDay(day.date, dayIndex)}.{" "}
+                {firstToOpen.opensOn && (
+                  <>
+                    <span className="font-semibold text-ink">{firstToOpen.name}</span> is projected to open first, on{" "}
+                    {formatOpening(firstToOpen.opensOn)}.
+                  </>
+                )}
+              </p>
             ) : (
               <p className="sheet p-4 text-sm text-ink-muted">
                 No resorts within {maxDrive} hr{maxDrive === "1" ? "" : "s"} on {myPasses.length ? "your passes" : "any pass"}. Try a
@@ -352,7 +371,7 @@ export default function Decide() {
         <p className="px-2 text-xs text-ink-faint">
           Drive times are estimated from distance and don&apos;t include traffic. Best overall: new snow on the day
           counts most, snow in the 2 days before adds half as much, and rain, gusts of 40+ mph and each hour of
-          driving count against. Forecasts from{" "}
+          driving count against. Only mountains projected to be open that day are ranked. Forecasts from{" "}
           <a className="underline" href="https://open-meteo.com/">
             Open-Meteo
           </a>

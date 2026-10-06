@@ -13,17 +13,23 @@ import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
 import SnowStake from "@/components/SnowStake";
 import { sum, type DailyForecast, type ResortForecast } from "@/lib/forecast";
-import { formatDay, formatFeet, formatInches, formatTemp } from "@/lib/format";
+import { formatDay, formatFeet, formatHour, formatInches, formatTemp } from "@/lib/format";
 import { POWDER_INCHES, last48In } from "@/lib/outlook";
 import {
+  FIRST_CHAIR_HOUR,
   MODELS,
   WIND_HOLD_MPH,
+  nextStorm,
+  refreeze,
   snowLine,
+  snowQuality,
   toBlocks,
   type ResortDetailForecast,
   type SnowLine,
+  type SnowQuality,
 } from "@/lib/resortForecast";
 import { isEstimate, type Resort } from "@/lib/resorts";
+import { formatOpening, isOpenOn, openingDate } from "@/lib/season";
 import { TERRAIN_CREDIT } from "@/lib/terrain";
 import { US_STATES } from "@/lib/usStates";
 
@@ -67,8 +73,13 @@ function Figure({
   hint?: string;
 }) {
   return (
-    <div className="flex items-end gap-2.5">
-      {stake !== undefined && <SnowStake inches={stake} height={44} />}
+    <div className="flex items-start gap-2.5">
+      {/* Level with the figure, not the label, so a line underneath doesn't move it. */}
+      {stake !== undefined && (
+        <span className="mt-2.5">
+          <SnowStake inches={stake} height={44} />
+        </span>
+      )}
       <div className="min-w-0">
         <dt className="text-xs text-ink-muted" title={hint}>
           {label}
@@ -117,13 +128,89 @@ const SNOW_LINE: Record<SnowLine, { text: string; tint: string; icon: string }> 
   dry: { text: "dry", tint: "bg-chip", icon: "text-ink-faint" },
 };
 
+const QUALITY: Record<SnowQuality, string> = {
+  dry: "light, dry snow",
+  medium: "medium-weight snow",
+  wet: "heavy, wet snow",
+};
+
+/** "Thu 4pm", or "Today 4pm". */
+function formatWhen(time: string, today: string): string {
+  const date = time.slice(0, 10);
+  return `${date === today ? "Today" : formatDay(date, 1)} ${formatHour(time)}`;
+}
+
+/**
+ * The next 72 hours in one line: a refreeze, the next storm (when, how much, how dense), or
+ * otherwise where the rain/snow line sits.
+ */
+function NextUp({ detail, today }: { detail: ResortDetailForecast; today: string }) {
+  const storm = nextStorm(detail.summit.hours);
+  const crust = refreeze(detail.base.hours) ?? refreeze(detail.summit.hours);
+  const line = snowLine(detail.summit, detail.base);
+
+  if (crust && (!storm || crust.wetAt < storm.start)) {
+    return (
+      <Pill tint="bg-[#f7ebe6]" icon="text-barn">
+        <span className="text-ink-muted">Rain {formatWhen(crust.wetAt, today)}, then {formatTemp(crust.lowF)}:</span>{" "}
+        <span className="font-semibold">expect firm, icy snow</span>
+      </Pill>
+    );
+  }
+  if (storm) {
+    const quality = snowQuality(storm.tempF);
+    const endHour = Number(storm.end.slice(11, 13));
+    const details = [
+      quality && QUALITY[quality],
+      endHour < FIRST_CHAIR_HOUR && "ends before the lifts open",
+      line === "rain-below" && "rain at the base",
+    ].filter(Boolean);
+    return (
+      <Pill tint="bg-ice" icon="text-glacier">
+        <span className="font-semibold">
+          {formatInches(storm.snowIn)} {formatWhen(storm.start, today)} – {formatWhen(storm.end, today)}
+        </span>
+        {details.length > 0 && (
+          <span className="block text-ink-muted" title="Snow density is estimated from the temperature while it falls.">
+            {details.join(" · ").replace(/^./, (c) => c.toUpperCase())}
+          </span>
+        )}
+      </Pill>
+    );
+  }
+  const { text, tint, icon } = SNOW_LINE[line];
+  return (
+    <Pill tint={tint} icon={icon}>
+      <span className="text-ink-muted">Next 72 hours:</span> <span className="font-semibold">{text}</span>
+    </Pill>
+  );
+}
+
+function Pill({ tint, icon, children }: { tint: string; icon: string; children: ReactNode }) {
+  return (
+    <p className={`mt-4 flex items-start gap-2 rounded-[10px] px-3 py-[9px] text-[13px] ${tint}`}>
+      <SnowflakeIcon className={`mt-[3px] h-3.5 w-3.5 shrink-0 ${icon}`} />
+      <span>{children}</span>
+    </p>
+  );
+}
+
+/** "Last snow 4 days ago", from the past week's daily totals. */
+function lastSnow(forecast: ResortForecast): string {
+  const i = forecast.past.findLastIndex((d) => (d.snowIn ?? 0) >= 1);
+  if (i === -1) return `No snow in ${forecast.past.length} days`;
+  return `Last snow ${forecast.past.length - i} days ago`;
+}
+
 // ── Sections ──────────────────────────────────────────────────────────
 
 function Conditions({ resort, forecast, detail }: { resort: Resort; forecast: ResortForecast; detail: DetailState }) {
   const gust = forecast.upcoming[0]?.gustMph ?? null;
   const report = resort.snowReportUrl ?? resort.websiteUrl;
-  const line = detail.data && SNOW_LINE[snowLine(detail.data.summit, detail.data.base)];
   const fresh = last48In(forecast);
+  const today = forecast.upcoming[0]?.date;
+  // Before the season, when it opens matters more than wind on idle lifts.
+  const preseason = today !== undefined && !isOpenOn(resort, today);
 
   return (
     <Sheet
@@ -137,8 +224,14 @@ function Conditions({ resort, forecast, detail }: { resort: Resort; forecast: Re
         </span>
       }
     >
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-[18px]">
-        <Figure label="Last 48 hrs" value={formatInches(fresh)} stake={fresh} zero={fresh < 0.1} />
+      <dl className="grid grid-cols-2 items-start gap-x-4 gap-y-[18px]">
+        <Figure
+          label="Last 48 hrs"
+          value={formatInches(fresh)}
+          stake={fresh}
+          zero={fresh < 0.1}
+          sub={fresh < 1 ? <span className="text-ink-muted">{lastSnow(forecast)}</span> : undefined}
+        />
         <Figure label="Next 3 days" value={formatInches(forecast.next3In)} stake={forecast.next3In} zero={forecast.next3In < 0.1} />
         <Figure
           label="Base"
@@ -148,22 +241,25 @@ function Conditions({ resort, forecast, detail }: { resort: Resort; forecast: Re
           stake={forecast.snowDepthIn ?? 0}
           zero={(forecast.snowDepthIn ?? 0) < 0.1}
         />
-        <Figure
-          label="Wind today"
-          value={gust == null ? "—" : Math.round(gust)}
-          unit="mph gusts"
-          sub={gust != null && gust >= WIND_HOLD_MPH ? <span className="font-semibold text-barn">Lift holds possible</span> : undefined}
-        />
+        {preseason ? (
+          <Figure
+            label="Opens"
+            value={resort.opensOn ? formatOpening(openingDate(resort, today)) : "—"}
+            unit={resort.opensOn ? "projected" : undefined}
+            hint={resort.opensOn ? "Projected by OnTheSnow. Openings depend on snow and cold for snowmaking." : undefined}
+            sub={resort.opensOn ? undefined : <span className="text-ink-muted">Date not announced</span>}
+          />
+        ) : (
+          <Figure
+            label="Wind today"
+            value={gust == null ? "—" : Math.round(gust)}
+            unit="mph gusts"
+            sub={gust != null && gust >= WIND_HOLD_MPH ? <span className="font-semibold text-barn">Lift holds possible</span> : undefined}
+          />
+        )}
       </dl>
 
-      {line && (
-        <p className={`mt-4 flex items-center gap-2 rounded-[10px] px-3 py-[9px] text-[13px] ${line.tint}`}>
-          <SnowflakeIcon className={`h-3.5 w-3.5 shrink-0 ${line.icon}`} />
-          <span>
-            <span className="text-ink-muted">Next 72 hours:</span> <span className="font-semibold">{line.text}</span>
-          </span>
-        </p>
-      )}
+      {detail.data && today && <NextUp detail={detail.data} today={today} />}
 
       {report && (
         <a
@@ -186,10 +282,10 @@ function Conditions({ resort, forecast, detail }: { resort: Resort; forecast: Re
   );
 }
 
-function DayRow({ day, index }: { day: DailyForecast; index: number }) {
+function DayRow({ day, index, open }: { day: DailyForecast; index: number; open: boolean }) {
   const snow = day.snowIn ?? 0;
   const rain = day.rainIn ?? 0;
-  const windy = day.gustMph != null && day.gustMph >= WIND_HOLD_MPH;
+  const windy = open && day.gustMph != null && day.gustMph >= WIND_HOLD_MPH;
   return (
     <li className="grid grid-cols-[52px_minmax(0,1fr)_76px_50px] items-center gap-2 border-t border-hairline py-2.5 text-sm tabular-nums">
       <span className="font-semibold">{formatDay(day.date, index)}</span>
@@ -209,7 +305,7 @@ function DayRow({ day, index }: { day: DailyForecast; index: number }) {
   );
 }
 
-function Forecast({ forecast, detail }: { forecast: ResortForecast; detail: DetailState }) {
+function Forecast({ resort, forecast, detail }: { resort: Resort; forecast: ResortForecast; detail: DetailState }) {
   // Week two: one line, with whether the three models agree.
   const late = detail.data?.models.slice(7) ?? [];
   const totals = MODELS.map((m) => sum(late.map((d) => d.byModel[m.id])));
@@ -219,7 +315,7 @@ function Forecast({ forecast, detail }: { forecast: ResortForecast; detail: Deta
     <Sheet label="Next 7 days">
       <ul className="-mt-1.5">
         {forecast.upcoming.map((d, i) => (
-          <DayRow key={d.date} day={d} index={i} />
+          <DayRow key={d.date} day={d} index={i} open={isOpenOn(resort, d.date)} />
         ))}
       </ul>
       <p className="border-t border-hairline pt-2.5 text-[13px] text-ink-muted">
@@ -257,10 +353,10 @@ function HourByHour({ resort, detail }: { resort: Resort; detail: DetailState })
               ]}
             />
             <div className="mt-4">
-              <HourlyChart blocks={toBlocks(detail.data[elevation].hours)} />
+              <HourlyChart blocks={toBlocks(detail.data[elevation].hours)} isOpen={(date) => isOpenOn(resort, date)} />
             </div>
             <div className="mt-3">
-              <HourlyLegend />
+              <HourlyLegend windHolds={detail.data.summit.hours.some((h) => isOpenOn(resort, h.time.slice(0, 10)))} />
             </div>
           </>
         ) : (
@@ -415,7 +511,7 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
         {forecast ? (
           <>
             <Conditions resort={resort} forecast={forecast} detail={detail} />
-            <Forecast forecast={forecast} detail={detail} />
+            <Forecast resort={resort} forecast={forecast} detail={detail} />
           </>
         ) : (
           <div className="sheet p-[18px]">

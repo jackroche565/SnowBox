@@ -205,6 +205,92 @@ export function toBlocks(hours: HourlyPoint[], size = 3): Block[] {
   return blocks;
 }
 
+// ── Snow quality and timing ─────────────────────────────────────────────
+
+/** An hour with at least this much snow counts as snowing. */
+const SNOWING_IN = 0.05;
+/** A dry spell longer than this ends one storm. */
+const STORM_GAP_HOURS = 3;
+/** Snow ending by this hour has been groomed or skied first thing (lifts open around 8–9am). */
+export const FIRST_CHAIR_HOUR = 8;
+
+export type Storm = {
+  /** First and last snowing hours, local YYYY-MM-DDTHH:mm. */
+  start: string;
+  end: string;
+  snowIn: number;
+  /** Average temperature while it snows, weighted by how much falls each hour. */
+  tempF: number | null;
+};
+
+/** The first stretch of snow in the hourly forecast that adds up to at least `minIn`. */
+export function nextStorm(hours: HourlyPoint[], minIn = 1): Storm | null {
+  let run: HourlyPoint[] = [];
+  let gap = 0;
+  const finish = (): Storm | null => {
+    const total = sum(run.map((h) => h.snowIn));
+    if (total < minIn) return null;
+    const warm = run.filter((h) => h.tempF != null);
+    const weight = sum(warm.map((h) => h.snowIn));
+    return {
+      start: run[0].time,
+      end: run[run.length - 1].time,
+      snowIn: total,
+      tempF: weight > 0 ? sum(warm.map((h) => h.tempF! * h.snowIn)) / weight : null,
+    };
+  };
+  for (const h of hours) {
+    if (h.snowIn >= SNOWING_IN) {
+      run.push(h);
+      gap = 0;
+    } else if (run.length && ++gap > STORM_GAP_HOURS) {
+      const storm = finish();
+      if (storm) return storm;
+      run = [];
+      gap = 0;
+    }
+  }
+  return run.length ? finish() : null;
+}
+
+export type SnowQuality = "dry" | "medium" | "wet";
+
+/** Colder snow is lighter: roughly 15:1 snow to water when cold, nearer 8:1 near freezing. An estimate. */
+export function snowQuality(tempF: number | null): SnowQuality | null {
+  if (tempF == null) return null;
+  if (tempF <= 18) return "dry";
+  if (tempF <= 27) return "medium";
+  return "wet";
+}
+
+/** Below this, wet snow freezes solid. */
+export const HARD_FREEZE_F = 28;
+
+/** This much new snow on top covers a refrozen crust. */
+const COVERS_CRUST_IN = 2;
+
+/**
+ * Rain or mix followed within a day by a hard freeze, with no real snow on top: the surface
+ * sets up firm. Returns the first such rain and how cold it gets after.
+ */
+export function refreeze(hours: HourlyPoint[]): { wetAt: string; lowF: number } | null {
+  for (let i = 0; i < hours.length; i++) {
+    const h = hours[i];
+    if ((h.kind !== "rain" && h.kind !== "mix") || h.precipIn < 0.02) continue;
+    // The end of this wet spell, then the day after it.
+    let end = i;
+    while (end + 1 < hours.length && hours[end + 1].kind !== "none" && hours[end + 1].kind !== "snow") end++;
+    const after = hours.slice(end + 1, end + 25);
+    const temps = after.map((x) => x.tempF).filter((t): t is number => t != null);
+    const lowF = temps.length ? Math.min(...temps) : null;
+    if (lowF != null && lowF <= HARD_FREEZE_F && sum(after.map((x) => x.snowIn)) < COVERS_CRUST_IN) {
+      return { wetAt: h.time, lowF };
+    }
+    i = end;
+  }
+  return null;
+}
+
 export type SnowLine = "all-snow" | "rain-below" | "all-rain" | "dry";
 
 /** Where precipitation turns to snow over the next 72 hours, summit vs base. */

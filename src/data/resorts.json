@@ -32,6 +32,7 @@
     "trailMapUrl": "https://www.boltonvalley.com/winter/trail-maps-snow-reports/",
     "snowReportUrl": "https://www.boltonvalley.com/winter/trail-maps-snow-reports/snow-reports/",
     "webcamUrl": "https://www.boltonvalley.com/the-resort/live-webcams/",
+    "opensOn": "2026-11-21",
     "estimates": [
       "verticalFt"
     ]
@@ -47,6 +48,7 @@
     "baseFt": 1980,
     "verticalFt": 1290,
     "websiteUrl": "https://www.bromley.com/",
+    "opensOn": "2026-11-27",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -66,6 +68,7 @@
     "baseFt": 1220,
     "verticalFt": 1990,
     "websiteUrl": "https://www.skiburke.com/",
+    "opensOn": "2026-12-05",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -104,7 +107,8 @@
     "trails": 81,
     "trailMapUrl": "https://jaypeakresort.com/skiing-riding/snow-report-maps/trail-map",
     "snowReportUrl": "https://jaypeakresort.com/skiing-riding/snow-report-maps/snow-report",
-    "webcamUrl": "https://jaypeakresort.com/resort/photo-day"
+    "webcamUrl": "https://jaypeakresort.com/resort/photo-day",
+    "opensOn": "2026-11-22"
   },
   {
     "id": "killington",
@@ -121,7 +125,8 @@
     "trails": 155,
     "trailMapUrl": "https://www.killington.com/the-mountain/trail-area-maps/winter-trail-guide/",
     "snowReportUrl": "https://www.killington.com/mountain-report",
-    "webcamUrl": "https://www.killington.com/the-mountain/conditions-weather/webcam/"
+    "webcamUrl": "https://www.killington.com/the-mountain/conditions-weather/webcam/",
+    "opensOn": "2026-11-11"
   },
   {
     "id": "lyndon-outing-club",
@@ -151,6 +156,7 @@
     "baseFt": 1650,
     "verticalFt": 1980,
     "websiteUrl": "https://www.madriverglen.com",
+    "opensOn": "2026-12-12",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -173,6 +179,7 @@
     "trailMapUrl": "https://www.magicmtn.com/trail-map",
     "snowReportUrl": "https://www.magicmtn.com/snow-report",
     "webcamUrl": "https://www.magicmtn.com/snow-report",
+    "opensOn": "2026-12-05",
     "estimates": [
       "trails",
       "webcamUrl"
@@ -212,7 +219,8 @@
     "trails": 86,
     "trailMapUrl": "https://www.mountsnow.com/the-mountain/about-the-mountain/trail-maps.aspx",
     "snowReportUrl": "https://www.mountsnow.com/the-mountain/mountain-conditions/weather-report.aspx",
-    "webcamUrl": "https://www.mountsnow.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+    "webcamUrl": "https://www.mountsnow.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "opensOn": "2026-11-21"
   },
   {
     "id": "northeast-slopes",
@@ -246,7 +254,8 @@
     "trails": 123,
     "trailMapUrl": "https://www.okemo.com/the-mountain/about-the-mountain/trail-maps.aspx",
     "snowReportUrl": "https://www.okemo.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
-    "webcamUrl": "https://www.okemo.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+    "webcamUrl": "https://www.okemo.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "opensOn": "2026-11-20"
   },
   {
     "id": "pico",
@@ -261,6 +270,7 @@
     "baseFt": 2000,
     "verticalFt": 1930,
     "websiteUrl": "https://www.picomountain.com/",
+    "opensOn": "2026-12-11",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -280,6 +290,7 @@
     "baseFt": 730,
     "verticalFt": 620,
     "websiteUrl": "https://www.saskadenasix.com",
+    "opensOn": "2026-12-19",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -299,6 +310,7 @@
     "baseFt": 1110,
     "verticalFt": 2540,
     "websiteUrl": "https://www.smuggs.com/",
+    "opensOn": "2026-11-27",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -321,6 +333,7 @@
     "trailMapUrl": "https://www.stowe.com/the-mountain/about-the-mountain/trail-maps.aspx",
     "snowReportUrl": "https://www.stowe.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
     "webcamUrl": "https://www.stowe.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "opensOn": "2026-11-20",
     "estimates": [
       "summitFt",
       "baseFt"
@@ -341,7 +354,8 @@
     "trails": 99,
     "trailMapUrl": "https://www.stratton.com/the-mountain/interactive-trail-map",
     "snowReportUrl": "https://www.stratton.com/the-mountain/mountain-report",
-    "webcamUrl": "https://www.stratton.com/the-mountain/webcams"
+    "webcamUrl": "https://www.stratton.com/the-mountain/webcams",
+    "opensOn": "2026-11-18"
   },
   {
     "id": "sugarbush",
@@ -359,6 +373,7 @@
     "trailMapUrl": "https://www.sugarbush.com/mountain",
     "snowReportUrl": "https://www.sugarbush.com/mountain/conditions",
     "webcamUrl": "https://www.sugarbush.com/mountain/webcams",
+    "opensOn": "2026-11-21",
     "estimates": [
       "trailMapUrl"
     ]
@@ -411,7 +426,8 @@
     "trails": 68,
     "trailMapUrl": "https://www.attitash.com/the-mountain/about-the-mountain/trail-map.aspx",
     "snowReportUrl": "https://www.attitash.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
-    "webcamUrl": "https://www.attitash.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+    "webcamUrl": "https://www.attitash.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "opensOn": "2026-12-04"
   },
   {
     "id": "black-mountain-nh",
@@ -429,6 +445,7 @@
     "trailMapUrl": "https://www.blackmt.com/trail-map",
     "snowReportUrl": "https://www.blackmt.com/conditions",
     "webcamUrl": "https://www.blackmt.com/conditions",
+    "opensOn": "2026-11-15",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -448,7 +465,8 @@
     "trails": 100,
     "trailMapUrl": "https://www.brettonwoods.com/plan-visit/maps/",
     "snowReportUrl": "https://www.brettonwoods.com/snow-trail-report/",
-    "webcamUrl": "https://www.brettonwoods.com/live-cam-forecast/"
+    "webcamUrl": "https://www.brettonwoods.com/live-cam-forecast/",
+    "opensOn": "2026-11-14"
   },
   {
     "id": "campton",
@@ -480,6 +498,7 @@
     "baseFt": 1880,
     "verticalFt": 2150,
     "websiteUrl": "https://www.cannonmt.com/",
+    "opensOn": "2026-11-27",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -497,6 +516,7 @@
     "baseFt": 550,
     "verticalFt": 1130,
     "websiteUrl": "https://www.cranmore.com/",
+    "opensOn": "2026-12-04",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -516,6 +536,7 @@
     "baseFt": 1040,
     "verticalFt": 880,
     "websiteUrl": "https://www.crotchedmtn.com/",
+    "opensOn": "2026-12-11",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -535,6 +556,7 @@
     "baseFt": 920,
     "verticalFt": 980,
     "websiteUrl": "http://skiway.dartmouth.edu/",
+    "opensOn": "2026-12-18",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -569,6 +591,7 @@
     "baseFt": 940,
     "verticalFt": 1300,
     "websiteUrl": "https://www.gunstock.com/",
+    "opensOn": "2026-12-04",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -588,6 +611,7 @@
     "baseFt": 470,
     "verticalFt": 330,
     "websiteUrl": "https://www.kingpine.com",
+    "opensOn": "2026-12-11",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -610,6 +634,7 @@
     "trailMapUrl": "https://www.loonmtn.com/mountain-maps",
     "snowReportUrl": "https://www.loonmtn.com/mountain-report",
     "webcamUrl": "https://www.loonmtn.com/explore/snow-conditions/webcams",
+    "opensOn": "2026-11-20",
     "estimates": [
       "baseFt",
       "verticalFt"
@@ -649,7 +674,8 @@
     "trails": 66,
     "trailMapUrl": "https://www.mountsunapee.com/the-mountain/about-the-mountain/trail-maps.aspx",
     "snowReportUrl": "https://www.mountsunapee.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
-    "webcamUrl": "https://www.mountsunapee.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+    "webcamUrl": "https://www.mountsunapee.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "opensOn": "2026-12-04"
   },
   {
     "id": "pats-peak",
@@ -664,6 +690,7 @@
     "baseFt": 580,
     "verticalFt": 770,
     "websiteUrl": "https://www.patspeak.com/",
+    "opensOn": "2026-12-05",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -683,6 +710,7 @@
     "baseFt": 1100,
     "verticalFt": 1100,
     "websiteUrl": "https://www.raggedmountainresort.com/",
+    "opensOn": "2026-12-04",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -702,6 +730,7 @@
     "baseFt": 740,
     "verticalFt": 1410,
     "websiteUrl": "https://www.skitenney.com/",
+    "opensOn": "2026-12-05",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -740,6 +769,7 @@
     "baseFt": 1820,
     "verticalFt": 2000,
     "websiteUrl": "https://www.waterville.com/",
+    "opensOn": "2026-11-28",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -759,6 +789,7 @@
     "baseFt": 1140,
     "verticalFt": 650,
     "websiteUrl": "https://www.whaleback.com/",
+    "opensOn": "2026-12-26",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -780,7 +811,8 @@
     "trails": 49,
     "trailMapUrl": "https://www.skiwildcat.com/the-mountain/about-the-mountain/trail-map.aspx",
     "snowReportUrl": "https://www.skiwildcat.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
-    "webcamUrl": "https://www.skiwildcat.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+    "webcamUrl": "https://www.skiwildcat.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "opensOn": "2026-12-02"
   },
   {
     "id": "baker-mountain",
@@ -812,6 +844,7 @@
     "baseFt": 1320,
     "verticalFt": 580,
     "websiteUrl": "https://skibigmoose.com/",
+    "opensOn": "2026-12-26",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -886,6 +919,7 @@
     "baseFt": 180,
     "verticalFt": 270,
     "websiteUrl": "https://skihermonmountain.com/",
+    "opensOn": "2026-12-18",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -922,6 +956,7 @@
     "baseFt": 250,
     "verticalFt": 230,
     "websiteUrl": "https://www.lostvalleyski.com/",
+    "opensOn": "2026-12-05",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -941,6 +976,7 @@
     "baseFt": 950,
     "verticalFt": 1040,
     "websiteUrl": "https://www.mtabram.com/",
+    "opensOn": "2026-12-19",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -958,6 +994,7 @@
     "baseFt": 410,
     "verticalFt": 340,
     "websiteUrl": "https://www.facebook.com/profile.php?id=100063549221774",
+    "opensOn": "2026-12-26",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -975,6 +1012,7 @@
     "baseFt": 520,
     "verticalFt": 1250,
     "websiteUrl": "https://www.pleasantmountain.com",
+    "opensOn": "2026-12-04",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -997,6 +1035,7 @@
     "trailMapUrl": "https://www.saddlebackmaine.com/trail-maps/",
     "snowReportUrl": "https://www.saddlebackmaine.com/mountain-report/",
     "webcamUrl": "https://www.saddlebackmaine.com/webcams/",
+    "opensOn": "2026-12-04",
     "estimates": [
       "verticalFt"
     ]
@@ -1034,6 +1073,7 @@
     "trailMapUrl": "https://www.sugarloaf.com/mountain-info/mountain-maps",
     "snowReportUrl": "https://www.sugarloaf.com/mountain-report",
     "webcamUrl": "https://www.sugarloaf.com/mountain-report",
+    "opensOn": "2026-11-20",
     "estimates": [
       "webcamUrl"
     ]
@@ -1054,6 +1094,7 @@
     "trailMapUrl": "https://www.sundayriver.com/resort-maps",
     "snowReportUrl": "https://www.sundayriver.com/mountain-report",
     "webcamUrl": "https://www.sundayriver.com/mountain-report",
+    "opensOn": "2026-11-15",
     "estimates": [
       "webcamUrl"
     ]
@@ -1124,6 +1165,7 @@
     "baseFt": 1110,
     "verticalFt": 690,
     "websiteUrl": "https://bousquetmountain.com/",
+    "opensOn": "2026-12-11",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1141,6 +1183,7 @@
     "baseFt": 830,
     "verticalFt": 940,
     "websiteUrl": "https://skibutternut.com/",
+    "opensOn": "2026-12-11",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1160,6 +1203,7 @@
     "baseFt": 920,
     "verticalFt": 970,
     "websiteUrl": "https://www.catamountski.com/",
+    "opensOn": "2026-12-04",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1177,6 +1221,7 @@
     "baseFt": 1250,
     "verticalFt": 1130,
     "websiteUrl": "https://www.jiminypeak.com/",
+    "opensOn": "2026-11-27",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1194,6 +1239,7 @@
     "baseFt": 200,
     "verticalFt": 230,
     "websiteUrl": "https://www.skinashoba.com/",
+    "opensOn": "2026-12-12",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1211,6 +1257,7 @@
     "baseFt": 1240,
     "verticalFt": 320,
     "websiteUrl": "https://www.otisridge.com/",
+    "opensOn": "2026-12-18",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1245,6 +1292,7 @@
     "baseFt": 350,
     "verticalFt": 190,
     "websiteUrl": "https://skiward.com/",
+    "opensOn": "2026-11-14",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1262,6 +1310,7 @@
     "baseFt": 1030,
     "verticalFt": 940,
     "websiteUrl": "https://www.wachusett.com/",
+    "opensOn": "2026-11-21",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1281,6 +1330,7 @@
     "baseFt": 910,
     "verticalFt": 590,
     "websiteUrl": "https://www.mohawkmtn.com/",
+    "opensOn": "2026-12-18",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1298,6 +1348,7 @@
     "baseFt": 200,
     "verticalFt": 360,
     "websiteUrl": "https://mountsouthington.com/",
+    "opensOn": "2026-12-12",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1317,6 +1368,7 @@
     "baseFt": 380,
     "verticalFt": 430,
     "websiteUrl": "https://powderridgepark.com/",
+    "opensOn": "2026-12-19",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1334,6 +1386,7 @@
     "baseFt": 500,
     "verticalFt": 560,
     "websiteUrl": "https://skisundown.com",
+    "opensOn": "2026-12-04",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1351,6 +1404,7 @@
     "baseFt": 110,
     "verticalFt": 190,
     "websiteUrl": "https://yawgoo.com/",
+    "opensOn": "2026-12-12",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -1372,6 +1426,7 @@
     "trails": 67,
     "trailMapUrl": "https://www.huntermtn.com/the-mountain/about-the-mountain/trail-map.aspx",
     "snowReportUrl": "https://www.huntermtn.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
-    "webcamUrl": "https://www.huntermtn.com/the-mountain/mountain-conditions/mountain-cams.aspx"
+    "webcamUrl": "https://www.huntermtn.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "opensOn": "2026-11-21"
   }
 ]

@@ -22,6 +22,8 @@ export type Resort = {
   webcamUrl?: string;
   /** The resort's own homepage, for areas without a dedicated snow report page on file. */
   websiteUrl?: string;
+  /** Projected opening day this season (YYYY-MM-DD), from OnTheSnow. Not official; update each fall. */
+  opensOn?: string;
   /** Fields whose values are estimates or conflict between sources (or, for URLs, not a dedicated page). */
   estimates?: (keyof Resort)[];
 };
