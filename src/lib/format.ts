@@ -39,7 +39,7 @@ export function formatShortDate(date: string): string {
 
 /** Colors for what's falling. Snow uses glacier; the rest are muted so snow stays the story. */
 export const PRECIP_COLORS = {
-  snow: "#4a90b8",
+  snow: "#1f5f8b",
   mix: "#9a7fc4",
   rain: "#7a8699",
 } as const;

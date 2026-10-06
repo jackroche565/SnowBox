@@ -3,8 +3,6 @@ export type Segment<T extends string> = {
   label: string;
   disabled?: boolean;
   title?: string;
-  /** Background when selected; defaults to navy. */
-  color?: string;
 };
 
 type Props<T extends string> = {
@@ -15,14 +13,10 @@ type Props<T extends string> = {
   className?: string;
 };
 
+/** Text tabs: the selected one is ink, bold and underlined. */
 export default function SegmentedControl<T extends string>({ label, segments, value, onChange, className = "" }: Props<T>) {
   return (
-    <div
-      role="radiogroup"
-      aria-label={label}
-      className={`grid rounded-md border border-line bg-white p-0.5 ${className}`}
-      style={{ gridTemplateColumns: `repeat(${segments.length}, minmax(0, auto))` }}
-    >
+    <div role="radiogroup" aria-label={label} className={`flex gap-4 ${className}`}>
       {segments.map((segment) => {
         const checked = segment.value === value;
         return (
@@ -34,10 +28,9 @@ export default function SegmentedControl<T extends string>({ label, segments, va
             disabled={segment.disabled}
             title={segment.title}
             onClick={() => onChange(segment.value)}
-            className={`rounded px-2 py-1.5 text-xs font-medium whitespace-nowrap transition-colors sm:px-3 sm:text-sm ${
-              checked ? "text-white" : "text-ink-muted hover:text-ink disabled:opacity-40 disabled:hover:text-ink-muted"
+            className={`border-b-2 pb-1 text-[14px] whitespace-nowrap ${
+              checked ? "border-ink font-bold text-ink" : "border-transparent text-ink-muted hover:text-ink disabled:opacity-40"
             }`}
-            style={checked ? { backgroundColor: segment.color ?? "var(--navy)" } : undefined}
           >
             {segment.label}
           </button>

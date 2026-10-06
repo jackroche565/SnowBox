@@ -93,14 +93,14 @@ export default function HourlyChart({
       {/* Temperature line with the freezing mark */}
       <div className="relative mt-2" style={{ height: TEMP_HEIGHT_PX }} aria-hidden="true">
         <div className="absolute inset-x-0 border-t border-dashed border-glacier" style={{ top: `${y(32)}%` }}>
-          <span className="absolute -top-2 right-0 bg-white pl-1 text-[10px] leading-none font-semibold text-glacier">32°</span>
+          <span className="absolute -top-2 right-0 bg-snow pl-1 text-[10px] leading-none font-semibold text-glacier">32°</span>
         </div>
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full overflow-visible">
-          <polyline points={points} fill="none" stroke="var(--alpenglow)" strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
+          <polyline points={points} fill="none" stroke="var(--ink)" strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
         </svg>
         {activeBlock?.tempF != null && active !== null && (
           <span
-            className="absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-alpenglow"
+            className="absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-snow bg-ink"
             style={{ left: `${x(active)}%`, top: `${y(activeBlock.tempF)}%` }}
           />
         )}
@@ -110,7 +110,7 @@ export default function HourlyChart({
       <div className="mt-1 grid" style={columns} aria-hidden="true">
         {blocks.map((b) => (
           <span key={b.start} className="flex h-4 justify-center">
-            {isOpen(b.start.slice(0, 10)) && b.gustMph != null && b.gustMph >= WIND_HOLD_MPH && <WindIcon className="h-3.5 w-3.5 text-barn" />}
+            {isOpen(b.start.slice(0, 10)) && b.gustMph != null && b.gustMph >= WIND_HOLD_MPH && <WindIcon className="h-3.5 w-3.5 text-ink" />}
           </span>
         ))}
       </div>
@@ -171,13 +171,13 @@ export function HourlyLegend({ windHolds }: { windHolds: boolean }) {
         </li>
       ))}
       <li className="flex items-center gap-1.5">
-        <span className="h-0.5 w-3 bg-alpenglow" />
+        <span className="h-0.5 w-3 bg-ink" />
         Temperature
       </li>
       {windHolds && (
         <li className="flex items-center gap-1.5">
-          <WindIcon className="h-3.5 w-3.5 text-barn" />
-          Gusts {WIND_HOLD_MPH}+ mph (lift holds possible)
+          <WindIcon className="h-3.5 w-3.5 text-ink" />
+          Wind hold possible (gusts {WIND_HOLD_MPH}+ mph)
         </li>
       )}
     </ul>

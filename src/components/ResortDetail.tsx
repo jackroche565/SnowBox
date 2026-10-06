@@ -5,13 +5,12 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { useAppState } from "@/components/AppState";
 import CountUp from "@/components/CountUp";
-import FavoriteButton from "@/components/FavoriteButton";
 import HourlyChart, { HourlyLegend } from "@/components/HourlyChart";
-import { ExternalIcon, SnowflakeIcon, WindIcon } from "@/components/Icons";
-import PassTags from "@/components/PassTags";
+import { StarIcon, WindIcon } from "@/components/Icons";
+import { passText } from "@/components/PassTags";
 import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
-import SnowStake from "@/components/SnowStake";
+import { STAKE_INCHES } from "@/components/SnowStake";
 import { sum, type DailyForecast, type ResortForecast } from "@/lib/forecast";
 import { formatDay, formatFeet, formatHour, formatInches, formatTemp } from "@/lib/format";
 import { POWDER_INCHES, last48In } from "@/lib/outlook";
@@ -25,78 +24,37 @@ import {
   snowQuality,
   toBlocks,
   type ResortDetailForecast,
-  type SnowLine,
   type SnowQuality,
 } from "@/lib/resortForecast";
 import { isEstimate, type Resort } from "@/lib/resorts";
-import { formatOpening, isOpenOn, openingDate } from "@/lib/season";
+import { formatOpening, isOpenOn } from "@/lib/season";
 import { TERRAIN_CREDIT } from "@/lib/terrain";
 import { US_STATES } from "@/lib/usStates";
 
 // WebGL only runs in the browser, so the 3D header loads client-side.
 const TerrainHero = dynamic(() => import("@/components/TerrainHero"), { ssr: false });
 
-// One page, most-checked first: recent snow, base, the next few days, wind, and where to find
-// lifts and trails. Deeper detail (hour by hour) is folded away.
+// One page, most-checked first: the mountain, recent and coming snow, the week, then detail and
+// links. Sections sit on the snow ground, divided by ink rules.
 
 /** Total model spread over days 8–16 above this reads as "models disagree". */
 const DISAGREE_INCHES = 2;
 
-function Sheet({ label, aside, children }: { label: string; aside?: ReactNode; children: ReactNode }) {
+function Section({ label, aside, children }: { label: string; aside?: ReactNode; children: ReactNode }) {
   return (
-    <section aria-label={label} className="sheet min-w-0 p-[18px]">
-      <div className="flex items-baseline justify-between gap-2">
-        <h2 className="text-[15px] font-semibold">{label}</h2>
-        {aside}
+    <section aria-label={label} className="rule-section px-4 pt-3 pb-5">
+      <div className="flex items-baseline justify-between gap-3">
+        <h2 className="text-[13px] font-semibold">{label}</h2>
+        {aside && <span className="text-[13px] text-ink-muted tabular-nums">{aside}</span>}
       </div>
-      <div className="mt-3.5">{children}</div>
+      <div className="mt-3">{children}</div>
     </section>
-  );
-}
-
-function Figure({
-  label,
-  value,
-  unit,
-  stake,
-  zero,
-  sub,
-  hint,
-}: {
-  label: string;
-  value: ReactNode;
-  unit?: string;
-  /** Inches for a snow stake beside the figure. */
-  stake?: number;
-  zero?: boolean;
-  sub?: ReactNode;
-  hint?: string;
-}) {
-  return (
-    <div className="flex items-start gap-2.5">
-      {/* Level with the figure, not the label, so a line underneath doesn't move it. */}
-      {stake !== undefined && (
-        <span className="mt-2.5">
-          <SnowStake inches={stake} height={44} />
-        </span>
-      )}
-      <div className="min-w-0">
-        <dt className="text-xs text-ink-muted" title={hint}>
-          {label}
-        </dt>
-        <dd className={`type-figure mt-1 text-[34px] ${zero ? "text-ink-zero" : "text-ink"}`}>
-          {value}
-          {unit && <span className="ml-1 font-sans text-[11px] font-medium text-ink-faint">{unit}</span>}
-        </dd>
-        {sub && <dd className="mt-1 text-xs">{sub}</dd>}
-      </div>
-    </div>
   );
 }
 
 function Pending({ state, what = "forecast" }: { state: "loading" | "error" | "ready"; what?: string }) {
   return (
-    <p className="text-sm text-ink-muted">
+    <p className="text-[14px] text-ink-muted">
       {state === "error" ? `The ${what} is unavailable right now. Try again in a few minutes.` : `Loading ${what}…`}
     </p>
   );
@@ -121,78 +79,21 @@ function useResortDetail(id: string): DetailState {
   return state;
 }
 
-const SNOW_LINE: Record<SnowLine, { text: string; tint: string; icon: string }> = {
-  "all-snow": { text: "snow top to bottom", tint: "bg-ice", icon: "text-glacier" },
-  "rain-below": { text: "rain at the base, snow at the summit", tint: "bg-[#efeaf7]", icon: "text-[#7a62a8]" },
-  "all-rain": { text: "rain or mix up to the summit", tint: "bg-chip", icon: "text-ink-faint" },
-  dry: { text: "dry", tint: "bg-chip", icon: "text-ink-faint" },
-};
-
 const QUALITY: Record<SnowQuality, string> = {
-  dry: "light, dry snow",
-  medium: "medium-weight snow",
-  wet: "heavy, wet snow",
+  dry: "light and dry",
+  medium: "medium weight",
+  wet: "heavy and wet",
 };
 
-/** "Thu 4pm", or "Today 4pm". */
+/** "Friday" for a YYYY-MM-DD date. */
+function weekday(date: string): string {
+  return new Date(`${date}T12:00:00`).toLocaleDateString("en-US", { weekday: "long" });
+}
+
+/** "Thu 4pm", or "today 4pm". */
 function formatWhen(time: string, today: string): string {
   const date = time.slice(0, 10);
-  return `${date === today ? "Today" : formatDay(date, 1)} ${formatHour(time)}`;
-}
-
-/**
- * The next 72 hours in one line: a refreeze, the next storm (when, how much, how dense), or
- * otherwise where the rain/snow line sits.
- */
-function NextUp({ detail, today }: { detail: ResortDetailForecast; today: string }) {
-  const storm = nextStorm(detail.summit.hours);
-  const crust = refreeze(detail.base.hours) ?? refreeze(detail.summit.hours);
-  const line = snowLine(detail.summit, detail.base);
-
-  if (crust && (!storm || crust.wetAt < storm.start)) {
-    return (
-      <Pill tint="bg-[#f7ebe6]" icon="text-barn">
-        <span className="text-ink-muted">Rain {formatWhen(crust.wetAt, today)}, then {formatTemp(crust.lowF)}:</span>{" "}
-        <span className="font-semibold">expect firm, icy snow</span>
-      </Pill>
-    );
-  }
-  if (storm) {
-    const quality = snowQuality(storm.tempF);
-    const endHour = Number(storm.end.slice(11, 13));
-    const details = [
-      quality && QUALITY[quality],
-      endHour < FIRST_CHAIR_HOUR && "ends before the lifts open",
-      line === "rain-below" && "rain at the base",
-    ].filter(Boolean);
-    return (
-      <Pill tint="bg-ice" icon="text-glacier">
-        <span className="font-semibold">
-          {formatInches(storm.snowIn)} {formatWhen(storm.start, today)} – {formatWhen(storm.end, today)}
-        </span>
-        {details.length > 0 && (
-          <span className="block text-ink-muted" title="Snow density is estimated from the temperature while it falls.">
-            {details.join(" · ").replace(/^./, (c) => c.toUpperCase())}
-          </span>
-        )}
-      </Pill>
-    );
-  }
-  const { text, tint, icon } = SNOW_LINE[line];
-  return (
-    <Pill tint={tint} icon={icon}>
-      <span className="text-ink-muted">Next 72 hours:</span> <span className="font-semibold">{text}</span>
-    </Pill>
-  );
-}
-
-function Pill({ tint, icon, children }: { tint: string; icon: string; children: ReactNode }) {
-  return (
-    <p className={`mt-4 flex items-start gap-2 rounded-[10px] px-3 py-[9px] text-[13px] ${tint}`}>
-      <SnowflakeIcon className={`mt-[3px] h-3.5 w-3.5 shrink-0 ${icon}`} />
-      <span>{children}</span>
-    </p>
-  );
+  return `${date === today ? "today" : formatDay(date, 1)} ${formatHour(time)}`;
 }
 
 /** "Last snow 4 days ago", from the past week's daily totals. */
@@ -202,144 +103,281 @@ function lastSnow(forecast: ResortForecast): string {
   return `Last snow ${forecast.past.length - i} days ago`;
 }
 
-// ── Sections ──────────────────────────────────────────────────────────
+// ── The mountain ──────────────────────────────────────────────────────
 
-function Conditions({ resort, forecast, detail }: { resort: Resort; forecast: ResortForecast; detail: DetailState }) {
-  const gust = forecast.upcoming[0]?.gustMph ?? null;
-  const report = resort.snowReportUrl ?? resort.websiteUrl;
-  const fresh = last48In(forecast);
-  const today = forecast.upcoming[0]?.date;
-  // Before the season, when it opens matters more than wind on idle lifts.
-  const preseason = today !== undefined && !isOpenOn(resort, today);
-
+function SpecStrip({ resort }: { resort: Resort }) {
+  const specs = [
+    { field: "summitFt", label: "Summit", value: resort.summitFt, unit: "ft" },
+    { field: "verticalFt", label: "Vertical", value: resort.verticalFt, unit: "ft" },
+    { field: "trails", label: "Trails", value: resort.trails, unit: "" },
+    { field: "baseFt", label: "Base", value: resort.baseFt, unit: "ft" },
+  ] as const;
   return (
-    <Sheet
-      label="Conditions"
-      aside={
-        <span className="text-[13px] text-ink-muted tabular-nums">
-          Now{" "}
-          <span className="font-semibold text-ink">
-            <CountUp value={forecast.tempF} format={formatTemp} />
-          </span>
-        </span>
-      }
-    >
-      <dl className="grid grid-cols-2 items-start gap-x-4 gap-y-[18px]">
-        <Figure
-          label="Last 48 hrs"
-          value={formatInches(fresh)}
-          stake={fresh}
-          zero={fresh < 0.1}
-          sub={fresh < 1 ? <span className="text-ink-muted">{lastSnow(forecast)}</span> : undefined}
-        />
-        <Figure label="Next 3 days" value={formatInches(forecast.next3In)} stake={forecast.next3In} zero={forecast.next3In < 0.1} />
-        <Figure
-          label="Base"
-          unit="est."
-          hint="Modeled snow on the ground from Open-Meteo, not the resort's reported base depth."
-          value={<CountUp value={forecast.snowDepthIn} format={formatInches} />}
-          stake={forecast.snowDepthIn ?? 0}
-          zero={(forecast.snowDepthIn ?? 0) < 0.1}
-        />
-        {preseason ? (
-          <Figure
-            label="Opens"
-            value={resort.opensOn ? formatOpening(openingDate(resort, today)) : "—"}
-            unit={resort.opensOn ? "projected" : undefined}
-            hint={resort.opensOn ? "Projected by OnTheSnow. Openings depend on snow and cold for snowmaking." : undefined}
-            sub={resort.opensOn ? undefined : <span className="text-ink-muted">Date not announced</span>}
-          />
-        ) : (
-          <Figure
-            label="Wind today"
-            value={gust == null ? "—" : Math.round(gust)}
-            unit="mph gusts"
-            sub={gust != null && gust >= WIND_HOLD_MPH ? <span className="font-semibold text-barn">Lift holds possible</span> : undefined}
-          />
-        )}
-      </dl>
-
-      {detail.data && today && <NextUp detail={detail.data} today={today} />}
-
-      {report && (
-        <a
-          href={report}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2.5 flex items-center justify-between gap-3 rounded-xl border border-line px-3.5 py-3 hover:border-glacier"
-        >
-          <span>
-            <span className="block text-sm font-semibold">Lifts &amp; trails open</span>
-            <span className="block text-xs text-ink-faint">Reported by {resort.name}</span>
-          </span>
-          <span className="flex shrink-0 items-center gap-1 text-sm font-medium text-glacier">
-            Official report <ExternalIcon className="h-3.5 w-3.5" />
-          </span>
-          <span className="sr-only">(opens in a new tab)</span>
-        </a>
-      )}
-    </Sheet>
+    <dl className="rule-section grid grid-cols-4 border-b border-ink">
+      {specs.map((s, i) => (
+        <div key={s.field} className={`py-2.5 pr-2 ${i > 0 ? "border-l border-rule pl-2.5" : "pl-4"}`}>
+          <dt className="text-[11px] text-ink-muted">{s.label}</dt>
+          <dd className="type-figure mt-1 text-[19px]">
+            {s.value?.toLocaleString("en-US") ?? "—"}
+            {s.unit && s.value != null && <span className="ml-0.5 font-sans text-[11px] font-normal text-ink-faint">{s.unit}</span>}
+          </dd>
+          {isEstimate(resort, s.field) && <dd className="text-[11px] text-ink-faint">est.</dd>}
+        </div>
+      ))}
+    </dl>
   );
 }
 
-function DayRow({ day, index, open }: { day: DailyForecast; index: number; open: boolean }) {
-  const snow = day.snowIn ?? 0;
-  const rain = day.rainIn ?? 0;
-  const windy = open && day.gustMph != null && day.gustMph >= WIND_HOLD_MPH;
+// ── Snow ──────────────────────────────────────────────────────────────
+
+/** A horizontal snow stake: fills against 24", with ticks at 6, 12, 18 and 24. */
+function Stake({ inches, color }: { inches: number; color: string }) {
+  const fill = Math.min(1, Math.max(0, inches / STAKE_INCHES));
   return (
-    <li className="grid grid-cols-[52px_minmax(0,1fr)_76px_50px] items-center gap-2 border-t border-hairline py-2.5 text-sm tabular-nums">
-      <span className="font-semibold">{formatDay(day.date, index)}</span>
-      <span className="flex min-w-0 items-center gap-2">
-        <span className={`type-figure w-11 text-[17px] ${snow >= 0.1 ? "text-ink" : "text-ink-zero"}`}>{formatInches(day.snowIn)}</span>
-        {snow >= POWDER_INCHES && <span className="text-xs font-semibold text-alpenglow">Powder</span>}
-        {rain >= 0.05 && <span className="truncate text-xs text-ink-muted">Rain {rain.toFixed(2)}&Prime;</span>}
+    <span aria-hidden="true" className="relative block h-2 w-full bg-snow-none/60">
+      {fill > 0 && <span className="absolute inset-y-0 left-0" style={{ width: `max(${fill * 100}%, 2px)`, backgroundColor: color }} />}
+      {[6, 12, 18, 24].map((t) => (
+        <span key={t} className="absolute -top-1 -bottom-1 w-px bg-ink/30" style={{ left: `calc(${(t / STAKE_INCHES) * 100}% - 1px)` }} />
+      ))}
+    </span>
+  );
+}
+
+function SnowRow({ label, inches, color, note }: { label: ReactNode; inches: number | null; color: string; note?: string }) {
+  const value = inches ?? 0;
+  return (
+    <li className="rule-row grid grid-cols-[96px_64px_minmax(0,1fr)] items-center gap-3 py-3 first:border-t-0 first:pt-0">
+      <span className="text-[14px]">
+        {label}
+        {note && <span className="block text-[11px] text-ink-faint">{note}</span>}
       </span>
-      <span className="text-right">
-        {formatTemp(day.highF)} <span className="text-ink-zero">{formatTemp(day.lowF)}</span>
+      <span className="type-figure text-right text-[30px]" style={{ color: value < 0.1 ? "var(--ink-zero)" : color }}>
+        <CountUp value={inches} format={formatInches} />
       </span>
-      <span className={`flex items-center justify-end gap-[3px] ${windy ? "font-semibold text-barn" : "text-ink-faint"}`}>
-        <WindIcon className="h-[13px] w-[13px]" />
-        {day.gustMph == null ? "—" : Math.round(day.gustMph)}
-      </span>
+      <Stake inches={value} color={color} />
     </li>
   );
 }
 
-function Forecast({ resort, forecast, detail }: { resort: Resort; forecast: ResortForecast; detail: DetailState }) {
-  // Week two: one line, with whether the three models agree.
+function Snow({ forecast }: { forecast: ResortForecast }) {
+  const fresh = last48In(forecast);
+  return (
+    <Section
+      label="Snow"
+      aside={
+        <>
+          Now{" "}
+          <span className="font-semibold text-ink">
+            <CountUp value={forecast.tempF} format={formatTemp} />
+          </span>
+        </>
+      }
+    >
+      <ul>
+        <SnowRow label="Last 48 hrs" inches={fresh} color="var(--glacier)" note={fresh < 1 ? lastSnow(forecast) : undefined} />
+        <SnowRow label="Next 3 days" inches={forecast.next3In} color="var(--glacier)" />
+        <SnowRow
+          label={
+            <span title="Modeled snow on the ground from Open-Meteo, not the resort's reported base depth.">
+              Base <span className="text-[11px] text-ink-faint">est.</span>
+            </span>
+          }
+          inches={forecast.snowDepthIn}
+          color="var(--ink)"
+        />
+      </ul>
+    </Section>
+  );
+}
+
+// ── Next 7 days ───────────────────────────────────────────────────────
+
+const CHART_PX = 84;
+/** Bars scale to at least this many inches, so a dusting doesn't fill the chart. */
+const CHART_MIN_SCALE = 12;
+
+function WeekChart({ resort, days, stormDays, stormIn }: { resort: Resort; days: DailyForecast[]; stormDays: string[]; stormIn: number }) {
+  const scale = Math.max(CHART_MIN_SCALE, ...days.map((d) => d.snowIn ?? 0));
+  const first = days.findIndex((d) => stormDays.includes(d.date));
+  const last = days.findLastIndex((d) => stormDays.includes(d.date));
+  return (
+    <div>
+      {/* The storm's days, bracketed. */}
+      <div className="relative h-7 text-[11px] font-semibold">
+        {first !== -1 && (
+          <span
+            className="absolute bottom-0 flex h-[14px] justify-center border-x border-t border-ink"
+            style={{
+              left: `calc(${(first / days.length) * 100}% + 4px)`,
+              width: `calc(${((last - first + 1) / days.length) * 100}% - 8px)`,
+            }}
+          >
+            <span className="-mt-[9px] h-fit bg-snow px-1 leading-none whitespace-nowrap">Storm, about {formatInches(stormIn)}</span>
+          </span>
+        )}
+      </div>
+      <ol className="grid grid-cols-7">
+        {days.map((d, i) => {
+          const inches = d.snowIn ?? 0;
+          const color = inches >= POWDER_INCHES ? "var(--alpenglow)" : "var(--glacier)";
+          const windy = isOpenOn(resort, d.date) && d.gustMph != null && d.gustMph >= WIND_HOLD_MPH;
+          return (
+            <li key={d.date} className="flex flex-col items-center text-center">
+              <div className="flex w-full flex-col items-center justify-end" style={{ height: CHART_PX + 24 }}>
+                <span className="type-figure mb-1 text-[17px]" style={{ color: inches < 0.1 ? "var(--ink-zero)" : color }}>
+                  {formatInches(d.snowIn)}
+                </span>
+                {inches >= 0.1 ? (
+                  <span className="w-[60%]" style={{ height: Math.max(3, (inches / scale) * CHART_PX), backgroundColor: color }} />
+                ) : (
+                  <span className="h-[2px] w-[60%] bg-snow-none" />
+                )}
+              </div>
+              <span className="w-full border-t border-ink pt-1.5 text-[13px] font-semibold">{formatDay(d.date, i)}</span>
+              <span className="text-[11px] text-ink-muted tabular-nums">
+                {formatTemp(d.highF)} <span className="text-ink-faint">{formatTemp(d.lowF)}</span>
+              </span>
+              <span className="mt-1 h-4">
+                {windy && (
+                  <>
+                    <WindIcon className="h-4 w-4 text-ink" />
+                    <span className="sr-only">Wind hold possible</span>
+                  </>
+                )}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+type Note = { key: string; wind?: boolean; lead: string; rest?: string };
+
+/** Plain sentences under the chart: the opening date, the storm or a refreeze, and wind holds. */
+function Notes({ resort, forecast, detail, today }: { resort: Resort; forecast: ResortForecast; detail: ResortDetailForecast | null; today: string }) {
+  const notes: Note[] = [];
+
+  if (!isOpenOn(resort, today)) {
+    notes.push(
+      resort.opensOn
+        ? { key: "opens", lead: `Opens ${formatOpening(resort.opensOn)}.`, rest: "Projected, depending on snow and cold for snowmaking." }
+        : { key: "opens", lead: "Opening date not announced." },
+    );
+  }
+
+  if (detail) {
+    const storm = nextStorm(detail.summit.hours);
+    const crust = refreeze(detail.base.hours) ?? refreeze(detail.summit.hours);
+    const line = snowLine(detail.summit, detail.base);
+    if (crust && (!storm || crust.wetAt < storm.start)) {
+      notes.push({ key: "crust", lead: "Firm, icy snow likely.", rest: `Rain ${formatDay(crust.wetAt.slice(0, 10), 1)}, then ${formatTemp(crust.lowF)}.` });
+    } else if (storm) {
+      const quality = snowQuality(storm.tempF);
+      const beforeLifts = Number(storm.end.slice(11, 13)) < FIRST_CHAIR_HOUR;
+      const lead =
+        storm.snowIn >= POWDER_INCHES
+          ? `Powder ${weekday(storm.end.slice(0, 10))}.`
+          : `${formatInches(storm.snowIn)} ${weekday(storm.start.slice(0, 10))}.`;
+      const rest = [
+        `Snow ${formatWhen(storm.start, today)} to ${
+          storm.end.slice(0, 10) === storm.start.slice(0, 10) ? formatHour(storm.end) : formatWhen(storm.end, today)
+        }`,
+        quality && QUALITY[quality],
+        line === "rain-below" && "rain at the base",
+        beforeLifts && "done before the lifts open",
+      ]
+        .filter(Boolean)
+        .join(", ");
+      notes.push({ key: "storm", lead, rest: `${rest}.` });
+    } else if (line === "rain-below" || line === "all-rain") {
+      notes.push({
+        key: "line",
+        lead: line === "rain-below" ? "Rain at the base, snow up top" : "Rain or mix to the summit",
+        rest: "in the next 72 hours.",
+      });
+    }
+  }
+
+  const windyDay = forecast.upcoming.find((d) => isOpenOn(resort, d.date) && d.gustMph != null && d.gustMph >= WIND_HOLD_MPH);
+  if (windyDay) {
+    notes.push({
+      key: "wind",
+      wind: true,
+      lead: `Wind hold possible ${windyDay.date === today ? "today" : weekday(windyDay.date)}.`,
+      rest: `Gusts to ${Math.round(windyDay.gustMph!)} mph.`,
+    });
+  }
+
+  if (notes.length === 0) return null;
+  return (
+    <ul className="mt-4 flex flex-col gap-2 text-[15px]">
+      {notes.map((n) => (
+        <li key={n.key} className="flex items-start gap-1.5">
+          {n.wind && <WindIcon className="mt-[3px] h-4 w-4 shrink-0 text-ink" />}
+          <span>
+            <span className="font-semibold">{n.lead}</span>
+            {n.rest && ` ${n.rest}`}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function NextSevenDays({ resort, forecast, detail, today }: { resort: Resort; forecast: ResortForecast; detail: DetailState; today: string }) {
+  // Week two: one figure, with whether the three models agree.
   const late = detail.data?.models.slice(7) ?? [];
   const totals = MODELS.map((m) => sum(late.map((d) => d.byModel[m.id])));
   const spread = totals.length ? Math.max(...totals) - Math.min(...totals) : 0;
 
+  const storm = detail.data ? nextStorm(detail.data.summit.hours) : null;
+  const stormDays = storm
+    ? forecast.upcoming.map((d) => d.date).filter((d) => d >= storm.start.slice(0, 10) && d <= storm.end.slice(0, 10))
+    : [];
+
   return (
-    <Sheet label="Next 7 days">
-      <ul className="-mt-1.5">
-        {forecast.upcoming.map((d, i) => (
-          <DayRow key={d.date} day={d} index={i} open={isOpenOn(resort, d.date)} />
-        ))}
-      </ul>
-      <p className="border-t border-hairline pt-2.5 text-[13px] text-ink-muted">
-        Days 8–16 <span className="type-figure text-[15px] text-ink">{formatInches(forecast.days8to16In)}</span>
-        {detail.data && (spread >= DISAGREE_INCHES ? " · models disagree" : " · models agree")} · long range
-      </p>
-    </Sheet>
+    <Section
+      label="Next 7 days"
+      aside={
+        <>
+          Days 8–16 <span className="font-semibold text-ink">{formatInches(forecast.days8to16In)}</span>
+          {detail.data && (spread >= DISAGREE_INCHES ? ", models disagree" : ", models agree")}
+        </>
+      }
+    >
+      <WeekChart resort={resort} days={forecast.upcoming} stormDays={stormDays} stormIn={storm?.snowIn ?? 0} />
+      <Notes resort={resort} forecast={forecast} detail={detail.data} today={today} />
+    </Section>
   );
 }
+
+// ── Hour by hour ──────────────────────────────────────────────────────
 
 function HourByHour({ resort, detail }: { resort: Resort; detail: DetailState }) {
   const [elevation, setElevation] = useState<"summit" | "base">("summit");
   return (
-    <details className="group sheet">
-      <summary className="flex cursor-pointer list-none items-center justify-between px-[18px] py-4 text-[15px] font-semibold">
+    <details className="group rule-section">
+      <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3.5 text-[13px] font-semibold">
         Hour by hour
-        <span className="flex items-center gap-1.5 text-[13px] font-normal text-ink-faint">
-          Summit &amp; base, 72 hrs
-          <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <span className="flex items-center gap-1.5 font-normal text-ink-muted">
+          Summit and base, 72 hrs
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="h-3.5 w-3.5 transition-transform group-open:rotate-180"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M6 9 L12 15 L18 9" />
           </svg>
         </span>
       </summary>
-      <div className="border-t border-hairline px-[18px] pt-3 pb-4">
+      <div className="px-4 pb-5">
         {detail.data ? (
           <>
             <SegmentedControl
@@ -367,6 +405,8 @@ function HourByHour({ resort, detail }: { resort: Resort; detail: DetailState })
   );
 }
 
+// ── Links ─────────────────────────────────────────────────────────────
+
 const LINKS = [
   { field: "webcamUrl", label: "Webcams" },
   { field: "trailMapUrl", label: "Trail map" },
@@ -374,65 +414,58 @@ const LINKS = [
   { field: "websiteUrl", label: "Website" },
 ] as const;
 
-function MountainFacts({ resort }: { resort: Resort }) {
-  const facts = [
-    { field: "summitFt", label: "Summit", value: resort.summitFt?.toLocaleString("en-US") ?? "—" },
-    { field: "baseFt", label: "Base", value: resort.baseFt?.toLocaleString("en-US") ?? "—" },
-    { field: "verticalFt", label: "Vertical", value: resort.verticalFt?.toLocaleString("en-US") ?? "—" },
-    { field: "trails", label: "Trails", value: resort.trails ?? "—" },
-  ] as const;
-
+function Links({ resort }: { resort: Resort }) {
+  const report = resort.snowReportUrl ?? resort.websiteUrl;
+  const links = LINKS.flatMap(({ field, label }) => {
+    const href = resort[field];
+    return href ? [{ href, label }] : [];
+  });
   return (
-    <Sheet label="The mountain">
-      <dl className="grid grid-cols-4 gap-2 tabular-nums">
-        {facts.map((f) => (
-          <div key={f.field}>
-            <dt className="text-xs text-ink-faint">
-              {f.label}
-              {f.field !== "trails" && " (ft)"}
-            </dt>
-            <dd className="font-semibold">
-              {f.value}
-              {isEstimate(resort, f.field) && <span className="text-[10px] font-normal text-ink-zero"> est.</span>}
-            </dd>
-          </div>
-        ))}
-      </dl>
-      <ul className="mt-3.5 flex flex-wrap gap-2">
-        {LINKS.map(({ field, label }) => {
-          const href = resort[field];
-          if (!href) return null;
-          return (
-            <li key={field}>
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 rounded-[10px] bg-chip px-3 py-2 text-[13px] font-medium hover:bg-line"
-              >
-                {label}
-                <ExternalIcon className="h-3.5 w-3.5 text-ink-faint" />
-                <span className="sr-only">(opens {resort.name}&apos;s website in a new tab)</span>
+    <section aria-label="Links" className="rule-section">
+      {report && (
+        <a
+          href={report}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-baseline justify-between gap-3 px-4 py-3.5 hover:bg-white/50"
+        >
+          <span className="text-[15px] font-semibold">Lifts and trails open</span>
+          <span className="text-right text-[14px] text-glacier underline underline-offset-2">
+            {resort.name}&apos;s report<span className="sr-only"> (opens in a new tab)</span>
+          </span>
+        </a>
+      )}
+      {links.length > 0 && (
+        <p className="rule-row px-4 py-3.5 text-[14px]">
+          {links.map((l, i) => (
+            <span key={l.label}>
+              {i > 0 && <span className="text-ink-faint"> · </span>}
+              <a href={l.href} target="_blank" rel="noopener noreferrer" className="text-glacier underline underline-offset-2">
+                {l.label}
               </a>
-            </li>
-          );
-        })}
-      </ul>
-    </Sheet>
+            </span>
+          ))}
+        </p>
+      )}
+    </section>
   );
 }
 
 // ── Page ──────────────────────────────────────────────────────────────
 
-function FloatingButton({ children, label, href }: { children: ReactNode; label: string; href: string }) {
+function YourMountain({ resort }: { resort: Resort }) {
+  const { favoriteIds, toggleFavorite } = useAppState();
+  const on = favoriteIds.includes(resort.id);
   return (
-    <Link
-      href={href}
-      aria-label={label}
-      className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-ink shadow-[0_1px_3px_rgb(15_26_42/0.12)] backdrop-blur-sm"
+    <button
+      type="button"
+      onClick={() => toggleFavorite(resort.id)}
+      aria-pressed={on}
+      className={`flex items-center gap-1.5 text-[14px] ${on ? "font-semibold" : "text-ink-muted"}`}
     >
-      {children}
-    </Link>
+      <StarIcon filled={on} className={`h-[18px] w-[18px] ${on ? "text-ink" : ""}`} />
+      Your mountain
+    </button>
   );
 }
 
@@ -441,92 +474,60 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
   const detail = useResortDetail(resort.id);
   const forecast = forecasts?.[resort.id];
   const distance = distanceTo(resort);
-  const powder = forecast?.upcoming.findIndex((d) => (d.snowIn ?? 0) >= POWDER_INCHES) ?? -1;
+  const today = forecast?.upcoming[0]?.date;
 
-  const facts = (
-    [
-      ["summitFt", resort.summitFt && `${formatFeet(resort.summitFt)} summit`],
-      ["verticalFt", resort.verticalFt && `${formatFeet(resort.verticalFt)} vertical`],
-      ["trails", resort.trails && `${resort.trails} trails`],
-    ] as const
-  ).flatMap(([field, text]) => (text ? [{ field, text }] : []));
+  const meta = [
+    US_STATES[resort.state] ?? resort.state,
+    passText(resort.passes),
+    distance !== null && origin ? `${Math.round(distance)} mi from ${origin.label.split(",")[0]}` : null,
+  ].filter(Boolean);
 
   return (
-    <div className="relative flex flex-1 flex-col">
+    <div className="flex flex-1 flex-col">
       <SiteHeader />
-      {/* Hero: the mountain in 3D, fading into the page. */}
-      <div className="relative h-[400px] overflow-hidden bg-[#e8eef4]">
+      <div className="mx-auto flex w-full max-w-2xl items-center justify-between px-4 py-2.5">
+        <Link href="/explore" className="text-[14px] font-semibold">
+          ← Explore
+        </Link>
+        <YourMountain resort={resort} />
+      </div>
+
+      {/* The mountain in 3D, fading into the page. */}
+      <div className="relative h-[260px] overflow-hidden bg-[#e8eef4]">
         <TerrainHero lat={resort.lat} lon={resort.lon} />
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
-          style={{ background: "linear-gradient(to bottom, rgb(243 245 248 / 0) 45%, rgb(243 245 248 / 0.85) 80%, var(--snow) 100%)" }}
+          style={{ background: "linear-gradient(to bottom, rgb(243 245 248 / 0) 50%, var(--snow) 100%)" }}
         />
-
-        <div className="absolute inset-x-4 top-3 flex justify-between sm:hidden">
-          <FloatingButton href="/explore" label="Back to Explore">
-            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 5 L8 12 L15 19" />
-            </svg>
-          </FloatingButton>
-          {forecast && powder !== -1 && (
-            <span className="flex h-8 items-center gap-1.5 self-center rounded-full bg-alpenglow px-3 text-[13px] font-semibold text-white shadow-[0_2px_8px_rgb(224_83_47/0.35)]">
-              <SnowflakeIcon className="h-[13px] w-[13px]" />
-              Powder {formatDay(forecast.upcoming[powder].date, powder)} · {formatInches(forecast.upcoming[powder].snowIn)}
-            </span>
-          )}
-          <FavoriteButton id={resort.id} name={resort.name} variant="floating" />
-        </div>
-
-        <div className="absolute inset-x-5 bottom-[18px] mx-auto max-w-2xl">
-          <div className="flex flex-wrap items-center gap-2.5 text-[13px] text-ink-muted">
-            <Link href="/explore" className="hidden hover:text-ink sm:inline">
-              ← Explore
-            </Link>
-            <span>{US_STATES[resort.state] ?? resort.state}</span>
-            <PassTags passes={resort.passes} />
-            {distance !== null && origin && (
-              <span className="tabular-nums">
-                {Math.round(distance)} mi from {origin.label.split(",")[0]}
-              </span>
-            )}
-            <span className="hidden sm:inline">
-              <FavoriteButton id={resort.id} name={resort.name} withLabel />
-            </span>
-          </div>
-          <h1 className="type-hero mt-0.5 text-[64px] sm:text-[80px]">{resort.name}</h1>
-          <p className="mt-1.5 text-sm text-ink-muted tabular-nums">
-            {facts.map(({ field, text }, i) => (
-              <span key={field}>
-                {i > 0 && " · "}
-                {text}
-                {isEstimate(resort, field) && <span className="ml-1 text-xs text-ink-zero">est.</span>}
-              </span>
-            ))}
-          </p>
-        </div>
       </div>
 
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-3 px-3 pt-1 pb-10">
-        {forecast ? (
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col">
+        <div className="relative -mt-12 px-4 pb-4">
+          <p className="text-[13px] text-ink-muted tabular-nums">{meta.join(" · ")}</p>
+          <h1 className="type-hero mt-1 text-[92px] [overflow-wrap:anywhere] max-[400px]:text-[76px]">{resort.name}</h1>
+        </div>
+
+        <SpecStrip resort={resort} />
+
+        {forecast && today ? (
           <>
-            <Conditions resort={resort} forecast={forecast} detail={detail} />
-            <Forecast resort={resort} forecast={forecast} detail={detail} />
+            <Snow forecast={forecast} />
+            <NextSevenDays resort={resort} forecast={forecast} detail={detail} today={today} />
           </>
         ) : (
-          <div className="sheet p-[18px]">
+          <div className="rule-section px-4 py-4">
             <Pending state={forecastState} />
           </div>
         )}
         <HourByHour resort={resort} detail={detail} />
-        <MountainFacts resort={resort} />
-        <p className="px-2 text-xs text-ink-faint">
+        <Links resort={resort} />
+        <p className="rule-row px-4 pt-3 pb-10 text-[11px] text-ink-faint">
           Forecasts from{" "}
           <a className="underline" href="https://open-meteo.com/">
             Open-Meteo
           </a>{" "}
-          (GFS, ECMWF and GEM models), refreshed every 30 minutes. Snow and base are modeled, not resort-reported.{" "}
-          {TERRAIN_CREDIT}
+          (GFS, ECMWF and GEM models). Snow and base are modeled, not resort-reported. {TERRAIN_CREDIT}
         </p>
       </main>
     </div>
