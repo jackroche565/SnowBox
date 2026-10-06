@@ -1,20 +1,32 @@
-import { PASS_COLORS } from "@/lib/format";
 import type { Pass } from "@/lib/resorts";
 
-/** Each pass as a small colored dot and its name. */
-export default function PassTags({ passes, tone = "light" }: { passes: Pass[]; tone?: "light" | "dark" }) {
-  if (passes.length === 0) return null;
+/** Passes as plain text ("Epic", "Ikon · Indy"), or "Independent" for resorts on none. */
+export function passText(passes: Pass[]): string {
+  return passes.length ? passes.join(" · ") : "Independent";
+}
+
+/**
+ * Passes as small tags: filled ink for a pass you hold, outlined otherwise. Resorts on no pass
+ * say "Independent".
+ */
+export default function PassTags({ passes, held = [] }: { passes: Pass[]; held?: Pass[] }) {
+  if (passes.length === 0) return <span className="text-[11px] text-ink-faint">Independent</span>;
   return (
-    <span className="inline-flex shrink-0 items-center gap-2">
-      {passes.map((pass) => (
-        <span
-          key={pass}
-          className={`inline-flex items-center gap-1 text-[11px] font-semibold ${tone === "dark" ? "text-snow/80" : "text-ink-muted"}`}
-        >
-          <span aria-hidden="true" className="h-[7px] w-[7px] rounded-full" style={{ backgroundColor: PASS_COLORS[pass] }} />
-          {pass}
-        </span>
-      ))}
+    <span className="inline-flex shrink-0 items-center gap-1">
+      {passes.map((pass) => {
+        const mine = held.includes(pass);
+        return (
+          <span
+            key={pass}
+            className={`rounded-[3px] border px-1 text-[11px] leading-[15px] font-semibold ${
+              mine ? "border-ink bg-ink text-snow" : "border-ink/40 text-ink-muted"
+            }`}
+          >
+            {pass}
+            {mine && <span className="sr-only"> (your pass)</span>}
+          </span>
+        );
+      })}
     </span>
   );
 }

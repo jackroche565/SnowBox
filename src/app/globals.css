@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* Snowbox, alpine editorial: a cool snow ground, white sheets, deep ink, glacier blue for snow,
-   alpenglow only for powder. */
+/* Snowbox: everything sits on the snow ground, divided by rules. Ink for text and controls,
+   blue only for snow, alpenglow only for powder. */
 :root {
   --snow: #f3f5f8; /* page */
   --sheet: #ffffff; /* surfaces */
@@ -14,7 +14,12 @@
   --line: #e3e8ee; /* control borders */
   --hairline: #edf1f5; /* dividers inside sheets */
   --chip: #eef1f5; /* quiet fills */
-  --glacier: #2f76a3; /* snow figures, links */
+  --glacier: #1f5f8b; /* snow figures and bars; links as text only */
+  --snow-deep: #123f60; /* deep snow */
+  --snow-mid: #8fb7d4; /* light snow */
+  --snow-light: #cfe1ee; /* lightest snow */
+  --snow-none: #cfd7e0; /* no snow */
+  --rule: #dfe5ec; /* between rows */
   --ice: #e6f0f7; /* snow tint */
   --alpenglow: #e0532f; /* powder only */
   --barn: #a9442b; /* wind holds, rain, errors */
@@ -34,6 +39,11 @@
   --color-hairline: var(--hairline);
   --color-chip: var(--chip);
   --color-glacier: var(--glacier);
+  --color-snow-deep: var(--snow-deep);
+  --color-snow-mid: var(--snow-mid);
+  --color-snow-light: var(--snow-light);
+  --color-snow-none: var(--snow-none);
+  --color-rule: var(--rule);
   --color-ice: var(--ice);
   --color-alpenglow: var(--alpenglow);
   --color-barn: var(--barn);
@@ -48,25 +58,35 @@ body {
   font-family: var(--font-instrument), system-ui, sans-serif;
 }
 
-/* Archivo is a variable-width face: condensed reads like trail signage. */
+/* Archivo is a variable-width face: narrow widths for every name and number. */
 @utility type-hero {
   font-family: var(--font-archivo), sans-serif;
-  font-stretch: 75%;
-  font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.015em;
+  font-stretch: 62%;
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 @utility type-name {
   font-family: var(--font-archivo), sans-serif;
-  font-stretch: 85%;
-  font-weight: 650;
+  font-stretch: 75%;
+  font-weight: 700;
+  line-height: 1.1;
 }
 @utility type-figure {
   font-family: var(--font-archivo), sans-serif;
-  font-stretch: 85%;
-  font-weight: 600;
+  font-stretch: 75%;
+  font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+}
+
+/* Sections are divided by rules, not cards. */
+@utility rule-section {
+  border-top: 1px solid var(--ink);
+}
+@utility rule-row {
+  border-top: 1px solid var(--rule);
 }
 
 /* White surfaces: one soft shadow, hairlines inside. */
