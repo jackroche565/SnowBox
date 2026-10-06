@@ -6,7 +6,6 @@ import type { AlertsResponse } from "@/app/api/alerts/route";
 import AlertLine from "@/components/AlertLine";
 import { useAppState } from "@/components/AppState";
 import { StarIcon } from "@/components/Icons";
-import LiveCam, { camsFor, useWorkingCams } from "@/components/LiveCam";
 import LocationSearch from "@/components/LocationSearch";
 import PassTags from "@/components/PassTags";
 import SiteHeader from "@/components/SiteHeader";
@@ -220,46 +219,6 @@ function YourWeek({ list, forecasts, onEdit }: { list: Resort[]; forecasts: Reco
   );
 }
 
-// ── Live cams ─────────────────────────────────────────────────────────
-
-/** Your mountains' live cams, then links to the cam pages of the ones without a live stream here. */
-function Cams({ list }: { list: Resort[] }) {
-  const working = useWorkingCams();
-  if (!working) return null;
-  const cams = list.flatMap((r) => camsFor(r, working));
-  const linked = list.filter((r) => camsFor(r, working).length === 0 && r.webcamUrl);
-  if (cams.length === 0 && linked.length === 0) return null;
-  return (
-    <section aria-labelledby="live-cams" className="rule-section mt-6 px-4 pt-3 pb-2">
-      <h2 id="live-cams" className="text-[13px] font-semibold">
-        Live cams
-      </h2>
-      {cams.length > 0 && (
-        <ul className="-mx-4 mt-3 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4 pb-2">
-          {cams.map((c) => (
-            <li key={c.youtube} className="w-[78%] max-w-[300px] shrink-0 snap-start">
-              <LiveCam cam={c} showResort />
-            </li>
-          ))}
-        </ul>
-      )}
-      {linked.length > 0 && (
-        <p className="mt-2 text-[14px]">
-          {cams.length > 0 && <span className="text-ink-muted">Cam pages: </span>}
-          {linked.map((r, i) => (
-            <span key={r.id}>
-              {i > 0 && <span className="text-ink-faint"> · </span>}
-              <a href={r.webcamUrl} target="_blank" rel="noopener noreferrer" className="text-glacier underline underline-offset-2">
-                {r.name}
-              </a>
-            </span>
-          ))}
-        </p>
-      )}
-    </section>
-  );
-}
-
 // ── Choosing your mountains ───────────────────────────────────────────
 
 const NEARBY_COUNT = 8;
@@ -452,7 +411,6 @@ export default function Home() {
             {forecasts && <Headline list={favorites} forecasts={forecasts} />}
             {alerts && <Warnings list={favorites} alerts={alerts} />}
             <YourWeek list={sorted} forecasts={forecasts} onEdit={() => setEditing(true)} />
-            <Cams list={favorites} />
             {forecastState === "error" && (
               <p className="px-4 pt-3 text-[14px] text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>
             )}
