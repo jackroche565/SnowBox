@@ -1,7 +1,21 @@
 import resortData from "@/data/resorts.json";
 
-export const PASSES = ["Epic", "Ikon", "Indy"] as const;
+export const PASSES = ["Epic", "Ikon", "Indy", "Snow Pass", "Mountain Collective"] as const;
 export type Pass = (typeof PASSES)[number];
+
+/** Short names where space is tight (tags, list rows). */
+export const PASS_SHORT: Record<Pass, string> = {
+  Epic: "Epic",
+  Ikon: "Ikon",
+  Indy: "Indy",
+  "Snow Pass": "Snow Pass",
+  "Mountain Collective": "Mtn Collective",
+};
+
+/** The pass filter's choices: each pass, plus mountains on none of them. */
+export const INDEPENDENT = "Independent";
+export const PASS_FILTERS = [...PASSES, INDEPENDENT] as const;
+export type PassFilter = (typeof PASS_FILTERS)[number];
 
 export type Resort = {
   id: string;

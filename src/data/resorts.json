@@ -1310,7 +1310,9 @@
     "state": "ME",
     "lat": 44.0526,
     "lon": -70.8155,
-    "passes": [],
+    "passes": [
+      "Snow Pass"
+    ],
     "summitFt": 1770,
     "baseFt": 520,
     "verticalFt": 1250,
@@ -1382,7 +1384,8 @@
     "lat": 45.0314,
     "lon": -70.3131,
     "passes": [
-      "Ikon"
+      "Ikon",
+      "Mountain Collective"
     ],
     "summitFt": 4237,
     "baseFt": 1417,
@@ -1408,7 +1411,8 @@
     "lat": 44.4734,
     "lon": -70.8566,
     "passes": [
-      "Ikon"
+      "Ikon",
+      "Mountain Collective"
     ],
     "summitFt": 3140,
     "baseFt": 800,
@@ -1485,7 +1489,9 @@
     "state": "MA",
     "lat": 42.2152,
     "lon": -71.1172,
-    "passes": [],
+    "passes": [
+      "Snow Pass"
+    ],
     "summitFt": 580,
     "baseFt": 260,
     "verticalFt": 320,
@@ -1532,7 +1538,9 @@
     "state": "MA",
     "lat": 42.1785,
     "lon": -73.3192,
-    "passes": [],
+    "passes": [
+      "Snow Pass"
+    ],
     "summitFt": 1770,
     "baseFt": 830,
     "verticalFt": 940,
@@ -1742,7 +1750,9 @@
     "state": "CT",
     "lat": 41.5814,
     "lon": -72.9292,
-    "passes": [],
+    "passes": [
+      "Snow Pass"
+    ],
     "summitFt": 560,
     "baseFt": 200,
     "verticalFt": 360,

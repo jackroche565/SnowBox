@@ -5,7 +5,7 @@ import { CountUpContext } from "@/components/CountUp";
 import type { SortKey } from "@/components/SortControl";
 import type { ForecastResponse, ResortForecast } from "@/lib/forecast";
 import { distanceMiles, type LatLon } from "@/lib/geo";
-import { PASSES, type Pass } from "@/lib/resorts";
+import { INDEPENDENT, PASS_FILTERS, type Pass, type PassFilter } from "@/lib/resorts";
 
 export type Origin = LatLon & { label: string };
 export type ForecastState = "loading" | "error" | "ready";
@@ -33,8 +33,10 @@ type AppState = {
   toggleFavorite: (id: string) => void;
 
   /** Passes the user holds. Empty means "show every resort". */
-  myPasses: Pass[];
-  togglePass: (pass: Pass) => void;
+  myPasses: PassFilter[];
+  togglePass: (pass: PassFilter) => void;
+  /** Replace the whole selection (All, Clear). */
+  setPasses: (passes: PassFilter[]) => void;
 
   /** False until saved settings are read from this browser, so pages can avoid flashing an empty state. */
   savedListsReady: boolean;
@@ -87,7 +89,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   const [origin, setOrigin] = useState<Origin | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
-  const [myPasses, setMyPasses] = useState<Pass[]>([]);
+  const [myPasses, setMyPasses] = useState<PassFilter[]>([]);
   const [storageLoaded, setStorageLoaded] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("next7");
 
@@ -110,7 +112,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     queueMicrotask(() => {
       setFavoriteIds(readStoredIds(STORAGE.favorites));
-      setMyPasses(readStoredIds(STORAGE.passes).filter((p): p is Pass => (PASSES as readonly string[]).includes(p)));
+      setMyPasses(readStoredIds(STORAGE.passes).filter((p): p is PassFilter => (PASS_FILTERS as readonly string[]).includes(p)));
       setOrigin(readStoredOrigin());
       setStorageLoaded(true);
     });
@@ -126,9 +128,10 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const toggleFavorite = useCallback((id: string) => {
     setFavoriteIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }, []);
-  const togglePass = useCallback((pass: Pass) => {
-    setMyPasses((prev) => (prev.includes(pass) ? prev.filter((p) => p !== pass) : PASSES.filter((p) => p === pass || prev.includes(p))));
+  const togglePass = useCallback((pass: PassFilter) => {
+    setMyPasses((prev) => (prev.includes(pass) ? prev.filter((p) => p !== pass) : PASS_FILTERS.filter((p) => p === pass || prev.includes(p))));
   }, []);
+  const setPasses = useCallback((passes: PassFilter[]) => setMyPasses(PASS_FILTERS.filter((p) => passes.includes(p))), []);
 
   const distanceTo = useCallback((point: LatLon) => (origin ? distanceMiles(origin, point) : null), [origin]);
 
@@ -143,6 +146,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       toggleFavorite,
       myPasses,
       togglePass,
+      setPasses,
       savedListsReady: storageLoaded,
       sortKey,
       setSortKey,
@@ -156,6 +160,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       toggleFavorite,
       myPasses,
       togglePass,
+      setPasses,
       storageLoaded,
       sortKey,
     ],
@@ -168,7 +173,12 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   );
 }
 
-/** Whether a resort takes any of the user's passes. With no passes chosen, every resort counts. */
-export function onMyPasses(passes: readonly Pass[], myPasses: Pass[]): boolean {
-  return myPasses.length === 0 || passes.some((p) => myPasses.includes(p));
+/**
+ * Whether a resort matches the pass filter: it takes one of the chosen passes, or it's on no pass
+ * and "Independent" is chosen. With nothing chosen, every resort counts.
+ */
+export function onMyPasses(passes: readonly Pass[], myPasses: PassFilter[]): boolean {
+  if (myPasses.length === 0) return true;
+  if (passes.length === 0) return myPasses.includes(INDEPENDENT);
+  return passes.some((p) => myPasses.includes(p));
 }

@@ -176,7 +176,6 @@ export default function Explore() {
   }, [query, myPasses, distanceTo, sortKey, forecasts]);
 
   const selected = selectedId ? visible.find((v) => v.resort.id === selectedId) : undefined;
-  const passLabel = myPasses.length ? `${myPasses.join(" & ")} ` : "";
   // What the dots show: forecast snow, observed snow, or nothing while the radar is up.
   const snow = useMemo((): Record<string, number> => {
     if (layer === "radar") return {};
@@ -274,8 +273,7 @@ export default function Explore() {
           <div className="hidden lg:block">{controls("side")}</div>
           <div className="rule-section flex items-baseline justify-between px-4 pt-3 pb-2 lg:mt-1">
             <h2 className="text-[13px] font-semibold">
-              {visible.length} {passLabel}
-              {visible.length === 1 ? "mountain" : "mountains"}
+              {visible.length} {visible.length === 1 ? "mountain" : "mountains"}
             </h2>
             <SortControl value={sortKey} onChange={setSortKey} distanceAvailable={origin !== null} />
           </div>
