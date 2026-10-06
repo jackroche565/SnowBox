@@ -5,8 +5,6 @@ export const metadata: Metadata = {
   title: "Decide · Snowbox",
 };
 
-/** `/decide?demo=1` runs Decide on a made-up storm, for trying it while nothing is open. */
-export default async function DecidePage({ searchParams }: PageProps<"/decide">) {
-  const { demo } = await searchParams;
-  return <Decide demo={demo === "1"} />;
+export default function DecidePage() {
+  return <Decide />;
 }

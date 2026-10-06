@@ -1,24 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { onMyPasses, useAppState } from "@/components/AppState";
 import { WindIcon } from "@/components/Icons";
 import LocationSearch from "@/components/LocationSearch";
 import PassPicker from "@/components/PassPicker";
+import { passText } from "@/components/PassTags";
 import SiteHeader from "@/components/SiteHeader";
 import { formatDrive, rankDay, type Pick } from "@/lib/decide";
-import { DEMO_PEAK_DAY, demoForecasts } from "@/lib/demo";
 import { formatDay, formatInches } from "@/lib/format";
 import { POWDER_INCHES } from "@/lib/outlook";
 import { WIND_HOLD_MPH } from "@/lib/resortForecast";
 import { resortPath, resorts } from "@/lib/resorts";
-import { formatOpening, isOpenOn, openingDate } from "@/lib/season";
+import { formatOpening, openingDate } from "@/lib/season";
 
-// One question: where should I ski on this day? One answer, three backups, and the two settings
-// that shape it (where you start, which pass) in a quiet line at the bottom.
+// One question: where's the most snow on this day? Mountains are ranked by that day's new snow
+// and nothing else; drive time is shown beside each one, never mixed into the order. With no snow
+// anywhere, the closest come first. Mountains that aren't open yet stay in the list, greyed out.
 
-const BACKUPS = 3;
+/** Rows shown before "Show all". */
+const SHORT_LIST = 10;
 
 function longDay(date: string, index: number): string {
   if (index === 0) return "today";
@@ -26,17 +28,13 @@ function longDay(date: string, index: number): string {
   return new Date(`${date}T12:00:00`).toLocaleDateString("en-US", { weekday: "long" });
 }
 
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-function snowColor(inches: number): string {
-  if (inches < 0.1) return "var(--ink-zero)";
+function snowColor(inches: number, open: boolean): string {
+  if (!open || inches < 0.1) return "var(--ink-zero)";
   return inches >= POWDER_INCHES ? "var(--alpenglow)" : "var(--glacier)";
 }
 
-const windHold = (p: Pick) => p.open && p.gustMph != null && p.gustMph >= WIND_HOLD_MPH;
-
 /** Seven text tabs, each with the most new snow any mountain gets that day. */
-function DayStrip({ days, value, onChange }: { days: { date: string; maxIn: number | null }[]; value: number; onChange: (i: number) => void }) {
+function DayStrip({ days, value, onChange }: { days: { date: string; maxIn: number }[]; value: number; onChange: (i: number) => void }) {
   return (
     <div role="radiogroup" aria-label="Day" className="grid grid-cols-7 border-b border-ink">
       {days.map((d, i) => {
@@ -51,9 +49,7 @@ function DayStrip({ days, value, onChange }: { days: { date: string; maxIn: numb
             className={`-mb-px flex flex-col items-center border-b-[3px] pt-2.5 pb-2 tabular-nums ${on ? "border-ink" : "border-transparent"}`}
           >
             <span className={`text-[13px] ${on ? "font-bold text-ink" : "text-ink-muted"}`}>{formatDay(d.date, i)}</span>
-            <span className={`type-figure mt-1 text-[15px] ${d.maxIn != null && d.maxIn >= 0.1 ? "text-glacier" : "text-ink-zero"}`}>
-              {d.maxIn == null ? "—" : formatInches(d.maxIn)}
-            </span>
+            <span className={`type-figure mt-1 text-[15px] ${d.maxIn >= 0.1 ? "text-glacier" : "text-ink-zero"}`}>{formatInches(d.maxIn)}</span>
           </button>
         );
       })}
@@ -61,71 +57,39 @@ function DayStrip({ days, value, onChange }: { days: { date: string; maxIn: numb
   );
 }
 
-/** "About 2h 50m away. 4" more in the 2 days before." The day's snow is already the big figure. */
-function Why({ pick }: { pick: Pick }) {
-  if (pick.driveHours == null && pick.priorIn < 1 && pick.rainIn < 0.05 && !windHold(pick)) return null;
-  return (
-    <p className="mt-2 text-[15px]">
-      {pick.driveHours != null && `About ${formatDrive(pick.driveHours).replace("~", "")} away.`}
-      {pick.priorIn >= 1 && ` ${formatInches(pick.priorIn)} more in the 2 days before.`}
-      {pick.rainIn >= 0.05 && " Rain likely."}
-      {windHold(pick) && (
-        <span className="ml-1 inline-flex items-center gap-1 align-baseline">
-          <WindIcon className="h-4 w-4 self-center" /> Wind hold possible.
-        </span>
-      )}
-    </p>
-  );
-}
+function Row({ pick }: { pick: Pick }) {
+  const { resort, open } = pick;
+  const windy = open && pick.gustMph != null && pick.gustMph >= WIND_HOLD_MPH;
+  const details = [
+    !open && (resort.opensOn ? `Opens ${formatOpening(resort.opensOn)}` : "Not open yet"),
+    pick.driveHours != null && `${formatDrive(pick.driveHours)} drive`,
+    passText(resort.passes),
+    pick.rainIn >= 0.05 && "Rain likely",
+  ].filter(Boolean);
 
-function Answer({ pick, lead }: { pick: Pick; lead: string }) {
   return (
-    <section aria-label="Best bet" className="px-4 pt-5 pb-6">
-      <p className="text-[13px] text-ink-muted">{lead}</p>
-      <div className="mt-1 flex items-end justify-between gap-4">
-        <h2 className="type-hero min-w-0 text-[54px]">{pick.resort.name}</h2>
-        {pick.snowIn >= 0.1 && (
-          <span className="type-hero shrink-0 text-[54px]" style={{ color: snowColor(pick.snowIn) }}>
-            {formatInches(pick.snowIn)}
-          </span>
-        )}
-      </div>
-      <Why pick={pick} />
-      <Link href={resortPath(pick.resort.id)} className="mt-4 flex h-11 items-center justify-center bg-ink text-[15px] font-semibold text-snow">
-        View mountain
-      </Link>
-    </section>
-  );
-}
-
-function Backups({ picks, label }: { picks: Pick[]; label: string }) {
-  if (picks.length === 0) return null;
-  return (
-    <section aria-labelledby="backups" className="rule-section">
-      <h2 id="backups" className="px-4 pt-3 pb-1 text-[13px] font-semibold">
-        {label}
-      </h2>
-      <ul>
-        {picks.map((p, i) => (
-          <li key={p.resort.id} className={i > 0 ? "rule-row" : undefined}>
-            <Link href={resortPath(p.resort.id)} className="flex items-baseline gap-3 px-4 py-3 hover:bg-white/50">
-              <span className="type-name min-w-0 flex-1 truncate text-[19px]">{p.resort.name}</span>
-              {windHold(p) && <WindIcon aria-label="Wind hold possible" className="h-4 w-4 shrink-0 self-center" />}
-              <span className="type-figure w-12 shrink-0 text-right text-[22px]" style={{ color: snowColor(p.snowIn) }}>
-                {formatInches(p.snowIn)}
+    <li className="rule-row first:border-t-0">
+      <Link href={resortPath(resort.id)} className="flex items-center gap-3 px-4 py-3 hover:bg-white/50">
+        <span className="min-w-0 flex-1">
+          <span className={`type-name block truncate text-[19px] ${open ? "" : "text-ink-faint"}`}>{resort.name}</span>
+          <span className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-[13px] text-ink-muted tabular-nums">
+            {details.join(" · ")}
+            {windy && (
+              <span className="flex items-center gap-1 text-ink">
+                · <WindIcon className="h-3.5 w-3.5" /> Wind hold possible
               </span>
-              {p.driveHours != null && (
-                <span className="w-16 shrink-0 text-right text-[13px] text-ink-muted tabular-nums">{formatDrive(p.driveHours)}</span>
-              )}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </section>
+            )}
+          </span>
+        </span>
+        <span className="type-figure shrink-0 text-[26px]" style={{ color: snowColor(pick.snowIn, open) }}>
+          {formatInches(pick.snowIn)}
+        </span>
+      </Link>
+    </li>
   );
 }
 
-/** First visit: the two things that shape the answer. */
+/** First visit: the two things that shape the list. */
 function Setup() {
   return (
     <section aria-label="Set up" className="px-4 pt-5 pb-5">
@@ -138,7 +102,7 @@ function Setup() {
   );
 }
 
-/** "From Boston · Ikon · Change", and the two settings when opened. */
+/** "From Boston · Any pass · Change", and the two settings when opened. */
 function Settings() {
   const { origin, myPasses } = useAppState();
   const [open, setOpen] = useState(false);
@@ -164,48 +128,35 @@ function Settings() {
   );
 }
 
-export default function Decide({ demo = false }: { demo?: boolean }) {
-  const { forecasts: real, forecastState, origin, myPasses, savedListsReady } = useAppState();
-  const forecasts = useMemo(() => (demo && real ? demoForecasts(real, resorts) : real), [demo, real]);
-  const [dayIndex, setDayIndex] = useState(demo ? DEMO_PEAK_DAY : 0);
+export default function Decide() {
+  const { forecasts, forecastState, origin, myPasses, savedListsReady } = useAppState();
+  const [dayIndex, setDayIndex] = useState(0);
+  const [showAll, setShowAll] = useState(false);
 
   const days = forecasts ? (Object.values(forecasts)[0]?.upcoming ?? []) : [];
   const day = days[dayIndex];
   const mine = resorts.filter((r) => onMyPasses(r.passes, myPasses));
-  const rank = (i: number) => (forecasts ? rankDay(mine, forecasts, i, origin, null, "overall") : []);
+  // Most snow first; on a tie (including no snow at all), the closest.
+  const rank = (i: number) => (forecasts ? rankDay(mine, forecasts, i, origin, null, "snow", true) : []);
   const picks = rank(dayIndex);
-  const strip = days.map((d, i) => {
-    const list = rank(i);
-    return { date: d.date, maxIn: list.length ? Math.max(...list.map((p) => p.snowIn)) : null };
-  });
+  const strip = days.map((d, i) => ({ date: d.date, maxIn: Math.max(0, ...rank(i).map((p) => p.snowIn)) }));
 
   const dayName = day ? longDay(day.date, dayIndex) : "";
   const anySnow = picks.some((p) => p.snowIn >= 0.1);
-  // With no snow anywhere, the useful answer is the closest open mountain.
-  const shown = anySnow || !origin ? picks : rankDay(mine, forecasts ?? {}, dayIndex, origin, null, "closest");
-  // Before the season, say who opens first instead of showing nothing.
-  const firstToOpen =
-    day && !mine.some((r) => isOpenOn(r, day.date))
-      ? mine.reduce<(typeof mine)[number] | null>(
-          (first, r) => (!first || openingDate(r, day.date) < openingDate(first, day.date) ? r : first),
-          null,
-        )
-      : null;
+  const anyOpen = picks.some((p) => p.open);
+  const firstToOpen = day
+    ? mine.reduce<(typeof mine)[number] | null>(
+        (first, r) => (!first || openingDate(r, day.date) < openingDate(first, day.date) ? r : first),
+        null,
+      )
+    : null;
+  const shown = showAll ? picks : picks.slice(0, SHORT_LIST);
 
   return (
     <>
       <SiteHeader />
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col pb-10">
         <h1 className="sr-only">Where to ski</h1>
-
-        {demo && (
-          <p className="border-b border-ink bg-ink px-4 py-2.5 text-[14px] text-snow">
-            <span className="font-semibold">Demo:</span> a made-up storm in January, not a forecast.{" "}
-            <Link href="/decide" className="underline underline-offset-2">
-              Leave demo
-            </Link>
-          </p>
-        )}
 
         {days.length > 0 && <DayStrip days={strip} value={dayIndex} onChange={setDayIndex} />}
 
@@ -215,32 +166,33 @@ export default function Decide({ demo = false }: { demo?: boolean }) {
         {forecastState === "loading" && <p className="px-4 pt-4 text-[15px] text-ink-muted">Loading forecast…</p>}
 
         {forecasts && day && (
-          <div className={!origin ? "rule-section" : undefined}>
-            {shown.length > 0 ? (
-              <>
-                <Answer
-                  pick={shown[0]}
-                  lead={anySnow ? `Best bet ${dayName}` : `No new snow ${dayName}. Closest open:`}
-                />
-                <Backups picks={shown.slice(1, 1 + BACKUPS)} label={anySnow ? "Also good" : "Also close"} />
-              </>
-            ) : (
-              <p className="px-4 pt-5 pb-6 text-[15px]">
-                <span className="font-semibold">
-                  {firstToOpen ? `Nothing's open yet ${dayIndex > 1 ? "on " : ""}${dayName}.` : `No open mountains ${dayName}.`}
-                </span>
-                {firstToOpen?.opensOn && ` ${firstToOpen.name} is projected to open first, on ${formatOpening(firstToOpen.opensOn)}.`}
-                {firstToOpen && !demo && (
-                  <>
-                    {" "}
-                    <Link href="/decide?demo=1" className="font-semibold underline underline-offset-4">
-                      Try it with a sample storm
-                    </Link>
-                  </>
-                )}
-              </p>
+          <section aria-label={`Mountains ${dayName}`} className={!origin ? "rule-section" : undefined}>
+            <div className="px-4 pt-4 pb-1">
+              <h2 className="text-[15px] font-semibold">
+                {anySnow ? `Most new snow ${dayName}` : `No new snow ${dayName}.${origin ? " Closest first." : ""}`}
+              </h2>
+              {!anyOpen && (
+                <p className="mt-0.5 text-[14px] text-ink-muted">
+                  Nothing is open yet.
+                  {firstToOpen?.opensOn && ` ${firstToOpen.name} is projected to open first, on ${formatOpening(firstToOpen.opensOn)}.`}
+                </p>
+              )}
+            </div>
+            <ol>
+              {shown.map((p) => (
+                <Row key={p.resort.id} pick={p} />
+              ))}
+            </ol>
+            {picks.length > SHORT_LIST && (
+              <button
+                type="button"
+                onClick={() => setShowAll((v) => !v)}
+                className="rule-row w-full px-4 py-3 text-left text-[14px] font-semibold underline underline-offset-4"
+              >
+                {showAll ? "Show fewer" : `Show all ${picks.length}`}
+              </button>
             )}
-          </div>
+          </section>
         )}
 
         {origin && <Settings />}

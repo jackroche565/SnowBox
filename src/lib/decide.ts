@@ -111,12 +111,14 @@ export function rankDay(
   origin: LatLon | null,
   maxDriveHours: number | null,
   rankBy: RankBy = "overall",
+  /** Keep mountains that aren't open yet (Decide shows them greyed out). */
+  includeClosed = false,
 ): Pick[] {
   return list
     .flatMap((resort) => {
       const forecast = forecasts[resort.id];
       const pick = forecast && scoreDay(resort, forecast, dayIndex, origin);
-      if (!pick || !pick.open) return [];
+      if (!pick || (!pick.open && !includeClosed)) return [];
       if (maxDriveHours != null && pick.driveHours != null && pick.driveHours > maxDriveHours) return [];
       return [pick];
     })
