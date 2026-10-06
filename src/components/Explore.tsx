@@ -4,15 +4,17 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { onMyPasses, useAppState, type Origin } from "@/components/AppState";
-import FavoriteButton from "@/components/FavoriteButton";
 import LocationSearch from "@/components/LocationSearch";
 import PassPicker from "@/components/PassPicker";
+import { passText } from "@/components/PassTags";
 import { ResortRow } from "@/components/ResortEntries";
 import type { MapFocus } from "@/components/ResortMap";
+import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
 import SortControl from "@/components/SortControl";
 import type { ResortForecast } from "@/lib/forecast";
-import { formatInches, formatTemp, resortColor } from "@/lib/format";
+import { estimateDriveHours, formatDrive } from "@/lib/decide";
+import { SNOW_BUCKETS, formatInches, formatTemp } from "@/lib/format";
 import { snowNote } from "@/lib/outlook";
 import { resorts, resortPath, type Resort } from "@/lib/resorts";
 import { US_STATES } from "@/lib/usStates";
@@ -27,74 +29,69 @@ const ResortMap = dynamic(() => import("@/components/ResortMap"), {
 const NEARBY_ZOOM = 7;
 
 /** What you see when you tap a dot: enough to decide whether to open the mountain. */
-function PreviewCard({
+function PreviewPanel({
   resort,
   forecast,
-  distance,
   onClose,
 }: {
   resort: Resort;
   forecast: ResortForecast | undefined;
-  distance: number | null;
   onClose: () => void;
 }) {
+  const { origin } = useAppState();
   const snow = forecast?.next7In ?? 0;
   const note = forecast && snowNote(forecast);
-  const meta = [resort.passes[0] ?? "Independent", resort.state, distance !== null && `${Math.round(distance)} mi`].filter(Boolean);
+  const meta = [
+    US_STATES[resort.state] ?? resort.state,
+    passText(resort.passes),
+    origin && `${formatDrive(estimateDriveHours(origin, resort))} drive (est.)`,
+  ].filter(Boolean);
+  const line = [note?.text, forecast && `${formatTemp(forecast.tempF)} now`].filter(Boolean).join(" · ");
 
   return (
-    <section
-      aria-label={resort.name}
-      className="absolute inset-x-3 bottom-3 z-10 rounded-[20px] bg-white p-4 shadow-[0_8px_30px_rgb(15_26_42/0.18)] lg:right-auto lg:w-[380px]"
-    >
+    <section aria-label={resort.name} className="absolute inset-x-0 bottom-0 z-10 border-t border-ink bg-snow px-4 pt-3 pb-4">
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h2 className="type-hero truncate text-[26px] leading-none [font-stretch:80%]">{resort.name}</h2>
-          <p className="mt-1 flex items-center gap-1.5 text-xs text-ink-muted">
-            <span aria-hidden="true" className="h-[7px] w-[7px] rounded-full" style={{ backgroundColor: resortColor(resort.passes) }} />
-            {meta.join(" · ")}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close"
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-chip text-ink-muted hover:bg-line"
-        >
-          <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round">
+        <p className="min-w-0 truncate text-[13px] text-ink-muted tabular-nums">{meta.join(" · ")}</p>
+        <button type="button" onClick={onClose} aria-label="Close" className="-mt-1 -mr-1 flex h-7 w-7 shrink-0 items-center justify-center">
+          <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round">
             <path d="M6 6 L18 18 M18 6 L6 18" />
           </svg>
         </button>
       </div>
-
-      {forecast && (
-        <div className="mt-3 flex items-end gap-5 tabular-nums">
-          <div>
-            <div className={`type-figure text-[22px] ${snow >= 0.1 ? "text-ink" : "text-ink-zero"}`}>{formatInches(snow)}</div>
-            <div className="mt-0.5 text-[11px] text-ink-faint">next 7 days</div>
-          </div>
-          <div>
-            <div className="type-figure text-[22px]">{formatTemp(forecast.tempF)}</div>
-            <div className="mt-0.5 text-[11px] text-ink-faint">now</div>
-          </div>
-          {note && (
-            <p className={`min-w-0 flex-1 truncate pb-0.5 text-right text-[13px] ${note.tone === "none" ? "text-ink-faint" : "text-glacier"}`}>
-              {note.text}
-            </p>
-          )}
-        </div>
-      )}
-
-      <div className="mt-3.5 flex gap-2">
-        <Link
-          href={resortPath(resort.id)}
-          className="flex h-11 flex-1 items-center justify-center rounded-xl bg-ink text-[15px] font-semibold text-white hover:bg-navy-2"
-        >
-          View mountain
-        </Link>
-        <FavoriteButton id={resort.id} name={resort.name} variant="tile" />
+      <div className="mt-1 flex items-end justify-between gap-4">
+        <h2 className="type-hero min-w-0 text-[40px]">{resort.name}</h2>
+        {forecast && (
+          <span className="shrink-0 text-right">
+            <span className={`type-hero block text-[40px] ${snow >= 0.1 ? "text-glacier" : "text-ink-zero"}`}>{formatInches(snow)}</span>
+            <span className="block text-[11px] text-ink-faint">next 7 days</span>
+          </span>
+        )}
       </div>
+      {line && <p className="mt-2 text-[14px]">{line}</p>}
+      <Link
+        href={resortPath(resort.id)}
+        className="mt-3 flex h-11 items-center justify-center bg-ink text-[15px] font-semibold text-snow hover:bg-navy-2"
+      >
+        View mountain
+      </Link>
     </section>
+  );
+}
+
+/** Small key for the dot colors, top left of the map. */
+function Legend() {
+  return (
+    <div className="absolute top-3 left-3 z-10 bg-snow/90 px-2.5 py-2 text-[11px]">
+      <p className="font-semibold">Next 7 days</p>
+      <ul className="mt-1 flex flex-col gap-0.5">
+        {SNOW_BUCKETS.map((b) => (
+          <li key={b.label} className="flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full border border-white" style={{ backgroundColor: b.color }} />
+            {b.label}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -140,76 +137,80 @@ export default function Explore() {
 
   const selected = selectedId ? visible.find((v) => v.resort.id === selectedId) : undefined;
   const passLabel = myPasses.length ? `${myPasses.join(" & ")} ` : "";
+  const snow = useMemo(
+    () => Object.fromEntries(Object.entries(forecasts ?? {}).map(([id, f]) => [id, f.next7In])),
+    [forecasts],
+  );
 
-  const controls = (
-    <div className="flex flex-col gap-2">
-      <div className="flex h-[46px] items-center gap-2.5 rounded-[14px] bg-white px-3.5 shadow-[0_2px_12px_rgb(15_26_42/0.10)]">
-        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-[18px] w-[18px] shrink-0 text-ink-faint" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
-          <circle cx="11" cy="11" r="7" />
-          <path d="M20 20 L16 16" />
-        </svg>
-        <label htmlFor={`resort-search-${view}`} className="sr-only">
+  // Rendered once above the map on phones and once above the list on desktop, so ids carry `where`.
+  const controls = (where: "top" | "side") => (
+    <div className="px-4 pt-3 pb-3 lg:px-0">
+      <div className="flex items-end gap-4">
+        <label htmlFor={`resort-search-${where}`} className="sr-only">
           Search mountains
         </label>
         <input
-          id={`resort-search-${view}`}
+          id={`resort-search-${where}`}
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={`Search ${resorts.length} mountains`}
-          className="min-w-0 flex-1 bg-transparent text-[15px] placeholder:text-ink-faint focus:outline-none"
+          className="min-w-0 flex-1 border-b-2 border-ink bg-transparent pb-1.5 text-[16px] placeholder:text-ink-faint focus:outline-none"
         />
-        <button
-          type="button"
-          onClick={() => setSettingFrom((v) => !v)}
-          aria-expanded={settingFrom}
-          className="shrink-0 text-[13px] whitespace-nowrap text-ink-muted hover:text-ink"
-        >
-          {origin ? (
-            <>
-              From <span className="font-semibold text-ink">{origin.label.split(",")[0]}</span>
-            </>
-          ) : (
-            <span className="font-medium text-glacier">Set location</span>
-          )}
-        </button>
+        <PassPicker className="shrink-0 pb-1" />
       </div>
-      {settingFrom && (
-        <div className="rounded-[14px] bg-white p-3 shadow-[0_2px_12px_rgb(15_26_42/0.10)]">
-          <LocationSearch onLocated={handleLocated} startEditing />
-        </div>
-      )}
-      <div className="flex items-center gap-2">
-        <PassPicker className="flex-1" />
-        <button
-          type="button"
-          onClick={() => {
-            setView(view === "map" ? "list" : "map");
-            setSelectedId(null);
-          }}
-          className="flex h-8 shrink-0 items-center rounded-full bg-ink px-3.5 text-[13px] font-semibold text-white lg:hidden"
-        >
-          {view === "map" ? "List" : "Map"}
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => setSettingFrom((v) => !v)}
+        aria-expanded={settingFrom}
+        className="mt-2.5 text-[13px] text-ink-muted hover:text-ink"
+      >
+        {origin ? (
+          <>
+            From <span className="font-semibold text-ink underline underline-offset-2">{origin.label.split(",")[0]}</span>
+          </>
+        ) : (
+          <span className="font-semibold text-ink underline underline-offset-2">Set where you&apos;re starting from</span>
+        )}
+      </button>
+      {settingFrom && <LocationSearch onLocated={handleLocated} startEditing className="mt-2.5" />}
     </div>
   );
 
   return (
     <div className="flex flex-1 flex-col">
-      <SiteHeader />
+      <SiteHeader
+        aside={
+          <SegmentedControl
+            label="View"
+            value={view}
+            onChange={(v) => {
+              setView(v);
+              setSelectedId(null);
+            }}
+            className="lg:hidden"
+            segments={[
+              { value: "map", label: "Map" },
+              { value: "list", label: "List" },
+            ]}
+          />
+        }
+      />
       <h1 className="sr-only">Explore resorts</h1>
 
-      <div className="mx-auto w-full max-w-[1400px] flex-1 lg:grid lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start lg:gap-4 lg:px-5 lg:pb-8">
-        {/* The map, with search and filters floating over it. On phones it is the whole view. */}
+      <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start lg:gap-6 lg:px-5 lg:pb-8">
+        <div className="lg:hidden">{controls("top")}</div>
+
+        {/* The map. On phones it is the whole view. */}
         <section
           aria-label="Resort map"
-          className={`relative h-[calc(100dvh-7.5rem-env(safe-area-inset-bottom))] min-h-[420px] overflow-hidden bg-snow lg:sticky lg:top-4 lg:block lg:h-[calc(100vh-6rem)] lg:rounded-[18px] lg:shadow-[0_1px_2px_rgb(15_26_42/0.05),0_10px_30px_rgb(15_26_42/0.06)] ${
+          className={`relative h-[calc(100dvh-13.5rem-env(safe-area-inset-bottom))] min-h-[380px] overflow-hidden border-t border-ink bg-snow lg:sticky lg:top-4 lg:mt-4 lg:block lg:h-[calc(100vh-6rem)] lg:border lg:border-ink ${
             view === "map" ? "" : "hidden"
           }`}
         >
           <ResortMap
             resorts={visible.map((v) => v.resort)}
+            snow={snow}
             favoriteIds={favoriteIds}
             hoveredId={hoveredId}
             selectedId={selectedId}
@@ -217,46 +218,39 @@ export default function Explore() {
             origin={origin}
             focus={focus}
           />
-          <div className="absolute inset-x-3 top-3 z-10">{controls}</div>
+          <Legend />
           {selected && (
-            <PreviewCard
-              resort={selected.resort}
-              forecast={forecasts?.[selected.resort.id]}
-              distance={selected.distance}
-              onClose={() => setSelectedId(null)}
-            />
+            <PreviewPanel resort={selected.resort} forecast={forecasts?.[selected.resort.id]} onClose={() => setSelectedId(null)} />
           )}
         </section>
 
         {/* The list: its own view on phones, a column beside the map on desktop. */}
-        <section aria-label="Resorts" className={`px-3 pb-6 lg:block lg:px-0 lg:pb-0 ${view === "list" ? "" : "hidden"}`}>
-          {view === "list" && <div className="pb-3 lg:hidden">{controls}</div>}
-          <div className="sheet pb-2">
-            <div className="flex items-baseline justify-between px-[18px] pt-4 pb-1.5">
-              <h2 className="text-[15px] font-semibold">
-                {visible.length} {passLabel}
-                {visible.length === 1 ? "mountain" : "mountains"}
-              </h2>
-              <SortControl value={sortKey} onChange={setSortKey} distanceAvailable={origin !== null} />
-            </div>
-            <ul>
-              {visible.map(({ resort, distance }) => (
-                <li key={resort.id}>
-                  <ResortRow
-                    resort={resort}
-                    distance={distance}
-                    forecast={forecasts?.[resort.id]}
-                    forecastState={forecastState}
-                    href={resortPath(resort.id)}
-                    hovered={resort.id === hoveredId}
-                    onHover={(hovering) => setHoveredId(hovering ? resort.id : null)}
-                  />
-                </li>
-              ))}
-            </ul>
-            {visible.length === 0 && <p className="px-[18px] py-4 text-sm text-ink-muted">No mountains match “{query}”.</p>}
+        <section aria-label="Resorts" className={`pb-6 lg:block lg:pb-0 ${view === "list" ? "" : "hidden"}`}>
+          <div className="hidden lg:block">{controls("side")}</div>
+          <div className="rule-section flex items-baseline justify-between px-4 pt-3 pb-2 lg:mt-1">
+            <h2 className="text-[13px] font-semibold">
+              {visible.length} {passLabel}
+              {visible.length === 1 ? "mountain" : "mountains"}
+            </h2>
+            <SortControl value={sortKey} onChange={setSortKey} distanceAvailable={origin !== null} />
           </div>
-          <p className="px-2 pt-3 text-xs text-ink-faint">
+          <ul>
+            {visible.map(({ resort, distance }) => (
+              <li key={resort.id}>
+                <ResortRow
+                  resort={resort}
+                  distance={distance}
+                  forecast={forecasts?.[resort.id]}
+                  forecastState={forecastState}
+                  href={resortPath(resort.id)}
+                  hovered={resort.id === hoveredId}
+                  onHover={(hovering) => setHoveredId(hovering ? resort.id : null)}
+                />
+              </li>
+            ))}
+          </ul>
+          {visible.length === 0 && <p className="px-4 py-4 text-[15px] text-ink-muted">No mountains match “{query}”.</p>}
+          <p className="rule-row px-4 pt-3 text-[11px] text-ink-faint">
             Forecasts from{" "}
             <a className="underline" href="https://open-meteo.com/">
               Open-Meteo

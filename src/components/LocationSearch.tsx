@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useId, useState, type FormEvent } from "react";
 import type { GeocodeResult } from "@/app/api/geocode/route";
 import { useAppState, type Origin } from "@/components/AppState";
 
@@ -18,6 +18,7 @@ export default function LocationSearch({ onLocated, startEditing = false, classN
   const [query, setQuery] = useState("");
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inputId = useId();
 
   function located(next: Origin) {
     setOrigin(next);
@@ -72,7 +73,7 @@ export default function LocationSearch({ onLocated, startEditing = false, classN
         <button
           type="button"
           onClick={() => setEditing(true)}
-          className="shrink-0 font-medium text-glacier hover:underline"
+          className="shrink-0 font-semibold underline underline-offset-2"
         >
           Change
         </button>
@@ -82,21 +83,21 @@ export default function LocationSearch({ onLocated, startEditing = false, classN
 
   return (
     <div className={className}>
-      <form onSubmit={handleSearch} className="flex flex-wrap gap-2">
-        <label htmlFor="location" className="sr-only">
+      <form onSubmit={handleSearch} className="flex flex-wrap items-end gap-x-4 gap-y-2">
+        <label htmlFor={inputId} className="sr-only">
           City or zip code
         </label>
         <input
-          id="location"
+          id={inputId}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="City or zip"
-          className="min-w-0 flex-1 basis-40 rounded-[10px] bg-chip px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:ring-2 focus:ring-glacier focus:outline-none"
+          className="min-w-0 flex-1 basis-40 border-b-2 border-ink bg-transparent pb-1 text-[15px] text-ink placeholder:text-ink-faint focus:outline-none"
         />
         <button
           type="submit"
           disabled={locating}
-          className="rounded-[10px] bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-navy-2 disabled:opacity-60"
+          className="pb-1 text-[14px] font-bold underline underline-offset-4 disabled:opacity-60"
         >
           {locating ? "Finding…" : "Set"}
         </button>
@@ -104,12 +105,12 @@ export default function LocationSearch({ onLocated, startEditing = false, classN
           type="button"
           onClick={handleUseMyLocation}
           disabled={locating}
-          className="rounded-[10px] bg-chip px-3 py-2 text-sm font-medium text-ink hover:bg-line disabled:opacity-60"
+          className="pb-1 text-[14px] font-semibold underline underline-offset-4 disabled:opacity-60"
         >
           Use my location
         </button>
         {origin && (
-          <button type="button" onClick={() => setEditing(false)} className="px-1 text-sm text-ink-muted hover:text-ink">
+          <button type="button" onClick={() => setEditing(false)} className="pb-1 text-[14px] text-ink-muted hover:text-ink">
             Cancel
           </button>
         )}

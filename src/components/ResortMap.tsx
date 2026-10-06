@@ -3,7 +3,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl, { type GeoJSONSource, type Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
-import { resortColor } from "@/lib/format";
+import { formatInches, snowBucketColor } from "@/lib/format";
 import type { LatLon } from "@/lib/geo";
 import { resorts as allResorts, type Resort } from "@/lib/resorts";
 import { QUIET_STYLE } from "@/lib/terrain";
@@ -12,6 +12,8 @@ export type MapFocus = LatLon & { zoom: number; key: number };
 
 type Props = {
   resorts: Resort[];
+  /** Forecast snow over the next 7 days, by resort id. */
+  snow: Record<string, number>;
   favoriteIds: string[];
   hoveredId: string | null;
   selectedId: string | null;
@@ -22,6 +24,8 @@ type Props = {
 };
 
 const DOT_RADIUS = 5.5;
+const FAVORITE_RADIUS = 7;
+
 /** Resorts north of this (Aroostook County, Maine) are left out of the opening frame. */
 const FAR_NORTH_LAT = 45.5;
 
@@ -34,14 +38,22 @@ function bounds(list: Resort[]): [[number, number], [number, number]] {
   ];
 }
 
-function resortFeatures(list: Resort[], favoriteIds: string[]) {
+function resortFeatures(list: Resort[], snow: Record<string, number>, favoriteIds: string[]) {
   return {
     type: "FeatureCollection" as const,
-    features: list.map((r) => ({
-      type: "Feature" as const,
-      geometry: { type: "Point" as const, coordinates: [r.lon, r.lat] },
-      properties: { id: r.id, name: r.name, color: resortColor(r.passes), favorite: favoriteIds.includes(r.id) },
-    })),
+    features: list.map((r) => {
+      const inches = snow[r.id];
+      return {
+        type: "Feature" as const,
+        geometry: { type: "Point" as const, coordinates: [r.lon, r.lat] },
+        properties: {
+          id: r.id,
+          label: inches == null ? r.name : `${r.name} ${formatInches(inches)}`,
+          color: snowBucketColor(inches ?? 0),
+          favorite: favoriteIds.includes(r.id),
+        },
+      };
+    }),
   };
 }
 
@@ -57,7 +69,7 @@ function originFeatures(origin: LatLon | null) {
 const state = (key: "hover" | "selected") =>
   ["boolean", ["feature-state", key], false] as unknown as maplibregl.ExpressionSpecification;
 
-export default function ResortMap({ resorts, favoriteIds, hoveredId, selectedId, onSelect, origin, focus }: Props) {
+export default function ResortMap({ resorts, snow, favoriteIds, hoveredId, selectedId, onSelect, origin, focus }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const [ready, setReady] = useState(false);
@@ -74,8 +86,8 @@ export default function ResortMap({ resorts, favoriteIds, hoveredId, selectedId,
       style: QUIET_STYLE,
       // Open on where nearly all the mountains are; the two far-north Maine hills are a short pan away.
       bounds: bounds(allResorts.filter((r) => r.lat < FAR_NORTH_LAT)),
-      // Room at the top for the floating search and filters.
-      fitBoundsOptions: { padding: { top: 120, bottom: 40, left: 24, right: 24 } },
+      // Room at the top left for the legend.
+      fitBoundsOptions: { padding: { top: 56, bottom: 32, left: 24, right: 24 } },
       // Flat and north-up: no tilting or rotating.
       maxPitch: 0,
       dragRotate: false,
@@ -94,10 +106,10 @@ export default function ResortMap({ resorts, favoriteIds, hoveredId, selectedId,
         id: "origin",
         type: "circle",
         source: "origin",
-        paint: { "circle-radius": 6, "circle-color": "#e0532f", "circle-stroke-color": "#ffffff", "circle-stroke-width": 2.5 },
+        paint: { "circle-radius": 5, "circle-color": "#ffffff", "circle-stroke-color": "#0f1a2a", "circle-stroke-width": 2.5 },
       });
 
-      map.addSource("resorts", { type: "geojson", data: resortFeatures([], []), promoteId: "id" });
+      map.addSource("resorts", { type: "geojson", data: resortFeatures([], {}, []), promoteId: "id" });
       map.addLayer({
         id: "resort-halo",
         type: "circle",
@@ -113,20 +125,20 @@ export default function ResortMap({ resorts, favoriteIds, hoveredId, selectedId,
         type: "circle",
         source: "resorts",
         paint: {
-          "circle-radius": ["case", state("selected"), 8, state("hover"), 7.5, DOT_RADIUS],
+          "circle-radius": ["case", state("selected"), 8.5, state("hover"), 8, ["get", "favorite"], FAVORITE_RADIUS, DOT_RADIUS],
           "circle-color": ["get", "color"],
-          "circle-stroke-color": "#ffffff",
-          "circle-stroke-width": ["case", state("selected"), 3, 1.75],
+          "circle-stroke-color": ["case", state("selected"), "#0f1a2a", "#ffffff"],
+          "circle-stroke-width": ["case", state("selected"), 2.5, 1.5],
         },
       });
-      // Your mountains carry their names.
+      // Your mountains carry their names and next-7-day totals.
       map.addLayer({
         id: "favorite-names",
         type: "symbol",
         source: "resorts",
         filter: ["get", "favorite"],
         layout: {
-          "text-field": ["get", "name"],
+          "text-field": ["get", "label"],
           "text-font": ["Noto Sans Bold"],
           "text-size": 11,
           "text-anchor": "left",
@@ -153,8 +165,8 @@ export default function ResortMap({ resorts, favoriteIds, hoveredId, selectedId,
 
   useEffect(() => {
     if (!ready) return;
-    (mapRef.current?.getSource("resorts") as GeoJSONSource | undefined)?.setData(resortFeatures(resorts, favoriteIds));
-  }, [ready, resorts, favoriteIds]);
+    (mapRef.current?.getSource("resorts") as GeoJSONSource | undefined)?.setData(resortFeatures(resorts, snow, favoriteIds));
+  }, [ready, resorts, snow, favoriteIds]);
 
   useEffect(() => {
     if (!ready) return;

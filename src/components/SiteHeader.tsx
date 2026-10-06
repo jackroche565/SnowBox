@@ -18,7 +18,7 @@ export function Wordmark() {
 
 /**
  * The same plain bar on every tab: the wordmark left over a 1px ink rule, plus the section tabs
- * from tablet width up. `aside` replaces the right side on phones (the resort page's star, Explore's tabs).
+ * from tablet width up. `aside` sits before the tabs; the caller decides at which widths it shows.
  */
 export default function SiteHeader({ aside }: { aside?: ReactNode }) {
   return (
@@ -26,7 +26,7 @@ export default function SiteHeader({ aside }: { aside?: ReactNode }) {
       <div className="mx-auto flex max-w-6xl items-end justify-between gap-4 px-4 pt-[18px] pb-3 sm:pb-0">
         <Wordmark />
         <nav aria-label="Sections" className="flex items-center gap-4 sm:pb-2">
-          {aside && <span className="sm:hidden">{aside}</span>}
+          {aside}
           <TopTabs />
         </nav>
       </div>

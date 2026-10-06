@@ -4,7 +4,6 @@
    blue only for snow, alpenglow only for powder. */
 :root {
   --snow: #f3f5f8; /* page */
-  --sheet: #ffffff; /* surfaces */
   --ink: #0f1a2a; /* text, active controls */
   --navy: #0f1a2a;
   --navy-2: #1d2a3e;
@@ -12,23 +11,18 @@
   --ink-faint: #6b7585; /* captions */
   --ink-zero: #a3acb9; /* a zero snow figure */
   --line: #e3e8ee; /* control borders */
-  --hairline: #edf1f5; /* dividers inside sheets */
-  --chip: #eef1f5; /* quiet fills */
   --glacier: #1f5f8b; /* snow figures and bars; links as text only */
   --snow-deep: #123f60; /* deep snow */
   --snow-mid: #8fb7d4; /* light snow */
   --snow-light: #cfe1ee; /* lightest snow */
   --snow-none: #cfd7e0; /* no snow */
   --rule: #dfe5ec; /* between rows */
-  --ice: #e6f0f7; /* snow tint */
   --alpenglow: #e0532f; /* powder only */
-  --barn: #a9442b; /* wind holds, rain, errors */
-  --gold: #e0a526; /* favorites star only */
+  --barn: #a9442b; /* errors only */
 }
 
 @theme inline {
   --color-snow: var(--snow);
-  --color-sheet: var(--sheet);
   --color-ink: var(--ink);
   --color-navy: var(--navy);
   --color-navy-2: var(--navy-2);
@@ -36,18 +30,14 @@
   --color-ink-faint: var(--ink-faint);
   --color-ink-zero: var(--ink-zero);
   --color-line: var(--line);
-  --color-hairline: var(--hairline);
-  --color-chip: var(--chip);
   --color-glacier: var(--glacier);
   --color-snow-deep: var(--snow-deep);
   --color-snow-mid: var(--snow-mid);
   --color-snow-light: var(--snow-light);
   --color-snow-none: var(--snow-none);
   --color-rule: var(--rule);
-  --color-ice: var(--ice);
   --color-alpenglow: var(--alpenglow);
   --color-barn: var(--barn);
-  --color-gold: var(--gold);
   --font-sans: var(--font-instrument);
   --font-display: var(--font-archivo);
 }
@@ -87,15 +77,6 @@ body {
 }
 @utility rule-row {
   border-top: 1px solid var(--rule);
-}
-
-/* White surfaces: one soft shadow, hairlines inside. */
-@utility sheet {
-  background: var(--sheet);
-  border-radius: 18px;
-  box-shadow:
-    0 1px 2px rgb(15 26 42 / 0.05),
-    0 10px 30px rgb(15 26 42 / 0.06);
 }
 
 /* Snow stake: a ruled pole that fills from the bottom, like the stake cams resorts point at. */

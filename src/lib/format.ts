@@ -1,15 +1,13 @@
-import type { Pass } from "@/lib/resorts";
+/** Next-7-day snow buckets for the Explore map's dots and legend, lightest to deepest. */
+export const SNOW_BUCKETS = [
+  { label: "None", min: 0, color: "#cfd7e0" },
+  { label: '1–5"', min: 1, color: "#8fb7d4" },
+  { label: '6–11"', min: 6, color: "#1f5f8b" },
+  { label: '12"+', min: 12, color: "#123f60" },
+] as const;
 
-export const PASS_COLORS: Record<Pass, string> = {
-  Epic: "#ea580c",
-  Ikon: "#2563eb",
-  Indy: "#16a34a",
-};
-/** Resorts on none of the three passes: ink, so they read as part of the map, not greyed out. */
-export const INDEPENDENT_COLOR = "#0f1a2a";
-
-export function resortColor(passes: Pass[]): string {
-  return passes.length ? PASS_COLORS[passes[0]] : INDEPENDENT_COLOR;
+export function snowBucketColor(inches: number): string {
+  return [...SNOW_BUCKETS].reverse().find((b) => inches >= b.min)!.color;
 }
 
 export function formatInches(value: number | null | undefined): string {
