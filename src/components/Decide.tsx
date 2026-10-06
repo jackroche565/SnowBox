@@ -4,17 +4,23 @@ import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { COMPARE_LIMIT, onMyPasses, useAppState } from "@/components/AppState";
 import Estimate from "@/components/Estimate";
+import { WindIcon } from "@/components/Icons";
 import LocationSearch from "@/components/LocationSearch";
 import PassPicker from "@/components/PassPicker";
-import PassTags from "@/components/PassTags";
+import { passText } from "@/components/PassTags";
 import SiteHeader from "@/components/SiteHeader";
 import { RANK_BY, formatDrive, rankDay, scoreDay, type Pick, type RankBy } from "@/lib/decide";
-import type { DailyForecast } from "@/lib/forecast";
 import { formatDay, formatFeet, formatInches, formatTemp } from "@/lib/format";
+import { POWDER_INCHES } from "@/lib/outlook";
+import { WIND_HOLD_MPH } from "@/lib/resortForecast";
 import { getResort, isEstimate, resortPath, resorts } from "@/lib/resorts";
 import { formatOpening, isOpenOn, openingDate } from "@/lib/season";
 
 type MaxDrive = "any" | "1" | "2" | "3" | "4";
+type Option = "rank" | "from" | "drive" | "pass";
+
+/** Rows shown under the top pick before "Show all". */
+const SHORT_LIST = 4;
 
 function longDay(date: string, index: number): string {
   if (index === 0) return "today";
@@ -22,9 +28,12 @@ function longDay(date: string, index: number): string {
   return new Date(`${date}T12:00:00`).toLocaleDateString("en-US", { weekday: "long" });
 }
 
-function DayPicker({ days, value, onChange }: { days: DailyForecast[]; value: number; onChange: (i: number) => void }) {
+const windHold = (p: Pick) => p.open && p.gustMph != null && p.gustMph >= WIND_HOLD_MPH;
+
+/** Text tabs for the next 7 days, each with the most snow any result gets that day. */
+function DayStrip({ days, value, onChange }: { days: { date: string; maxIn: number | null }[]; value: number; onChange: (i: number) => void }) {
   return (
-    <div role="radiogroup" aria-label="Day" className="flex gap-1.5">
+    <div role="radiogroup" aria-label="Day" className="grid grid-cols-7 border-b border-ink">
       {days.map((d, i) => {
         const on = i === value;
         return (
@@ -34,12 +43,14 @@ function DayPicker({ days, value, onChange }: { days: DailyForecast[]; value: nu
             role="radio"
             aria-checked={on}
             onClick={() => onChange(i)}
-            className={`flex min-w-0 flex-1 flex-col items-center rounded-[10px] border py-[7px] tabular-nums transition-colors ${
-              on ? "border-ink bg-ink text-white" : "border-line bg-white text-ink hover:border-ink/30"
-            }`}
+            className={`-mb-px flex flex-col items-center border-b-[3px] pt-2.5 pb-2 tabular-nums ${on ? "border-ink" : "border-transparent"}`}
           >
-            <span className="text-xs font-semibold">{formatDay(d.date, i)}</span>
-            <span className="text-[11px] opacity-70">{Number(d.date.slice(8))}</span>
+            <span className={`text-[13px] ${on ? "font-bold text-ink" : "text-ink-muted"}`}>{formatDay(d.date, i)}</span>
+            <span
+              className={`type-figure mt-1 text-[15px] ${d.maxIn != null && d.maxIn >= 0.1 ? "text-glacier" : "text-ink-zero"}`}
+            >
+              {d.maxIn == null ? "—" : formatInches(d.maxIn)}
+            </span>
           </button>
         );
       })}
@@ -47,83 +58,136 @@ function DayPicker({ days, value, onChange }: { days: DailyForecast[]; value: nu
   );
 }
 
-/** Trail-marker shapes as icons for the three ways to rank. Always ink; never a difficulty. */
-const RANK_ICON: Record<RankBy, ReactNode> = {
-  overall: <path d="M12 2 L22 12 L12 22 L2 12 Z" />,
-  snow: <circle cx="12" cy="12" r="10" />,
-  closest: <rect x="3" y="3" width="18" height="18" rx="1" />,
-};
-
-function RankPicker({ value, onChange, closestAvailable }: { value: RankBy; onChange: (v: RankBy) => void; closestAvailable: boolean }) {
+/** A bold, underlined word in the options sentence that opens its picker. */
+function Word({ open, onClick, children }: { open: boolean; onClick: () => void; children: ReactNode }) {
   return (
-    <div role="radiogroup" aria-label="Rank by" className="grid grid-cols-3 gap-1.5">
-      {(Object.keys(RANK_BY) as RankBy[]).map((v) => {
-        const on = v === value;
-        const disabled = v === "closest" && !closestAvailable;
-        return (
-          <button
-            key={v}
-            type="button"
-            role="radio"
-            aria-checked={on}
-            disabled={disabled}
-            title={disabled ? "Set where you're starting from first" : undefined}
-            onClick={() => onChange(v)}
-            className={`flex flex-col items-start gap-1.5 rounded-xl border p-2.5 text-left transition-colors disabled:opacity-40 ${
-              on ? "border-ink bg-ink text-white" : "border-line bg-white text-ink hover:border-ink/30"
-            }`}
-          >
-            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
-              {RANK_ICON[v]}
-            </svg>
-            <span className="text-[13px] font-semibold">{RANK_BY[v]}</span>
-          </button>
-        );
-      })}
+    <button
+      type="button"
+      aria-expanded={open}
+      onClick={onClick}
+      className={`font-bold underline decoration-2 underline-offset-4 ${open ? "decoration-ink" : "decoration-ink/30 hover:decoration-ink"}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function TextChoice<T extends string>({ label, options, value, onChange }: { label: string; options: [T, string, boolean?][]; value: T; onChange: (v: T) => void }) {
+  return (
+    <div role="radiogroup" aria-label={label} className="flex flex-wrap gap-x-4 gap-y-2">
+      {options.map(([v, text, disabled]) => (
+        <button
+          key={v}
+          type="button"
+          role="radio"
+          aria-checked={v === value}
+          disabled={disabled}
+          onClick={() => onChange(v)}
+          className={`border-b-2 pb-0.5 text-[14px] disabled:opacity-40 ${
+            v === value ? "border-ink font-bold text-ink" : "border-transparent text-ink-muted hover:text-ink"
+          }`}
+        >
+          {text}
+        </button>
+      ))}
     </div>
   );
 }
 
-function ResultRow({ pick, rank, highlight }: { pick: Pick; rank: number; highlight: boolean }) {
+function Detail({ pick }: { pick: Pick }) {
+  const parts: ReactNode[] = [];
+  if (pick.driveHours != null) parts.push(<span key="drive" className="tabular-nums">{formatDrive(pick.driveHours)} drive (est.)</span>);
+  parts.push(<span key="pass">{passText(pick.resort.passes)}</span>);
+  for (const r of pick.reasons) {
+    // decide.ts words wind as "Gusts N mph…"; here it's said with its icon instead.
+    if (!r.text.startsWith("Gusts")) parts.push(<span key={r.text}>{r.text}</span>);
+  }
+  return (
+    <span className="flex flex-wrap items-center gap-x-1.5 text-[13px] text-ink-muted">
+      {parts.map((p, i) => (
+        <span key={i}>
+          {i > 0 && "· "}
+          {p}
+        </span>
+      ))}
+      {windHold(pick) && (
+        <span className="flex items-center gap-1 text-ink">
+          · <WindIcon className="h-3.5 w-3.5" /> Wind hold possible
+        </span>
+      )}
+    </span>
+  );
+}
+
+function CompareBox({ pick }: { pick: Pick }) {
   const { compareIds, toggleCompare } = useAppState();
   const { resort } = pick;
-  const inCompare = compareIds.includes(resort.id);
-  const full = !inCompare && compareIds.length >= COMPARE_LIMIT;
-
+  const on = compareIds.includes(resort.id);
+  const full = !on && compareIds.length >= COMPARE_LIMIT;
   return (
-    <li className={`flex items-center gap-3 border-t border-hairline px-4 py-3 first:border-t-0 ${highlight ? "bg-ice/60" : ""}`}>
-      <span className={`type-hero w-6 shrink-0 text-[26px] tabular-nums ${highlight ? "text-glacier" : "text-ink-zero"}`}>{rank}</span>
-      <span className="min-w-0 flex-1">
-        <span className="flex items-center gap-2">
-          <Link href={resortPath(resort.id)} className="type-name truncate text-lg hover:text-glacier">
-            {resort.name}
-          </Link>
-          <PassTags passes={resort.passes} />
+    <input
+      type="checkbox"
+      checked={on}
+      disabled={full}
+      onChange={() => toggleCompare(resort.id)}
+      aria-label={`Compare ${resort.name} side by side`}
+      title={full ? `Compare up to ${COMPARE_LIMIT} at a time` : "Compare side by side"}
+      className="h-[18px] w-[18px] shrink-0 cursor-pointer appearance-none border-2 border-ink bg-transparent checked:bg-ink disabled:opacity-30"
+    />
+  );
+}
+
+function snowColor(inches: number): string {
+  if (inches < 0.1) return "var(--ink-zero)";
+  return inches >= POWDER_INCHES ? "var(--alpenglow)" : "var(--glacier)";
+}
+
+function TopPick({ pick, dayLabel }: { pick: Pick; dayLabel: string }) {
+  const { compareIds, toggleCompare } = useAppState();
+  const on = compareIds.includes(pick.resort.id);
+  const full = !on && compareIds.length >= COMPARE_LIMIT;
+  return (
+    <section aria-label="Best bet" className="px-4 pt-4 pb-5">
+      <p className="text-[13px] text-ink-muted">Best bet {dayLabel}</p>
+      <div className="mt-1 flex items-end justify-between gap-4">
+        <Link href={resortPath(pick.resort.id)} className="type-hero min-w-0 text-[54px] hover:underline">
+          {pick.resort.name}
+        </Link>
+        <span className="type-hero shrink-0 text-[54px]" style={{ color: snowColor(pick.snowIn) }}>
+          {formatInches(pick.snowIn)}
         </span>
-        <span className="mt-0.5 flex flex-wrap gap-x-2.5 gap-y-0.5 text-xs">
-          {pick.driveHours != null && (
-            <span className="text-ink-faint tabular-nums">{formatDrive(pick.driveHours)} drive · est., no traffic</span>
-          )}
-          {pick.reasons.map((r) => (
-            <span key={r.text} className={`font-medium ${r.tone === "good" ? "text-glacier" : "text-barn"}`}>
-              {r.text}
-            </span>
-          ))}
-        </span>
-      </span>
-      <span className="shrink-0 text-right">
-        <span className={`type-figure block text-[22px] ${pick.snowIn >= 0.1 ? "text-ink" : "text-ink-zero"}`}>{formatInches(pick.snowIn)}</span>
-        <span className="mt-0.5 block text-[11px] text-ink-faint">new snow</span>
-      </span>
-      <input
-        type="checkbox"
-        checked={inCompare}
+      </div>
+      <div className="mt-2.5">
+        <Detail pick={pick} />
+      </div>
+      <button
+        type="button"
+        onClick={() => toggleCompare(pick.resort.id)}
         disabled={full}
-        onChange={() => toggleCompare(resort.id)}
-        aria-label={`Compare ${resort.name} side by side`}
-        title={full ? `Compare up to ${COMPARE_LIMIT} at a time` : "Compare side by side"}
-        className="h-4 w-4 shrink-0 accent-[#0f1a2a] disabled:opacity-40"
-      />
+        className="mt-3 text-[14px] font-semibold underline underline-offset-4 disabled:opacity-40"
+      >
+        {on ? `Remove ${pick.resort.name} from compare` : `Compare ${pick.resort.name}`}
+      </button>
+    </section>
+  );
+}
+
+function ResultRow({ pick, rank }: { pick: Pick; rank: number }) {
+  return (
+    <li className="rule-row flex items-center gap-3 px-4 py-3">
+      <span className="type-figure w-5 shrink-0 text-[17px] text-ink-faint">{rank}</span>
+      <span className="min-w-0 flex-1">
+        <Link href={resortPath(pick.resort.id)} className="type-name block truncate text-[19px] hover:underline">
+          {pick.resort.name}
+        </Link>
+        <span className="mt-0.5 block">
+          <Detail pick={pick} />
+        </span>
+      </span>
+      <span className="type-figure shrink-0 text-[24px]" style={{ color: snowColor(pick.snowIn) }}>
+        {formatInches(pick.snowIn)}
+      </span>
+      <CompareBox pick={pick} />
     </li>
   );
 }
@@ -188,8 +252,9 @@ function HeadToHead({ picks, dayLabel }: { picks: Pick[]; dayLabel: string }) {
   }
 
   return (
-    <section aria-label="Side by side" className="sheet overflow-x-auto p-3 sm:p-5">
-      <table className="w-full table-fixed border-collapse text-sm tabular-nums">
+    <section aria-label="Side by side" className="rule-section overflow-x-auto border-b border-ink px-4 pt-3 pb-3">
+      <h2 className="text-[13px] font-semibold">Side by side</h2>
+      <table className="mt-2 w-full table-fixed border-collapse text-[14px] tabular-nums">
         <colgroup>
           <col className="w-28 sm:w-36" />
           {picks.map((p) => (
@@ -202,15 +267,15 @@ function HeadToHead({ picks, dayLabel }: { picks: Pick[]; dayLabel: string }) {
               Measure
             </th>
             {picks.map((p) => (
-              <th key={p.resort.id} scope="col" className="px-2 pb-3 text-left align-top font-normal">
-                <Link href={resortPath(p.resort.id)} className="type-name text-lg leading-tight hover:text-glacier sm:text-xl">
+              <th key={p.resort.id} scope="col" className="px-2 pb-2.5 text-left align-top font-normal">
+                <Link href={resortPath(p.resort.id)} className="type-name block text-[17px] leading-tight hover:underline">
                   {p.resort.name}
                 </Link>
                 <button
                   type="button"
                   onClick={() => toggleCompare(p.resort.id)}
                   aria-label={`Remove ${p.resort.name}`}
-                  className="mt-1 block text-[11px] font-medium text-ink-muted hover:text-barn"
+                  className="mt-1 text-[11px] text-ink-muted underline underline-offset-2 hover:text-ink"
                 >
                   Remove
                 </button>
@@ -222,12 +287,12 @@ function HeadToHead({ picks, dayLabel }: { picks: Pick[]; dayLabel: string }) {
           {rows.map((row) => {
             const lead = leader(row);
             return (
-              <tr key={row.label} className="border-t border-hairline">
-                <th scope="row" className="py-2.5 pr-2 text-left text-xs font-medium text-ink-muted">
+              <tr key={row.label} className="border-t border-rule">
+                <th scope="row" className="py-2 pr-2 text-left text-[13px] font-normal text-ink-muted">
                   {row.label}
                 </th>
                 {picks.map((p, i) => (
-                  <td key={p.resort.id} className={`px-2 py-2.5 ${i === lead ? "font-bold" : ""}`}>
+                  <td key={p.resort.id} className={`px-2 py-2 ${i === lead ? "font-bold" : ""}`}>
                     {row.render(p)}
                   </td>
                 ))}
@@ -245,15 +310,23 @@ export default function Decide() {
   const [dayIndex, setDayIndex] = useState(0);
   const [maxDrive, setMaxDrive] = useState<MaxDrive>("any");
   const [chosenRank, setRankBy] = useState<RankBy>("overall");
-  const [settingFrom, setSettingFrom] = useState(false);
+  const [open, setOpen] = useState<Option | null>(null);
+  const [showAll, setShowAll] = useState(false);
   // "Closest" needs a starting point; without one, fall back to the blend.
   const rankBy = chosenRank === "closest" && !origin ? "overall" : chosenRank;
+  const toggle = (o: Option) => setOpen((cur) => (cur === o ? null : o));
 
   const days = forecasts ? (Object.values(forecasts)[0]?.upcoming ?? []) : [];
   const day = days[dayIndex];
   const maxHours = origin && maxDrive !== "any" ? Number(maxDrive) : null;
   const mine = resorts.filter((r) => onMyPasses(r.passes, myPasses));
-  const picks = forecasts ? rankDay(mine, forecasts, dayIndex, origin, maxHours, rankBy) : [];
+  const rank = (i: number) => (forecasts ? rankDay(mine, forecasts, i, origin, maxHours, rankBy) : []);
+  const picks = rank(dayIndex);
+  const strip = days.map((d, i) => {
+    const list = rank(i);
+    return { date: d.date, maxIn: list.length ? Math.max(...list.map((p) => p.snowIn)) : null };
+  });
+  const anySnow = picks.some((p) => p.snowIn >= 0.1);
   // Before the season, say who opens first instead of showing an empty list.
   const firstToOpen =
     day && !mine.some((r) => isOpenOn(r, day.date))
@@ -262,7 +335,6 @@ export default function Decide() {
           null,
         )
       : null;
-  const anySnow = picks.some((p) => p.snowIn >= 0.1);
 
   // Picked resorts stay in the head-to-head even if the filters above hide them from the list.
   const compared = forecasts
@@ -274,104 +346,133 @@ export default function Decide() {
       })
     : [];
 
+  const dayName = day ? longDay(day.date, dayIndex) : "";
+  const rest = picks.slice(1, showAll ? undefined : 1 + SHORT_LIST);
+
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-3 px-3 pb-10">
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col pb-10">
         <h1 className="sr-only">Decide where to ski</h1>
 
-        <section aria-label="Options" className="sheet flex flex-col gap-3.5 p-4">
-          {days.length ? <DayPicker days={days} value={dayIndex} onChange={setDayIndex} /> : <p className="text-sm text-ink-muted">Loading…</p>}
-          <RankPicker value={rankBy} onChange={setRankBy} closestAvailable={origin !== null} />
+        {days.length > 0 && <DayStrip days={strip} value={dayIndex} onChange={setDayIndex} />}
 
-          <div className="flex flex-col gap-2.5 border-t border-hairline pt-3">
-            <div className="flex flex-wrap items-center gap-2 text-[13px]">
-              <button
-                type="button"
-                onClick={() => setSettingFrom((v) => !v)}
-                aria-expanded={settingFrom}
-                className="rounded-full bg-chip px-2.5 py-1.5 hover:bg-line"
-              >
-                {origin ? (
-                  <>
-                    From <span className="font-semibold">{origin.label.split(",")[0]}</span>
-                  </>
-                ) : (
-                  <span className="font-medium text-glacier">Set where you&apos;re starting from</span>
-                )}
-              </button>
-              {origin && (
-                <label className="relative flex items-center rounded-full bg-chip py-1.5 pr-6 pl-2.5 hover:bg-line">
-                  <span className="sr-only">Maximum drive</span>
-                  <select
-                    value={maxDrive}
-                    onChange={(e) => setMaxDrive(e.target.value as MaxDrive)}
-                    className="cursor-pointer appearance-none bg-transparent font-semibold focus:outline-none"
-                  >
-                    <option value="any">Any drive</option>
-                    {(["1", "2", "3", "4"] as const).map((h) => (
-                      <option key={h} value={h}>
-                        Up to {h} hr{h === "1" ? "" : "s"}
-                      </option>
-                    ))}
-                  </select>
-                  <svg aria-hidden="true" viewBox="0 0 24 24" className="pointer-events-none absolute right-2 h-3 w-3" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M6 9 L12 15 L18 9" />
-                  </svg>
-                </label>
+        <section aria-label="Options" className="px-4 pt-4 pb-4">
+          <p className="text-[17px] leading-relaxed">
+            <Word open={open === "rank"} onClick={() => toggle("rank")}>
+              {RANK_BY[rankBy]}
+            </Word>{" "}
+            from{" "}
+            <Word open={open === "from"} onClick={() => toggle("from")}>
+              {origin ? origin.label.split(",")[0] : "where?"}
+            </Word>
+            {origin && (
+              <>
+                ,{" "}
+                <Word open={open === "drive"} onClick={() => toggle("drive")}>
+                  {maxDrive === "any" ? "any drive" : `up to ${maxDrive} hr${maxDrive === "1" ? "" : "s"}`}
+                </Word>
+              </>
+            )}
+            ,{" "}
+            <Word open={open === "pass"} onClick={() => toggle("pass")}>
+              {myPasses.length ? myPasses.join(" or ") : "any pass"}
+            </Word>
+          </p>
+
+          {open && (
+            <div className="mt-3 border-l-2 border-ink pl-3">
+              {open === "rank" && (
+                <TextChoice
+                  label="Rank by"
+                  value={rankBy}
+                  onChange={(v) => {
+                    setRankBy(v);
+                    setOpen(null);
+                  }}
+                  options={(Object.keys(RANK_BY) as RankBy[]).map((v) => [v, RANK_BY[v], v === "closest" && !origin])}
+                />
               )}
+              {open === "from" && <LocationSearch startEditing onLocated={() => setOpen(null)} />}
+              {open === "drive" && (
+                <TextChoice
+                  label="Maximum drive"
+                  value={maxDrive}
+                  onChange={(v) => {
+                    setMaxDrive(v);
+                    setOpen(null);
+                  }}
+                  options={[
+                    ["any", "Any drive"],
+                    ...(["1", "2", "3", "4"] as const).map((h): [MaxDrive, string] => [h, `Up to ${h} hr${h === "1" ? "" : "s"}`]),
+                  ]}
+                />
+              )}
+              {open === "pass" && <PassPicker />}
             </div>
-            {settingFrom && <LocationSearch onLocated={() => setSettingFrom(false)} startEditing />}
-            <PassPicker />
-          </div>
+          )}
         </section>
 
-        {forecastState === "error" && <p className="px-2 text-sm text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>}
-        {forecastState === "loading" && <p className="px-2 text-sm text-ink-muted">Loading forecast…</p>}
+        {forecastState === "error" && <p className="px-4 text-[15px] text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>}
+        {forecastState === "loading" && <p className="px-4 text-[15px] text-ink-muted">Loading forecast…</p>}
 
         {forecasts && day && (
           <>
-            {!anySnow && picks.length > 0 && (
-              <p className="px-2 pt-1 text-[13px] text-ink-muted">
-                No new snow forecast {longDay(day.date, dayIndex)}.
-                {rankBy !== "closest" &&
-                  (origin ? " Ranked by drive time." : " Set where you're starting from to rank by drive time.")}
-              </p>
-            )}
-
             {picks.length > 0 ? (
-              <ol className="sheet overflow-hidden">
-                {picks.map((p, i) => (
-                  <ResultRow key={p.resort.id} pick={p} rank={i + 1} highlight={i === 0 && p.snowIn >= 0.1} />
-                ))}
-              </ol>
-            ) : firstToOpen ? (
-              <p className="sheet p-4 text-sm text-ink-muted">
-                {myPasses.length ? "None of your mountains are" : "No mountains are"} open yet {dayIndex > 1 && "on "}
-                {longDay(day.date, dayIndex)}.{" "}
-                {firstToOpen.opensOn && (
-                  <>
-                    <span className="font-semibold text-ink">{firstToOpen.name}</span> is projected to open first, on{" "}
-                    {formatOpening(firstToOpen.opensOn)}.
-                  </>
+              <>
+                {!anySnow && (
+                  <p className="rule-section px-4 pt-3 text-[15px]">
+                    <span className="font-semibold">No new snow {dayName}.</span>
+                    {rankBy !== "closest" && origin && " Closest first."}
+                  </p>
                 )}
+                <div className={anySnow ? "rule-section" : ""}>
+                  <TopPick pick={picks[0]} dayLabel={dayName} />
+                </div>
+                {rest.length > 0 && (
+                  <ol>
+                    {rest.map((p, i) => (
+                      <ResultRow key={p.resort.id} pick={p} rank={i + 2} />
+                    ))}
+                  </ol>
+                )}
+                {picks.length > 1 + SHORT_LIST && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAll((v) => !v)}
+                    className="rule-row px-4 py-3 text-left text-[14px] font-semibold underline underline-offset-4"
+                  >
+                    {showAll ? "Show fewer" : `Show all ${picks.length}`}
+                  </button>
+                )}
+              </>
+            ) : firstToOpen ? (
+              <p className="rule-section px-4 pt-3 text-[15px]">
+                <span className="font-semibold">
+                  {myPasses.length ? "None of your mountains are" : "No mountains are"} open yet {dayIndex > 1 && "on "}
+                  {dayName}.
+                </span>
+                {firstToOpen.opensOn && ` ${firstToOpen.name} is projected to open first, on ${formatOpening(firstToOpen.opensOn)}.`}
               </p>
             ) : (
-              <p className="sheet p-4 text-sm text-ink-muted">
+              <p className="rule-section px-4 pt-3 text-[15px]">
                 No resorts within {maxDrive} hr{maxDrive === "1" ? "" : "s"} on {myPasses.length ? "your passes" : "any pass"}. Try a
                 longer drive.
               </p>
             )}
 
-            {compared.length === 1 && <p className="px-2 text-[13px] text-ink-muted">Tick one more to compare side by side.</p>}
-            {compared.length >= 2 && <HeadToHead picks={compared} dayLabel={dayIndex === 0 ? "today" : formatDay(day.date, dayIndex)} />}
+            {compared.length === 1 && <p className="rule-row px-4 py-3 text-[14px] text-ink-muted">Tick one more to compare side by side.</p>}
+            {compared.length >= 2 && (
+              <div className="mt-4">
+                <HeadToHead picks={compared} dayLabel={dayIndex === 0 ? "today" : formatDay(day.date, dayIndex)} />
+              </div>
+            )}
           </>
         )}
 
-        <p className="px-2 text-xs text-ink-faint">
-          Drive times are estimated from distance and don&apos;t include traffic. Best overall: new snow on the day
-          counts most, snow in the 2 days before adds half as much, and rain, gusts of 40+ mph and each hour of
-          driving count against. Only mountains projected to be open that day are ranked. Forecasts from{" "}
+        <p className="mt-6 px-4 text-[11px] text-ink-faint">
+          Drive times are estimated from distance, without traffic. Only mountains projected to be open that day are
+          ranked. Forecasts from{" "}
           <a className="underline" href="https://open-meteo.com/">
             Open-Meteo
           </a>

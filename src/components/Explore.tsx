@@ -180,7 +180,7 @@ export default function Explore() {
         </div>
       )}
       <div className="flex items-center gap-2">
-        <PassPicker floating className="flex-1" />
+        <PassPicker className="flex-1" />
         <button
           type="button"
           onClick={() => {
