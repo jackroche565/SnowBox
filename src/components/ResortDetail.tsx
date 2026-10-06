@@ -7,6 +7,7 @@ import { useAppState } from "@/components/AppState";
 import AlertLine from "@/components/AlertLine";
 import CountUp from "@/components/CountUp";
 import HourlyChart, { HourlyLegend } from "@/components/HourlyChart";
+import LiveCam, { camsFor, useWorkingCams } from "@/components/LiveCam";
 import { StarIcon, WindIcon } from "@/components/Icons";
 import { passText } from "@/components/PassTags";
 import SegmentedControl from "@/components/SegmentedControl";
@@ -197,6 +198,22 @@ function Snow({ resort, forecast }: { resort: Resort; forecast: ResortForecast }
           inches={forecast.snowDepthIn}
           color="var(--ink)"
         />
+      </ul>
+    </Section>
+  );
+}
+
+function LiveCams({ resort }: { resort: Resort }) {
+  const cams = camsFor(resort, useWorkingCams());
+  if (cams.length === 0) return null;
+  return (
+    <Section label="Live cams">
+      <ul className="grid gap-4 sm:grid-cols-2">
+        {cams.map((c) => (
+          <li key={c.youtube}>
+            <LiveCam cam={c} />
+          </li>
+        ))}
       </ul>
     </Section>
   );
@@ -590,6 +607,7 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
         {forecast && today ? (
           <>
             <Snow resort={resort} forecast={forecast} />
+            <LiveCams resort={resort} />
             <NextSevenDays resort={resort} forecast={forecast} detail={detail} today={today} />
           </>
         ) : (
