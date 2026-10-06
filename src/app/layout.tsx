@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, Instrument_Sans } from "next/font/google";
 import { AppStateProvider } from "@/components/AppState";
 import { BottomNav } from "@/components/Nav";
+import Statsig from "@/components/Statsig";
 import "./globals.css";
 
 const instrument = Instrument_Sans({
@@ -38,10 +39,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${instrument.variable} ${archivo.variable} h-full antialiased`}>
       {/* Bottom padding keeps content clear of the phone tab bar. */}
       <body className="flex min-h-full flex-col pb-[calc(3.75rem+env(safe-area-inset-bottom))] sm:pb-0">
-        <AppStateProvider>
-          {children}
-          <BottomNav />
-        </AppStateProvider>
+        <Statsig>
+          <AppStateProvider>
+            {children}
+            <BottomNav />
+          </AppStateProvider>
+        </Statsig>
       </body>
     </html>
   );
