@@ -17,7 +17,13 @@ const archivo = Archivo({
   axes: ["wdth"],
 });
 
+// Share previews need full addresses; on Vercel this is the production domain.
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Snowbox",
   description: "Snow forecasts for Northeast ski resorts.",
   applicationName: "Snowbox",
@@ -26,6 +32,7 @@ export const metadata: Metadata = {
     description: "Snow forecasts for Northeast ski resorts.",
     type: "website",
   },
+  twitter: { card: "summary_large_image" },
 };
 
 // "cover" lets the phone tab bar sit behind the home indicator, padded by the safe-area inset.

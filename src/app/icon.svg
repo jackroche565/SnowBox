@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- The Snowbox mountain mark: snow-colored peaks on an ink tile, so it reads on light and dark tab bars. -->
+  <rect width="32" height="32" rx="7" fill="#0f1a2a"/>
+  <g transform="translate(4 8)">
+    <path d="M0 16 L8 3 L12 9 L16 4 L24 16 Z" fill="#f3f5f8"/>
+    <path d="M8 3 L10.4 7 L8.6 6.2 L6.8 7.4 Z M16 4 L18 7.2 L16.4 6.6 L14.8 7.3 Z" fill="#0f1a2a"/>
+  </g>
+</svg>
