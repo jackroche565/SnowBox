@@ -30,7 +30,7 @@ export async function GET(_req: NextRequest, ctx: RouteContext<"/api/resort/[id]
     }
     const body: ResortDetailForecast = {
       ...parseHourly(resort, await hourlyRes.json()),
-      models: parseModels(await modelsRes.json()),
+      models: parseModels(await modelsRes.json(), resort.timezone),
     };
     return Response.json(body);
   } catch {

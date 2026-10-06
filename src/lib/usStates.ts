@@ -13,6 +13,15 @@ export const US_STATES: Record<string, string> = {
   WA: "Washington", WV: "West Virginia", WI: "Wisconsin", WY: "Wyoming",
 };
 
+export const PROVINCES: Record<string, string> = {
+  AB: "Alberta", BC: "British Columbia", MB: "Manitoba", NB: "New Brunswick", NL: "Newfoundland and Labrador",
+  NS: "Nova Scotia", NT: "Northwest Territories", ON: "Ontario", PE: "Prince Edward Island", QC: "Quebec",
+  SK: "Saskatchewan", YT: "Yukon",
+};
+
+/** A mountain's state or province, by code. US and Canadian codes don't overlap. */
+export const PLACE_NAMES: Record<string, string> = { ...US_STATES, ...PROVINCES };
+
 /** Turns "VT", "vt" or "Vermont" into "Vermont"; returns undefined if unrecognized. */
 export function normalizeState(input: string): string | undefined {
   const trimmed = input.trim();

@@ -6,14 +6,16 @@ import { onMyPasses, useAppState } from "@/components/AppState";
 import { WindIcon } from "@/components/Icons";
 import LocationSearch from "@/components/LocationSearch";
 import PassPicker from "@/components/PassPicker";
+import RegionPicker from "@/components/RegionPicker";
 import { passText } from "@/components/PassTags";
 import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
-import { formatDrive, rankDay, type Pick } from "@/lib/decide";
+import { formatDrive, isDrivable, rankDay, type Pick } from "@/lib/decide";
 import { formatDay, formatInches } from "@/lib/format";
 import { POWDER_INCHES } from "@/lib/outlook";
 import { WIND_HOLD_MPH } from "@/lib/resortForecast";
-import { resortPath, resorts } from "@/lib/resorts";
+import { resortsIn } from "@/lib/regions";
+import { resortPath } from "@/lib/resorts";
 import { formatOpening, openingDate } from "@/lib/season";
 
 // Where to ski on a day, two simple ways: most new snow, or closest. The two are never blended;
@@ -63,7 +65,7 @@ function Row({ pick }: { pick: Pick }) {
   const windy = open && pick.gustMph != null && pick.gustMph >= WIND_HOLD_MPH;
   const details = [
     !open && (resort.opensOn ? `Opens ${formatOpening(resort.opensOn)}` : "Not open yet"),
-    pick.driveHours != null && `${formatDrive(pick.driveHours)} drive`,
+    isDrivable(pick.driveHours) && `${formatDrive(pick.driveHours)} drive`,
     passText(resort.passes),
     pick.rainIn >= 0.05 && "Rain likely",
   ].filter(Boolean);
@@ -133,16 +135,18 @@ function Controls({ view, onView }: { view: View; onView: (v: View) => void }) {
 }
 
 export default function Decide() {
-  const { forecasts, forecastState, origin, myPasses } = useAppState();
+  const { forecasts, forecastState, origin, myPasses, region } = useAppState();
   const [dayIndex, setDayIndex] = useState(0);
   const [chosenView, setView] = useState<View>("snow");
   // "Closest" needs a starting point.
   const view = chosenView === "closest" && !origin ? "snow" : chosenView;
   const [showAll, setShowAll] = useState(false);
 
-  const days = forecasts ? (Object.values(forecasts)[0]?.upcoming ?? []) : [];
+  const inRegion = resortsIn(region);
+  // The region's own days (forecasts from other regions may be loaded too, in other time zones).
+  const days = (forecastState === "ready" && inRegion.map((r) => forecasts?.[r.id]).find(Boolean)?.upcoming) || [];
   const day = days[dayIndex];
-  const mine = resorts.filter((r) => onMyPasses(r.passes, myPasses));
+  const mine = inRegion.filter((r) => onMyPasses(r.passes, myPasses));
   // Most snow first (ties, including no snow at all, go closest first), or simply closest first.
   const rank = (i: number, by: View) => (forecasts ? rankDay(mine, forecasts, i, origin, null, by, true) : []);
   const picks = rank(dayIndex, view);
@@ -165,6 +169,9 @@ export default function Decide() {
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col pb-10">
         <h1 className="sr-only">Where to ski</h1>
 
+        <div className="px-4 pt-3.5 pb-2.5">
+          <RegionPicker />
+        </div>
         {days.length > 0 && <DayStrip days={strip} value={dayIndex} onChange={setDayIndex} />}
 
         <Controls view={view} onView={setView} />

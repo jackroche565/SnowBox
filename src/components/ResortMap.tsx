@@ -5,7 +5,8 @@ import maplibregl, { type GeoJSONSource, type Map as MapLibreMap, type RasterTil
 import { useEffect, useRef, useState } from "react";
 import { formatInches, snowBucketColor } from "@/lib/format";
 import type { LatLon } from "@/lib/geo";
-import { resorts as allResorts, type Resort } from "@/lib/resorts";
+import type { Bounds } from "@/lib/regions";
+import type { Resort } from "@/lib/resorts";
 import { QUIET_STYLE } from "@/lib/terrain";
 
 export type MapFocus = LatLon & { zoom: number; key: number };
@@ -23,6 +24,8 @@ type Props = {
   focus: MapFocus | null;
   /** Show the national radar under the dots. */
   radar: boolean;
+  /** The region to frame; the map re-frames when it changes. */
+  frame: Bounds;
 };
 
 /** NOAA's national radar composite, tiled by the Iowa Environmental Mesonet (public domain). */
@@ -33,17 +36,8 @@ const RADAR_REFRESH_MS = 5 * 60 * 1000;
 const DOT_RADIUS = 5.5;
 const FAVORITE_RADIUS = 7;
 
-/** Resorts north of this (Aroostook County, Maine) are left out of the opening frame. */
-const FAR_NORTH_LAT = 45.5;
-
-function bounds(list: Resort[]): [[number, number], [number, number]] {
-  const lons = list.map((r) => r.lon);
-  const lats = list.map((r) => r.lat);
-  return [
-    [Math.min(...lons), Math.min(...lats)],
-    [Math.max(...lons), Math.max(...lats)],
-  ];
-}
+/** Room at the top for the layer switch and key. */
+const FRAME_PADDING = { top: 84, bottom: 32, left: 24, right: 24 };
 
 function resortFeatures(list: Resort[], snow: Record<string, number>, favoriteIds: string[]) {
   return {
@@ -76,7 +70,7 @@ function originFeatures(origin: LatLon | null) {
 const state = (key: "hover" | "selected") =>
   ["boolean", ["feature-state", key], false] as unknown as maplibregl.ExpressionSpecification;
 
-export default function ResortMap({ resorts, snow, favoriteIds, hoveredId, selectedId, onSelect, origin, focus, radar }: Props) {
+export default function ResortMap({ resorts, snow, favoriteIds, hoveredId, selectedId, onSelect, origin, focus, radar, frame }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const [ready, setReady] = useState(false);
@@ -91,10 +85,8 @@ export default function ResortMap({ resorts, snow, favoriteIds, hoveredId, selec
     const map = new maplibregl.Map({
       container: container.current,
       style: QUIET_STYLE,
-      // Open on where nearly all the mountains are; the two far-north Maine hills are a short pan away.
-      bounds: bounds(allResorts.filter((r) => r.lat < FAR_NORTH_LAT)),
-      // Room at the top for the layer switch and key.
-      fitBoundsOptions: { padding: { top: 84, bottom: 32, left: 24, right: 24 } },
+      bounds: frame,
+      fitBoundsOptions: { padding: FRAME_PADDING },
       // Flat and north-up: no tilting or rotating.
       maxPitch: 0,
       dragRotate: false,
@@ -221,6 +213,14 @@ export default function ResortMap({ resorts, snow, favoriteIds, hoveredId, selec
     const timer = setInterval(refresh, RADAR_REFRESH_MS);
     return () => clearInterval(timer);
   }, [ready, radar]);
+
+  // A new region: frame it (the first frame is set when the map is created).
+  const framed = useRef(frame);
+  useEffect(() => {
+    if (!ready || framed.current === frame) return;
+    framed.current = frame;
+    mapRef.current?.fitBounds(frame, { padding: FRAME_PADDING, duration: 0 });
+  }, [ready, frame]);
 
   useEffect(() => {
     if (!focus) return;

@@ -20,7 +20,13 @@ export type PassFilter = (typeof PASS_FILTERS)[number];
 export type Resort = {
   id: string;
   name: string;
+  /** State or province code ("VT", "BC"). */
   state: string;
+  country: "US" | "CA";
+  /** Which Snowbox region it's in (see regions.ts). */
+  region: import("@/lib/regions").RegionId;
+  /** IANA time zone, e.g. "America/Denver". Forecast days and times are in this zone. */
+  timezone: string;
   lat: number;
   lon: number;
   passes: Pass[];

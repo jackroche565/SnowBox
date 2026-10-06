@@ -37,23 +37,38 @@ export type ForecastResponse = {
   forecasts: Record<string, ResortForecast>;
 };
 
-export const TIMEZONE = "America/New_York";
 /** How far ahead the outlook reaches. 16 is Open-Meteo's maximum. */
 export const OUTLOOK_DAYS = 16;
+/** Days the fast request covers: today and the next 6. */
+export const NEAR_DAYS = 7;
 
-export function buildForecastUrl(list: Resort[]): string {
-  const params = new URLSearchParams({
+const DAILY = "snowfall_sum,rain_sum,temperature_2m_max,temperature_2m_min,wind_gusts_10m_max";
+
+function baseParams(list: Resort[]) {
+  return {
     latitude: list.map((r) => r.lat).join(","),
     longitude: list.map((r) => r.lon).join(","),
-    current: "temperature_2m,snow_depth",
-    daily: "snowfall_sum,rain_sum,temperature_2m_max,temperature_2m_min,wind_gusts_10m_max",
-    past_days: "7",
-    forecast_days: String(OUTLOOK_DAYS),
-    timezone: TIMEZONE,
+    daily: DAILY,
+    // Each location in its own time zone, so "today" is today at the mountain.
+    timezone: "auto",
     temperature_unit: "fahrenheit",
     precipitation_unit: "inch",
     wind_speed_unit: "mph",
-  });
+  };
+}
+
+// Open-Meteo's free tier allows 10,000 calls a day and counts each location (more for longer
+// ranges), so the summary comes in two parts refreshed at different speeds:
+
+/** Fast: conditions now plus today and the next 6 days. What people check; refreshed hourly. */
+export function buildNearUrl(list: Resort[]): string {
+  const params = new URLSearchParams({ ...baseParams(list), current: "temperature_2m,snow_depth", forecast_days: String(NEAR_DAYS) });
+  return `https://api.open-meteo.com/v1/forecast?${params}`;
+}
+
+/** Slow: the past week (already happened) and the long range (changes slowly). Refreshed every 6 hours. */
+export function buildFarUrl(list: Resort[]): string {
+  const params = new URLSearchParams({ ...baseParams(list), past_days: "7", forecast_days: String(OUTLOOK_DAYS) });
   return `https://api.open-meteo.com/v1/forecast?${params}`;
 }
 
@@ -74,7 +89,8 @@ function toInches(value: number | null | undefined, unit: string | undefined): n
   return value * factor;
 }
 
-type OpenMeteoLocation = {
+export type OpenMeteoLocation = {
+  timezone?: string;
   current?: { temperature_2m?: number | null; snow_depth?: number | null };
   current_units?: { snow_depth?: string };
   daily?: {
@@ -88,17 +104,41 @@ type OpenMeteoLocation = {
   daily_units?: { snowfall_sum?: string; rain_sum?: string };
 };
 
-export function todayInTimezone(now: Date): string {
+export function todayInTimezone(now: Date, timeZone: string): string {
   // en-CA formats dates as YYYY-MM-DD, matching Open-Meteo's daily timestamps.
-  return now.toLocaleDateString("en-CA", { timeZone: TIMEZONE });
+  return now.toLocaleDateString("en-CA", { timeZone });
+}
+
+type DailySeries = Exclude<keyof NonNullable<OpenMeteoLocation["daily"]>, "time">;
+const SERIES: DailySeries[] = ["snowfall_sum", "rain_sum", "temperature_2m_max", "temperature_2m_min", "wind_gusts_10m_max"];
+
+/**
+ * One location from the two requests: the slow one's full date range (past week to day 16),
+ * with the fast one's newer values wherever it has the day, and the fast one's current conditions.
+ */
+export function mergeLocations(near: OpenMeteoLocation | undefined, far: OpenMeteoLocation | undefined): OpenMeteoLocation {
+  const dates = [...new Set([...(far?.daily?.time ?? []), ...(near?.daily?.time ?? [])])].sort();
+  const pick = (key: DailySeries, date: string) => {
+    const ni = near?.daily?.time.indexOf(date) ?? -1;
+    if (ni !== -1) return near?.daily?.[key]?.[ni] ?? null;
+    const fi = far?.daily?.time.indexOf(date) ?? -1;
+    return fi !== -1 ? (far?.daily?.[key]?.[fi] ?? null) : null;
+  };
+  return {
+    timezone: near?.timezone ?? far?.timezone,
+    current: near?.current,
+    current_units: near?.current_units,
+    daily: { time: dates, ...Object.fromEntries(SERIES.map((k) => [k, dates.map((date) => pick(k, date))])) },
+    daily_units: near?.daily_units ?? far?.daily_units,
+  };
 }
 
 export function sum(values: (number | null)[]): number {
   return values.reduce<number>((total, v) => total + (v ?? 0), 0);
 }
 
-export function parseLocation(loc: OpenMeteoLocation, now = new Date()): ResortForecast {
-  const today = todayInTimezone(now);
+export function parseLocation(loc: OpenMeteoLocation, timeZone: string, now = new Date()): ResortForecast {
+  const today = todayInTimezone(now, loc.timezone ?? timeZone);
   const daily = loc.daily;
   const snowUnit = loc.daily_units?.snowfall_sum;
 
@@ -128,17 +168,19 @@ export function parseLocation(loc: OpenMeteoLocation, now = new Date()): ResortF
   };
 }
 
-/** Pairs each resort with its entry in an Open-Meteo multi-location response. */
-export function parseForecastResponse(
+/** Open-Meteo returns a bare object for one location and an array (in request order) for several. */
+export const asLocations = (body: OpenMeteoLocation | OpenMeteoLocation[]) => (Array.isArray(body) ? body : [body]);
+
+/** Pairs each resort with its merged fast and slow entries. */
+export function parseForecasts(
   list: Resort[],
-  body: OpenMeteoLocation | OpenMeteoLocation[],
+  near: OpenMeteoLocation[],
+  far: OpenMeteoLocation[],
   now = new Date(),
 ): Record<string, ResortForecast> {
-  // Open-Meteo returns a bare object for one location and an array (in request order) for several.
-  const locations = Array.isArray(body) ? body : [body];
   const forecasts: Record<string, ResortForecast> = {};
   list.forEach((resort, i) => {
-    if (locations[i]) forecasts[resort.id] = parseLocation(locations[i], now);
+    if (near[i] || far[i]) forecasts[resort.id] = parseLocation(mergeLocations(near[i], far[i]), resort.timezone, now);
   });
   return forecasts;
 }

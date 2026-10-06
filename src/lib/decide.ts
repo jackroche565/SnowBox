@@ -25,6 +25,11 @@ const WIND_PENALTY = 3;
 /** Each hour of estimated driving costs this many points. */
 const DRIVE_WEIGHT = 1;
 
+/** Past this, a drive estimate means nothing (you'd fly), so pages don't show one. */
+export const MAX_SHOWN_DRIVE_HOURS = 12;
+
+export const isDrivable = (hours: number | null | undefined): hours is number => hours != null && hours <= MAX_SHOWN_DRIVE_HOURS;
+
 export function estimateDriveHours(from: LatLon, to: LatLon): number {
   return (distanceMiles(from, to) * ROAD_FACTOR) / AVERAGE_MPH;
 }

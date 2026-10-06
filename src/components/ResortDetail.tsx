@@ -33,7 +33,7 @@ import { formatAlertTime, officeName, type ResortNws } from "@/lib/nws";
 import { isEstimate, type Resort } from "@/lib/resorts";
 import { formatOpening, isOpenOn } from "@/lib/season";
 import { TERRAIN_CREDIT } from "@/lib/terrain";
-import { US_STATES } from "@/lib/usStates";
+import { PLACE_NAMES } from "@/lib/usStates";
 
 // WebGL only runs in the browser, so the 3D header loads client-side.
 const TerrainHero = dynamic(() => import("@/components/TerrainHero"), { ssr: false });
@@ -170,7 +170,7 @@ function Snow({ resort, forecast }: { resort: Resort; forecast: ResortForecast }
   const fresh = measured ?? last48In(forecast);
   const note =
     measured != null
-      ? `Observed by NOAA, to ${formatObservedEnd(observed!.endsAt)}`
+      ? `Observed by NOAA, to ${formatObservedEnd(observed!.endsAt, resort.timezone)}`
       : fresh < 1
         ? lastSnow(forecast)
         : "Modeled";
@@ -386,9 +386,11 @@ function NextSevenDays({ resort, forecast, detail, today }: { resort: Resort; fo
 
 // ── Weather service ───────────────────────────────────────────────────
 
-function useNws(id: string): ResortNws | null {
+function useNws(id: string, covered: boolean): ResortNws | null {
   const [nws, setNws] = useState<ResortNws | null>(null);
   useEffect(() => {
+    // The weather service covers the US only.
+    if (!covered) return;
     let cancelled = false;
     fetch(`/api/nws/${id}`)
       .then((res) => (res.ok ? (res.json() as Promise<ResortNws>) : null))
@@ -397,11 +399,11 @@ function useNws(id: string): ResortNws | null {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, covered]);
   return nws;
 }
 
-function ForecasterNotes({ nws }: { nws: ResortNws }) {
+function ForecasterNotes({ nws, resort }: { nws: ResortNws; resort: Resort }) {
   const d = nws.discussion;
   if (!d) return null;
   return (
@@ -409,7 +411,7 @@ function ForecasterNotes({ nws }: { nws: ResortNws }) {
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5 text-[13px] font-semibold">
         Forecaster notes
         <span className="flex items-center gap-1.5 font-normal text-ink-muted">
-          NWS {officeName(d.office)}, {formatAlertTime(d.issued)}
+          NWS {officeName(d.office)}, {formatAlertTime(d.issued, resort.timezone)}
           <svg
             aria-hidden="true"
             viewBox="0 0 24 24"
@@ -554,15 +556,18 @@ function YourMountain({ resort }: { resort: Resort }) {
 }
 
 export default function ResortDetail({ resort }: { resort: Resort }) {
-  const { forecasts, forecastState, distanceTo, origin } = useAppState();
+  const { forecasts, regionState, requireRegion, distanceTo, origin } = useAppState();
+  // This mountain's region may not be the one you've chosen; load its forecasts either way.
+  useEffect(() => requireRegion(resort.region), [requireRegion, resort.region]);
+  const forecastState = regionState(resort.region);
   const detail = useResortDetail(resort.id);
-  const nws = useNws(resort.id);
+  const nws = useNws(resort.id, resort.nws !== undefined);
   const forecast = forecasts?.[resort.id];
   const distance = distanceTo(resort);
   const today = forecast?.upcoming[0]?.date;
 
   const meta = [
-    US_STATES[resort.state] ?? resort.state,
+    PLACE_NAMES[resort.state] ?? resort.state,
     passText(resort.passes),
     distance !== null && origin ? `${Math.round(distance)} mi from ${origin.label.split(",")[0]}` : null,
   ].filter(Boolean);
@@ -598,7 +603,7 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
           <ul aria-label="Weather service warnings" className="px-4 pt-3 pb-1 text-[15px]">
             {nws.alerts.map((a) => (
               <li key={a.event}>
-                <AlertLine alert={a} office={resort.nws?.office} />
+                <AlertLine alert={a} timeZone={resort.timezone} office={resort.nws?.office} />
               </li>
             ))}
           </ul>
@@ -615,7 +620,7 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
             <Pending state={forecastState} />
           </div>
         )}
-        {nws && <ForecasterNotes nws={nws} />}
+        {nws && <ForecasterNotes nws={nws} resort={resort} />}
         <HourByHour resort={resort} detail={detail} />
         <Links resort={resort} />
         <p className="rule-row px-4 pt-3 pb-10 text-[11px] text-ink-faint">

@@ -1,5 +1,5 @@
-import { TIMEZONE } from "@/lib/forecast";
-import type { Resort } from "@/lib/resorts";
+import officeNames from "@/data/nwsOffices.json";
+import { resorts, type Resort } from "@/lib/resorts";
 
 // The National Weather Service: active warnings for each mountain, and the local office's
 // forecaster discussion. Free and keyless, but the API asks every caller to identify itself.
@@ -9,18 +9,11 @@ export const NWS_HEADERS = {
   Accept: "application/geo+json",
 };
 
-/** The states our mountains are in: one alerts request covers all of them. */
-const STATES = "VT,NH,ME,MA,CT,RI,NY";
+/** The US states our mountains are in: one alerts request covers all of them. */
+const STATES = [...new Set(resorts.filter((r) => r.country === "US").map((r) => r.state))].sort().join(",");
 
-export const OFFICE_NAMES: Record<string, string> = {
-  BTV: "Burlington",
-  GYX: "Gray",
-  CAR: "Caribou",
-  ALY: "Albany",
-  BOX: "Boston",
-  OKX: "New York",
-  BGM: "Binghamton",
-};
+/** Each forecast office's city, e.g. BTV → Burlington (from the weather service's office list). */
+const OFFICE_NAMES: Record<string, string> = officeNames;
 
 export const officeName = (office: string) => OFFICE_NAMES[office] ?? office;
 
@@ -128,10 +121,10 @@ export function parseDiscussion(office: string, issued: string, text: string): N
 
 // ── Formatting ──────────────────────────────────────────────────────────
 
-/** "Thu 7pm" in resort time. */
-export function formatAlertTime(iso: string): string {
+/** "Thu 7pm" in the mountain's time zone. */
+export function formatAlertTime(iso: string, timeZone: string): string {
   const d = new Date(iso);
-  const day = d.toLocaleDateString("en-US", { weekday: "short", timeZone: TIMEZONE });
-  const hour = d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: TIMEZONE });
+  const day = d.toLocaleDateString("en-US", { weekday: "short", timeZone });
+  const hour = d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone });
   return `${day} ${hour.replace(":00", "").replace(" ", "").toLowerCase()}`;
 }

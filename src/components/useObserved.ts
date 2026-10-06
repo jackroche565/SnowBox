@@ -25,10 +25,10 @@ export function useObserved(): ObservedSnow | null {
   return observed;
 }
 
-/** "Mon 8pm", the end of an observed window, in resort time. */
-export function formatObservedEnd(iso: string): string {
+/** "Mon 8pm", the end of an observed window, in the given time zone. */
+export function formatObservedEnd(iso: string, timeZone: string): string {
   const d = new Date(iso);
-  const day = d.toLocaleDateString("en-US", { weekday: "short", timeZone: "America/New_York" });
-  const hour = d.toLocaleTimeString("en-US", { hour: "numeric", timeZone: "America/New_York" });
+  const day = d.toLocaleDateString("en-US", { weekday: "short", timeZone });
+  const hour = d.toLocaleTimeString("en-US", { hour: "numeric", timeZone });
   return `${day} ${hour.replace(" ", "").toLowerCase()}`;
 }

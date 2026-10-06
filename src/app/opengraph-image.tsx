@@ -19,7 +19,6 @@ export default async function OpengraphImage() {
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", background: "#f3f5f8", position: "relative" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element -- rendered to an image, not a page */}
         <img src={ridgeSrc} alt="" width={1200} height={300} style={{ position: "absolute", left: 0, bottom: 0, width: 1200, height: 300, objectFit: "cover" }} />
         <div style={{ display: "flex", flexDirection: "column", padding: "72px 80px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 28 }}>

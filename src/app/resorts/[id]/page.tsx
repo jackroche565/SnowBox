@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: PageProps<"/resorts/[id]">): 
   if (!resort) return {};
   return {
     title: `${resort.name} · Snowbox`,
-    description: `Snow forecast, trail map and webcams for ${resort.name}, ${resort.state}.`,
+    description: `Snow forecast and conditions for ${resort.name}, ${resort.state}.`,
   };
 }
 

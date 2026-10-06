@@ -1,11 +1,12 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CountUpContext } from "@/components/CountUp";
 import type { SortKey } from "@/components/SortControl";
 import type { ForecastResponse, ResortForecast } from "@/lib/forecast";
 import { distanceMiles, type LatLon } from "@/lib/geo";
-import { INDEPENDENT, PASS_FILTERS, type Pass, type PassFilter } from "@/lib/resorts";
+import { DEFAULT_REGION, isRegion, type RegionId } from "@/lib/regions";
+import { INDEPENDENT, PASS_FILTERS, getResort, type Pass, type PassFilter } from "@/lib/resorts";
 
 export type Origin = LatLon & { label: string };
 export type ForecastState = "loading" | "error" | "ready";
@@ -17,11 +18,22 @@ const STORAGE = {
   favorites: "snowline:favorites",
   passes: "snowline:passes",
   origin: "snowline:origin",
+  region: "snowbox:region",
 };
 
 type AppState = {
+  /** Forecasts for every region loaded so far, by resort id. Null until the first one arrives. */
   forecasts: Record<string, ResortForecast> | null;
+  /** Whether the chosen region's forecasts are in. */
   forecastState: ForecastState;
+  /** The same, for any region (a resort page's own region, say). */
+  regionState: (region: RegionId) => ForecastState;
+
+  /** The region Explore and Decide show, saved in this browser. */
+  region: RegionId;
+  setRegion: (region: RegionId) => void;
+  /** Ask for a region's forecasts without switching to it (a resort page in another region). */
+  requireRegion: (region: RegionId) => void;
 
   /** Where the user starts from, saved in this browser. */
   origin: Origin | null;
@@ -84,8 +96,11 @@ function writeStored(key: string, value: unknown) {
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [forecasts, setForecasts] = useState<Record<string, ResortForecast> | null>(null);
-  const [forecastState, setForecastState] = useState<ForecastState>("loading");
+  const [states, setStates] = useState<Partial<Record<RegionId, ForecastState>>>({});
   const [countingUp, setCountingUp] = useState(false);
+  const [region, setRegion] = useState<RegionId>(DEFAULT_REGION);
+  const [requested, setRequested] = useState<RegionId[]>([]);
+  const started = useRef(new Set<RegionId>());
 
   const [origin, setOrigin] = useState<Origin | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
@@ -93,19 +108,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [storageLoaded, setStorageLoaded] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("next7");
 
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    fetch("/api/forecast")
-      .then((res) => (res.ok ? (res.json() as Promise<ForecastResponse>) : Promise.reject()))
-      .then((data) => {
-        setForecasts(data.forecasts);
-        setForecastState("ready");
-        setCountingUp(true);
-        timer = setTimeout(() => setCountingUp(false), COUNT_UP_WINDOW_MS);
-      })
-      .catch(() => setForecastState("error"));
-    return () => clearTimeout(timer);
-  }, []);
 
   // Saved settings are read after mount so the server-rendered HTML (which can't see
   // localStorage) matches the first client render.
@@ -114,6 +116,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       setFavoriteIds(readStoredIds(STORAGE.favorites));
       setMyPasses(readStoredIds(STORAGE.passes).filter((p): p is PassFilter => (PASS_FILTERS as readonly string[]).includes(p)));
       setOrigin(readStoredOrigin());
+      const storedRegion = readStored(STORAGE.region);
+      if (isRegion(storedRegion)) setRegion(storedRegion);
       setStorageLoaded(true);
     });
   }, []);
@@ -123,7 +127,35 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     writeStored(STORAGE.favorites, favoriteIds);
     writeStored(STORAGE.passes, myPasses);
     writeStored(STORAGE.origin, origin);
-  }, [favoriteIds, myPasses, origin, storageLoaded]);
+    writeStored(STORAGE.region, region);
+  }, [favoriteIds, myPasses, origin, region, storageLoaded]);
+
+  // Load each region once it's needed: the chosen one, your mountains' regions (Home), and any a
+  // page asks for. The server caches each region, so this is cheap.
+  const needed = useMemo(() => {
+    const favoriteRegions = favoriteIds.flatMap((id) => getResort(id)?.region ?? []);
+    return [...new Set<RegionId>([region, ...favoriteRegions, ...requested])];
+  }, [region, requested, favoriteIds]);
+  useEffect(() => {
+    if (!storageLoaded) return;
+    for (const r of needed) {
+      if (started.current.has(r)) continue;
+      started.current.add(r);
+      setStates((prev) => ({ ...prev, [r]: "loading" }));
+      fetch(`/api/forecast?region=${r}`)
+        .then((res) => (res.ok ? (res.json() as Promise<ForecastResponse>) : Promise.reject()))
+        .then((data) => {
+          setForecasts((prev) => ({ ...prev, ...data.forecasts }));
+          setStates((prev) => ({ ...prev, [r]: "ready" }));
+          setCountingUp(true);
+          setTimeout(() => setCountingUp(false), COUNT_UP_WINDOW_MS);
+        })
+        .catch(() => {
+          started.current.delete(r); // try again next time it's needed
+          setStates((prev) => ({ ...prev, [r]: "error" }));
+        });
+    }
+  }, [needed, storageLoaded]);
 
   const toggleFavorite = useCallback((id: string) => {
     setFavoriteIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -134,11 +166,17 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const setPasses = useCallback((passes: PassFilter[]) => setMyPasses(PASS_FILTERS.filter((p) => passes.includes(p))), []);
 
   const distanceTo = useCallback((point: LatLon) => (origin ? distanceMiles(origin, point) : null), [origin]);
+  const requireRegion = useCallback((r: RegionId) => setRequested((prev) => (prev.includes(r) ? prev : [...prev, r])), []);
+  const regionState = useCallback((r: RegionId): ForecastState => states[r] ?? "loading", [states]);
 
   const value = useMemo<AppState>(
     () => ({
       forecasts,
-      forecastState,
+      forecastState: regionState(region),
+      regionState,
+      region,
+      setRegion,
+      requireRegion,
       origin,
       setOrigin,
       distanceTo,
@@ -153,7 +191,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     }),
     [
       forecasts,
-      forecastState,
+      regionState,
+      region,
+      requireRegion,
       origin,
       distanceTo,
       favoriteIds,

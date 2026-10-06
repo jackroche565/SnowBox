@@ -7,6 +7,7 @@ import { onMyPasses, useAppState, type Origin } from "@/components/AppState";
 import LocationSearch from "@/components/LocationSearch";
 import PassPicker from "@/components/PassPicker";
 import { passText } from "@/components/PassTags";
+import RegionPicker from "@/components/RegionPicker";
 import { ResortRow } from "@/components/ResortEntries";
 import type { MapFocus } from "@/components/ResortMap";
 import SegmentedControl from "@/components/SegmentedControl";
@@ -14,11 +15,12 @@ import SiteHeader from "@/components/SiteHeader";
 import SortControl from "@/components/SortControl";
 import { formatObservedEnd, useObserved } from "@/components/useObserved";
 import type { ResortForecast } from "@/lib/forecast";
-import { estimateDriveHours, formatDrive } from "@/lib/decide";
+import { estimateDriveHours, formatDrive, isDrivable } from "@/lib/decide";
 import { SNOW_BUCKETS, formatInches, formatTemp } from "@/lib/format";
 import { snowNote } from "@/lib/outlook";
-import { resorts, resortPath, type Resort } from "@/lib/resorts";
-import { US_STATES } from "@/lib/usStates";
+import { regionBounds, resortsIn } from "@/lib/regions";
+import { resortPath, type Resort } from "@/lib/resorts";
+import { PLACE_NAMES } from "@/lib/usStates";
 
 // WebGL only runs in the browser, so the map loads client-side.
 const ResortMap = dynamic(() => import("@/components/ResortMap"), {
@@ -43,9 +45,9 @@ function PreviewPanel({
   const snow = forecast?.next7In ?? 0;
   const note = forecast && snowNote(forecast);
   const meta = [
-    US_STATES[resort.state] ?? resort.state,
+    PLACE_NAMES[resort.state] ?? resort.state,
     passText(resort.passes),
-    origin && `${formatDrive(estimateDriveHours(origin, resort))} drive (est.)`,
+    origin && isDrivable(estimateDriveHours(origin, resort)) && `${formatDrive(estimateDriveHours(origin, resort))} drive (est.)`,
   ].filter(Boolean);
   const line = [note?.text, forecast && `${formatTemp(forecast.tempF)} now`].filter(Boolean).join(" · ");
 
@@ -81,6 +83,9 @@ function PreviewPanel({
 
 type Layer = "next7" | "fell" | "radar";
 
+/** Map-wide times (radar, observed snow) read in the viewer's own time zone. */
+const viewerTimeZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 const LAYERS: { value: Layer; label: string }[] = [
   { value: "next7", label: "Next 7 days" },
   { value: "fell", label: "Fell, 48 hrs" },
@@ -111,7 +116,7 @@ function LayerPanel({ layer, onChange, observedEnd }: { layer: Layer; onChange: 
     <div className="absolute top-0 right-0 left-0 z-10 bg-snow/90 px-3 pt-2.5 pb-2 text-[11px] lg:right-auto">
       <SegmentedControl label="Map shows" value={layer} onChange={onChange} segments={LAYERS} />
       {layer === "radar" ? (
-        <p className="mt-1.5 text-ink-muted">{radarTime ? `NOAA radar at ${formatObservedEnd(radarTime)}.` : "Loading radar…"}</p>
+        <p className="mt-1.5 text-ink-muted">{radarTime ? `NOAA radar at ${formatObservedEnd(radarTime, viewerTimeZone())}.` : "Loading radar…"}</p>
       ) : (
         <>
           <ul className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5">
@@ -124,7 +129,7 @@ function LayerPanel({ layer, onChange, observedEnd }: { layer: Layer; onChange: 
           </ul>
           {layer === "fell" && (
             <p className="mt-1 text-ink-muted">
-              {observedEnd ? `Observed by NOAA, 48 hrs to ${formatObservedEnd(observedEnd)}.` : "Loading observed snow…"}
+              {observedEnd ? `Observed by NOAA, 48 hrs to ${formatObservedEnd(observedEnd, viewerTimeZone())}.` : "Loading observed snow…"}
             </p>
           )}
         </>
@@ -134,7 +139,9 @@ function LayerPanel({ layer, onChange, observedEnd }: { layer: Layer; onChange: 
 }
 
 export default function Explore() {
-  const { forecasts, forecastState, origin, distanceTo, myPasses, favoriteIds, sortKey, setSortKey } = useAppState();
+  const { forecasts, forecastState, origin, distanceTo, myPasses, favoriteIds, sortKey, setSortKey, region } = useAppState();
+  const inRegion = useMemo(() => resortsIn(region), [region]);
+  const frame = useMemo(() => regionBounds(region), [region]);
 
   const [view, setView] = useState<"map" | "list">("map");
   const [layer, setLayer] = useState<Layer>("next7");
@@ -155,10 +162,10 @@ export default function Explore() {
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const filtered = resorts.filter(
+    const filtered = inRegion.filter(
       (r) =>
         onMyPasses(r.passes, myPasses) &&
-        (!q || r.name.toLowerCase().includes(q) || (US_STATES[r.state] ?? r.state).toLowerCase().startsWith(q)),
+        (!q || r.name.toLowerCase().includes(q) || (PLACE_NAMES[r.state] ?? r.state).toLowerCase().startsWith(q)),
     );
     const withDistance = filtered.map((resort) => ({ resort, distance: distanceTo(resort) }));
     return withDistance.sort((a, b) => {
@@ -173,7 +180,7 @@ export default function Explore() {
           return a.resort.name.localeCompare(b.resort.name);
       }
     });
-  }, [query, myPasses, distanceTo, sortKey, forecasts]);
+  }, [inRegion, query, myPasses, distanceTo, sortKey, forecasts]);
 
   const selected = selectedId ? visible.find((v) => v.resort.id === selectedId) : undefined;
   // What the dots show: forecast snow, observed snow, or nothing while the radar is up.
@@ -188,6 +195,10 @@ export default function Explore() {
   // Rendered once above the map on phones and once above the list on desktop, so ids carry `where`.
   const controls = (where: "top" | "side") => (
     <div className="px-4 pt-3 pb-3 lg:px-0">
+      <div className="mb-3 flex items-end justify-between gap-4">
+        <RegionPicker />
+        <PassPicker align="right" className="shrink-0" />
+      </div>
       <div className="flex items-end gap-4">
         <label htmlFor={`resort-search-${where}`} className="sr-only">
           Search mountains
@@ -197,10 +208,9 @@ export default function Explore() {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={`Search ${resorts.length} mountains`}
+          placeholder={`Search ${inRegion.length} mountains`}
           className="min-w-0 flex-1 border-b-2 border-ink bg-transparent pb-1.5 text-[16px] placeholder:text-ink-faint focus:outline-none"
         />
-        <PassPicker className="shrink-0 pb-1" />
       </div>
       <button
         type="button"
@@ -247,7 +257,7 @@ export default function Explore() {
         {/* The map. On phones it is the whole view. */}
         <section
           aria-label="Resort map"
-          className={`relative h-[calc(100dvh-13.5rem-env(safe-area-inset-bottom))] min-h-[380px] overflow-hidden border-t border-ink bg-snow lg:sticky lg:top-4 lg:mt-4 lg:block lg:h-[calc(100vh-6rem)] lg:border lg:border-ink ${
+          className={`relative h-[calc(100dvh-16.5rem-env(safe-area-inset-bottom))] min-h-[380px] overflow-hidden border-t border-ink bg-snow lg:sticky lg:top-4 lg:mt-4 lg:block lg:h-[calc(100vh-6rem)] lg:border lg:border-ink ${
             view === "map" ? "" : "hidden"
           }`}
         >
@@ -261,6 +271,7 @@ export default function Explore() {
             origin={origin}
             focus={focus}
             radar={layer === "radar"}
+            frame={frame}
           />
           <LayerPanel layer={layer} onChange={setLayer} observedEnd={observed?.endsAt ?? null} />
           {selected && (

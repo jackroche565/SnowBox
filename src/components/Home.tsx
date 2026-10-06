@@ -8,12 +8,14 @@ import { useAppState } from "@/components/AppState";
 import { StarIcon } from "@/components/Icons";
 import LocationSearch from "@/components/LocationSearch";
 import PassTags from "@/components/PassTags";
+import RegionPicker from "@/components/RegionPicker";
 import SiteHeader from "@/components/SiteHeader";
 import type { DailyForecast, ResortForecast } from "@/lib/forecast";
 import type { NwsAlert } from "@/lib/nws";
 import { formatDay, formatInches, formatShortDate } from "@/lib/format";
+import { resortsIn, type RegionId } from "@/lib/regions";
 import { getResort, resortPath, resorts, type Resort } from "@/lib/resorts";
-import { US_STATES } from "@/lib/usStates";
+import { PLACE_NAMES } from "@/lib/usStates";
 
 /**
  * The Mount Mansfield range in 3D relief. The render's sky is the page color, so the ridgeline rises
@@ -88,11 +90,11 @@ function useAlerts(): Record<string, NwsAlert[]> | null {
 
 /** One line per warning across your mountains: "Winter Storm Warning for Stowe and Jay Peak until Thu 7pm." */
 function Warnings({ list, alerts }: { list: Resort[]; alerts: Record<string, NwsAlert[]> }) {
-  const groups = new Map<string, { alert: NwsAlert; names: string[] }>();
+  const groups = new Map<string, { alert: NwsAlert; names: string[]; timeZone: string }>();
   for (const resort of list) {
     for (const alert of alerts[resort.id] ?? []) {
       const key = `${alert.event}|${alert.until}`;
-      const group = groups.get(key) ?? { alert, names: [] };
+      const group = groups.get(key) ?? { alert, names: [], timeZone: resort.timezone };
       group.names.push(resort.name);
       groups.set(key, group);
     }
@@ -101,9 +103,9 @@ function Warnings({ list, alerts }: { list: Resort[]; alerts: Record<string, Nws
   const join = (names: string[]) => (names.length < 3 ? names.join(" and ") : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`);
   return (
     <ul aria-label="Weather service warnings" className="px-4 pb-4 text-[15px]">
-      {[...groups.values()].map(({ alert, names }) => (
+      {[...groups.values()].map(({ alert, names, timeZone }) => (
         <li key={`${alert.event}|${alert.until}`}>
-          <AlertLine alert={alert} where={join(names)} />
+          <AlertLine alert={alert} timeZone={timeZone} where={join(names)} />
         </li>
       ))}
     </ul>
@@ -230,7 +232,7 @@ function matches(resort: Resort, query: string): boolean {
   return (
     resort.name.toLowerCase().includes(q) ||
     resort.state.toLowerCase() === q ||
-    (US_STATES[resort.state] ?? "").toLowerCase().startsWith(q)
+    (PLACE_NAMES[resort.state] ?? "").toLowerCase().startsWith(q)
   );
 }
 
@@ -272,12 +274,15 @@ function MountainRow({ resort, onToggle }: { resort: Resort; onToggle: () => voi
   );
 }
 
-const STATES_BY_COUNT = Object.entries(
-  resorts.reduce<Record<string, number>>((counts, r) => ({ ...counts, [r.state]: (counts[r.state] ?? 0) + 1 }), {}),
-).sort((a, b) => b[1] - a[1]);
+/** A region's states or provinces, most mountains first. */
+function statesByCount(region: RegionId): [string, number][] {
+  return Object.entries(
+    resortsIn(region).reduce<Record<string, number>>((counts, r) => ({ ...counts, [r.state]: (counts[r.state] ?? 0) + 1 }), {}),
+  ).sort((a, b) => b[1] - a[1]);
+}
 
 function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: () => void }) {
-  const { favoriteIds, origin, distanceTo } = useAppState();
+  const { favoriteIds, origin, distanceTo, region } = useAppState();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState<string | null>(null);
   const [locating, setLocating] = useState(false);
@@ -288,6 +293,9 @@ function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: ()
   return (
     <section aria-label="Choose your mountains" className="flex flex-1 flex-col pb-24">
       <h2 className="type-hero px-4 pt-7 text-[44px] leading-[0.95] [font-stretch:65%]">Which mountains do you ski?</h2>
+      <div className="px-4 pt-4">
+        <RegionPicker />
+      </div>
 
       <div className="px-4 pt-6">
         <label htmlFor="mountain-search" className="sr-only">
@@ -335,7 +343,7 @@ function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: ()
             </div>
           )}
           <ul className="rule-section mt-5">
-            {STATES_BY_COUNT.map(([st, count], i) => {
+            {statesByCount(region).map(([st, count], i) => {
               const expanded = open === st;
               return (
                 <li key={st} className={i > 0 ? "rule-row" : undefined}>
@@ -345,7 +353,7 @@ function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: ()
                     onClick={() => setOpen(expanded ? null : st)}
                     className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left"
                   >
-                    <span className="type-name text-[19px]">{US_STATES[st] ?? st}</span>
+                    <span className="type-name text-[19px]">{PLACE_NAMES[st] ?? st}</span>
                     <span className="flex items-center gap-2 text-[13px] text-ink-muted tabular-nums">
                       {count}
                       <Chevron open={expanded} />

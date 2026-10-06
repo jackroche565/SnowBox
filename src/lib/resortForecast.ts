@@ -1,4 +1,4 @@
-import { OUTLOOK_DAYS, TIMEZONE, sum, todayInTimezone } from "@/lib/forecast";
+import { OUTLOOK_DAYS, sum, todayInTimezone } from "@/lib/forecast";
 import type { Resort } from "@/lib/resorts";
 
 // The detailed forecast behind a single resort page. The Overview's all-resort summary stays
@@ -61,16 +61,16 @@ export function precipKind(precipIn: number, tempF: number | null): PrecipKind {
   return "rain";
 }
 
-const COMMON = {
-  timezone: TIMEZONE,
+const common = (resort: Resort) => ({
+  timezone: resort.timezone,
   temperature_unit: "fahrenheit",
   precipitation_unit: "inch",
   wind_speed_unit: "mph",
-};
+});
 
 export function buildHourlyUrl(resort: Resort): string {
   const params = new URLSearchParams({
-    ...COMMON,
+    ...common(resort),
     // The same point twice, at summit then base height: Open-Meteo adjusts for elevation.
     latitude: `${resort.lat},${resort.lat}`,
     longitude: `${resort.lon},${resort.lon}`,
@@ -87,7 +87,7 @@ export function buildHourlyUrl(resort: Resort): string {
 export function buildModelsUrl(resort: Resort): string {
   const midFt = resort.summitFt && resort.baseFt ? (resort.summitFt + resort.baseFt) / 2 : resort.summitFt;
   const params = new URLSearchParams({
-    ...COMMON,
+    ...common(resort),
     latitude: String(resort.lat),
     longitude: String(resort.lon),
     daily: "snowfall_sum",
@@ -148,9 +148,9 @@ export function parseHourly(resort: Resort, body: HourlyLocation | HourlyLocatio
   };
 }
 
-export function parseModels(body: ModelsLocation, now = new Date()): ModelDay[] {
+export function parseModels(body: ModelsLocation, timeZone: string, now = new Date()): ModelDay[] {
   const daily = body.daily;
-  const today = todayInTimezone(now);
+  const today = todayInTimezone(now, timeZone);
   return (daily?.time ?? []).flatMap((date, i) => {
     if (date < today) return [];
     const byModel = Object.fromEntries(

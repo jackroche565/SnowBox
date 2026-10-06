@@ -3,6 +3,8 @@ import { cycleTime, fileUrl, recentCycles, sampleGrid, type ObservedSnow } from 
 import { resorts } from "@/lib/resorts";
 
 // A new analysis comes out twice a day; check hourly for it.
+// The analysis covers the lower 48 only: Canadian and Alaskan mountains get no observed value.
+const usResorts = resorts.filter((r) => r.country === "US" && r.state !== "AK");
 const REVALIDATE_SECONDS = 3600;
 
 const get = (url: string) => fetch(url, { next: { revalidate: REVALIDATE_SECONDS } });
@@ -16,8 +18,8 @@ export async function GET() {
       if (!day.ok || !twoDays.ok) continue;
       const body: ObservedSnow = {
         endsAt: cycleTime(cycle),
-        last24: await sampleGrid(await day.arrayBuffer(), resorts),
-        last48: await sampleGrid(await twoDays.arrayBuffer(), resorts),
+        last24: await sampleGrid(await day.arrayBuffer(), usResorts),
+        last48: await sampleGrid(await twoDays.arrayBuffer(), usResorts),
       };
       return Response.json(body);
     }
