@@ -10,12 +10,10 @@ import { PASSES, type Pass } from "@/lib/resorts";
 export type Origin = LatLon & { label: string };
 export type ForecastState = "loading" | "error" | "ready";
 
-export const COMPARE_LIMIT = 3;
 const COUNT_UP_WINDOW_MS = 1500;
 
 // Storage keys predate the Snowbox name. Renaming them would drop everyone's saved lists.
 const STORAGE = {
-  compare: "snowline:compare",
   favorites: "snowline:favorites",
   passes: "snowline:passes",
   origin: "snowline:origin",
@@ -29,10 +27,6 @@ type AppState = {
   origin: Origin | null;
   setOrigin: (origin: Origin | null) => void;
   distanceTo: (point: LatLon) => number | null;
-
-  /** Resorts picked for a head-to-head in Decide. */
-  compareIds: string[];
-  toggleCompare: (id: string) => void;
 
   /** Starred resorts, in the order they were starred. Shown on Home. */
   favoriteIds: string[];
@@ -92,7 +86,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [countingUp, setCountingUp] = useState(false);
 
   const [origin, setOrigin] = useState<Origin | null>(null);
-  const [compareIds, setCompareIds] = useState<string[]>([]);
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   const [myPasses, setMyPasses] = useState<Pass[]>([]);
   const [storageLoaded, setStorageLoaded] = useState(false);
@@ -116,7 +109,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   // localStorage) matches the first client render.
   useEffect(() => {
     queueMicrotask(() => {
-      setCompareIds(readStoredIds(STORAGE.compare).slice(0, COMPARE_LIMIT));
       setFavoriteIds(readStoredIds(STORAGE.favorites));
       setMyPasses(readStoredIds(STORAGE.passes).filter((p): p is Pass => (PASSES as readonly string[]).includes(p)));
       setOrigin(readStoredOrigin());
@@ -126,17 +118,11 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!storageLoaded) return;
-    writeStored(STORAGE.compare, compareIds);
     writeStored(STORAGE.favorites, favoriteIds);
     writeStored(STORAGE.passes, myPasses);
     writeStored(STORAGE.origin, origin);
-  }, [compareIds, favoriteIds, myPasses, origin, storageLoaded]);
+  }, [favoriteIds, myPasses, origin, storageLoaded]);
 
-  const toggleCompare = useCallback((id: string) => {
-    setCompareIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : prev.length < COMPARE_LIMIT ? [...prev, id] : prev,
-    );
-  }, []);
   const toggleFavorite = useCallback((id: string) => {
     setFavoriteIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }, []);
@@ -153,8 +139,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       origin,
       setOrigin,
       distanceTo,
-      compareIds,
-      toggleCompare,
       favoriteIds,
       toggleFavorite,
       myPasses,
@@ -168,8 +152,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       forecastState,
       origin,
       distanceTo,
-      compareIds,
-      toggleCompare,
       favoriteIds,
       toggleFavorite,
       myPasses,

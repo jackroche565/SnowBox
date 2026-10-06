@@ -8,11 +8,13 @@ type Props = {
   onLocated?: (origin: Origin) => void;
   /** Open on the search form even when a starting point is already saved. */
   startEditing?: boolean;
+  /** Show a Cancel button while editing a saved starting point. Off where the page has its own Done. */
+  cancelable?: boolean;
   className?: string;
 };
 
 /** Set where you're starting from. Once set it collapses to a one-line summary with a Change button. */
-export default function LocationSearch({ onLocated, startEditing = false, className = "" }: Props) {
+export default function LocationSearch({ onLocated, startEditing = false, cancelable = true, className = "" }: Props) {
   const { origin, setOrigin } = useAppState();
   const [editing, setEditing] = useState(startEditing);
   const [query, setQuery] = useState("");
@@ -109,7 +111,7 @@ export default function LocationSearch({ onLocated, startEditing = false, classN
         >
           Use my location
         </button>
-        {origin && (
+        {origin && cancelable && (
           <button type="button" onClick={() => setEditing(false)} className="pb-1 text-[14px] text-ink-muted hover:text-ink">
             Cancel
           </button>
