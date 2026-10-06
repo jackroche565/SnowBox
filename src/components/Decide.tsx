@@ -7,6 +7,7 @@ import { WindIcon } from "@/components/Icons";
 import LocationSearch from "@/components/LocationSearch";
 import PassPicker from "@/components/PassPicker";
 import { passText } from "@/components/PassTags";
+import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
 import { formatDrive, rankDay, type Pick } from "@/lib/decide";
 import { formatDay, formatInches } from "@/lib/format";
@@ -15,9 +16,9 @@ import { WIND_HOLD_MPH } from "@/lib/resortForecast";
 import { resortPath, resorts } from "@/lib/resorts";
 import { formatOpening, openingDate } from "@/lib/season";
 
-// One question: where's the most snow on this day? Mountains are ranked by that day's new snow
-// and nothing else; drive time is shown beside each one, never mixed into the order. With no snow
-// anywhere, the closest come first. Mountains that aren't open yet stay in the list, greyed out.
+// Where to ski on a day, two simple ways: most new snow, or closest. The two are never blended;
+// drive time sits beside each mountain in the snow view. Switches for the view, passes and
+// starting point sit at the top. Mountains that aren't open yet stay in the list, greyed out.
 
 /** Rows shown before "Show all". */
 const SHORT_LIST = 10;
@@ -89,57 +90,63 @@ function Row({ pick }: { pick: Pick }) {
   );
 }
 
-/** First visit: the two things that shape the list. */
-function Setup() {
-  return (
-    <section aria-label="Set up" className="px-4 pt-5 pb-5">
-      <h2 className="type-hero text-[36px] leading-[0.95] [font-stretch:65%]">Where are you starting from?</h2>
-      <LocationSearch startEditing className="mt-4" />
-      <p className="mt-5 text-[15px] font-semibold">Which pass do you have?</p>
-      <PassPicker className="mt-2" />
-      <p className="mt-1.5 text-[13px] text-ink-muted">None selected means every mountain.</p>
-    </section>
-  );
-}
+type View = "snow" | "closest";
 
-/** "From Boston · Any pass · Change", and the two settings when opened. */
-function Settings() {
-  const { origin, myPasses } = useAppState();
-  const [open, setOpen] = useState(false);
+/**
+ * The switches, all at the top: what to rank by, which passes, and where you're starting from
+ * (which "Closest" needs).
+ */
+function Controls({ view, onView }: { view: View; onView: (v: View) => void }) {
+  const { origin } = useAppState();
+  const [editing, setEditing] = useState(false);
   return (
-    <section aria-label="Your settings" className="rule-section px-4 pt-3 pb-2">
-      <p className="flex flex-wrap items-baseline gap-x-2 text-[14px]">
-        <span>
-          From <span className="font-semibold">{origin ? origin.label.split(",")[0] : "anywhere"}</span>
-          <span className="text-ink-faint"> · </span>
-          <span className="font-semibold">{myPasses.length ? myPasses.join(", ") : "Any pass"}</span>
-        </span>
-        <button type="button" aria-expanded={open} onClick={() => setOpen((v) => !v)} className="font-semibold underline underline-offset-4">
-          {open ? "Done" : "Change"}
-        </button>
+    <section aria-label="Options" className="px-4 pt-3.5 pb-3">
+      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
+        <SegmentedControl
+          label="Rank by"
+          value={view}
+          onChange={onView}
+          segments={[
+            { value: "snow", label: "Most snow" },
+            { value: "closest", label: "Closest", disabled: !origin, title: origin ? undefined : "Set where you're starting from first" },
+          ]}
+        />
+        <PassPicker />
+      </div>
+      <p className="mt-3 text-[14px]">
+        {origin ? (
+          <>
+            From <span className="font-semibold">{origin.label.split(",")[0]}</span>{" "}
+            <button type="button" aria-expanded={editing} onClick={() => setEditing((v) => !v)} className="font-semibold underline underline-offset-4">
+              {editing ? "Done" : "Change"}
+            </button>
+          </>
+        ) : (
+          <button type="button" aria-expanded={editing} onClick={() => setEditing((v) => !v)} className="font-semibold underline underline-offset-4">
+            Set where you&apos;re starting from
+          </button>
+        )}
       </p>
-      {open && (
-        <div className="mt-3 flex flex-col gap-3 pb-2">
-          <LocationSearch startEditing cancelable={false} onLocated={() => setOpen(false)} />
-          <PassPicker />
-        </div>
-      )}
+      {editing && <LocationSearch startEditing cancelable={false} onLocated={() => setEditing(false)} className="mt-2.5" />}
     </section>
   );
 }
 
 export default function Decide() {
-  const { forecasts, forecastState, origin, myPasses, savedListsReady } = useAppState();
+  const { forecasts, forecastState, origin, myPasses } = useAppState();
   const [dayIndex, setDayIndex] = useState(0);
+  const [chosenView, setView] = useState<View>("snow");
+  // "Closest" needs a starting point.
+  const view = chosenView === "closest" && !origin ? "snow" : chosenView;
   const [showAll, setShowAll] = useState(false);
 
   const days = forecasts ? (Object.values(forecasts)[0]?.upcoming ?? []) : [];
   const day = days[dayIndex];
   const mine = resorts.filter((r) => onMyPasses(r.passes, myPasses));
-  // Most snow first; on a tie (including no snow at all), the closest.
-  const rank = (i: number) => (forecasts ? rankDay(mine, forecasts, i, origin, null, "snow", true) : []);
-  const picks = rank(dayIndex);
-  const strip = days.map((d, i) => ({ date: d.date, maxIn: Math.max(0, ...rank(i).map((p) => p.snowIn)) }));
+  // Most snow first (ties, including no snow at all, go closest first), or simply closest first.
+  const rank = (i: number, by: View) => (forecasts ? rankDay(mine, forecasts, i, origin, null, by, true) : []);
+  const picks = rank(dayIndex, view);
+  const strip = days.map((d, i) => ({ date: d.date, maxIn: Math.max(0, ...rank(i, "snow").map((p) => p.snowIn)) }));
 
   const dayName = day ? longDay(day.date, dayIndex) : "";
   const anySnow = picks.some((p) => p.snowIn >= 0.1);
@@ -160,24 +167,24 @@ export default function Decide() {
 
         {days.length > 0 && <DayStrip days={strip} value={dayIndex} onChange={setDayIndex} />}
 
-        {savedListsReady && !origin && <Setup />}
+        <Controls view={view} onView={setView} />
 
         {forecastState === "error" && <p className="px-4 pt-4 text-[15px] text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>}
         {forecastState === "loading" && <p className="px-4 pt-4 text-[15px] text-ink-muted">Loading forecast…</p>}
 
         {forecasts && day && (
-          <section aria-label={`Mountains ${dayName}`} className={!origin ? "rule-section" : undefined}>
-            <div className="px-4 pt-4 pb-1">
-              <h2 className="text-[15px] font-semibold">
-                {anySnow ? `Most new snow ${dayName}` : `No new snow ${dayName}.${origin ? " Closest first." : ""}`}
-              </h2>
-              {!anyOpen && (
-                <p className="mt-0.5 text-[14px] text-ink-muted">
-                  Nothing is open yet.
-                  {firstToOpen?.opensOn && ` ${firstToOpen.name} is projected to open first, on ${formatOpening(firstToOpen.opensOn)}.`}
-                </p>
-              )}
-            </div>
+          <section aria-label={`Mountains ${dayName}`} className="rule-section">
+            {(!anySnow || !anyOpen) && (
+              <div className="px-4 pt-3.5 pb-1 text-[14px]">
+                {!anySnow && <p className="font-semibold">No new snow {dayName}.</p>}
+                {!anyOpen && (
+                  <p className="text-ink-muted">
+                    Nothing is open yet.
+                    {firstToOpen?.opensOn && ` ${firstToOpen.name} is projected to open first, on ${formatOpening(firstToOpen.opensOn)}.`}
+                  </p>
+                )}
+              </div>
+            )}
             <ol>
               {shown.map((p) => (
                 <Row key={p.resort.id} pick={p} />
@@ -195,7 +202,6 @@ export default function Decide() {
           </section>
         )}
 
-        {origin && <Settings />}
 
         <p className="mt-6 px-4 text-[11px] text-ink-faint">
           Drive times are estimated from distance, without traffic. Forecasts from{" "}
