@@ -25,11 +25,11 @@ const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Snowbox",
-  description: "Snow forecasts for Northeast ski resorts.",
+  description: "Snow forecasts for ski areas across the US and Canada.",
   applicationName: "Snowbox",
   openGraph: {
     title: "Snowbox",
-    description: "Snow forecasts for Northeast ski resorts.",
+    description: "Snow forecasts for ski areas across the US and Canada.",
     type: "website",
   },
   twitter: { card: "summary_large_image" },

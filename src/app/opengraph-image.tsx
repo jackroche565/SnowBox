@@ -2,9 +2,9 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
-// The preview shown when a Snowbox link is shared: the wordmark on the snow ground, over the
-// Mount Mansfield ridgeline from Home. Built once at build time.
-export const alt = "Snowbox: snow forecasts for Northeast ski resorts";
+// The preview shown when a Snowbox link is shared: the wordmark and one line on the snow ground,
+// over a mountain ridgeline. Built once at build time.
+export const alt = "Snowbox: find the snow, pick your mountain";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -28,7 +28,7 @@ export default async function OpengraphImage() {
             </svg>
             <div style={{ fontFamily: "Archivo Condensed", fontSize: 150, lineHeight: 1, color: "#0f1a2a", letterSpacing: "-0.02em" }}>Snowbox</div>
           </div>
-          <div style={{ fontFamily: "Archivo", fontSize: 40, color: "#4b5668", marginTop: 26 }}>Snow forecasts for Northeast ski resorts</div>
+          <div style={{ fontFamily: "Archivo", fontSize: 40, color: "#4b5668", marginTop: 26 }}>Find the snow. Pick your mountain.</div>
         </div>
       </div>
     ),
