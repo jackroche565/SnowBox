@@ -6,7 +6,7 @@ Snowfall and forecasts for ski areas across the US and Canada, in regions (North
 
 ## Deploying
 
-Vercel auto-deploys the branch `claude/web-app-github-vercel-p9ocy4` as production. Pushing to it updates the live site (test123-iota-red.vercel.app). Other branches get Vercel preview URLs. Run `git pull` before starting work, since cloud and local sessions both push here.
+Vercel auto-deploys the branch `claude/web-app-github-vercel-p9ocy4` as production. Pushing to it updates the live site (www.snowbox.app; Vercel project "snowbox" in the jack-r-skis team, also at snowbox-jack-r-skis.vercel.app). Other branches get Vercel preview URLs. Run `git pull` before starting work, since cloud and local sessions both push here.
 
 ## Before pushing
 
