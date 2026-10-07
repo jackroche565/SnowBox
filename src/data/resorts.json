@@ -1082,6 +1082,32 @@
     }
   },
   {
+    "id": "yawgoo",
+    "name": "Yawgoo Valley",
+    "state": "RI",
+    "country": "US",
+    "region": "northeast",
+    "lat": 41.5173,
+    "lon": -71.53,
+    "timezone": "America/New_York",
+    "passes": [],
+    "summitFt": 300,
+    "baseFt": 110,
+    "verticalFt": 190,
+    "websiteUrl": "https://yawgoo.com/",
+    "opensOn": "2026-12-12",
+    "nws": {
+      "office": "BOX",
+      "zone": "RIZ006",
+      "county": "RIC009"
+    },
+    "estimates": [
+      "summitFt",
+      "baseFt",
+      "verticalFt"
+    ]
+  },
+  {
     "id": "ascutney-outdoors",
     "name": "Ascutney Outdoors",
     "state": "VT",
