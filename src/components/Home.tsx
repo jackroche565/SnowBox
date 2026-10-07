@@ -223,7 +223,7 @@ function YourWeek({ list, forecasts, onEdit }: { list: Resort[]; forecasts: Reco
 
 // ── Choosing your mountains ───────────────────────────────────────────
 
-const NEARBY_COUNT = 8;
+const NEARBY_COUNT = 5;
 
 /** Matches a resort by name or state ("stowe", "vt", "vermont"). */
 function matches(resort: Resort, query: string): boolean {
@@ -286,6 +286,7 @@ function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: ()
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState<string | null>(null);
   const [locating, setLocating] = useState(false);
+  const [nearbyOpen, setNearbyOpen] = useState(true);
 
   const found = query.trim() ? resorts.filter((r) => matches(r, query)) : null;
   const nearby = origin ? [...resorts].sort((a, b) => (distanceTo(a) ?? 0) - (distanceTo(b) ?? 0)).slice(0, NEARBY_COUNT) : [];
@@ -334,12 +335,24 @@ function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: ()
         <>
           {nearby.length > 0 && (
             <div className="mt-5">
-              <h3 className="px-4 pb-2 text-[13px] font-semibold">Closest to {origin!.label.split(",")[0]}</h3>
-              <ul>
-                {nearby.map((r) => (
-                  <MountainRow key={r.id} resort={r} onToggle={onToggle} />
-                ))}
-              </ul>
+              <h3>
+                <button
+                  type="button"
+                  aria-expanded={nearbyOpen}
+                  onClick={() => setNearbyOpen(!nearbyOpen)}
+                  className="flex w-full items-center justify-between gap-3 px-4 pb-2 text-left text-[13px] font-semibold"
+                >
+                  Closest to {origin!.label.split(",")[0]}
+                  <Chevron open={nearbyOpen} />
+                </button>
+              </h3>
+              {nearbyOpen && (
+                <ul>
+                  {nearby.map((r) => (
+                    <MountainRow key={r.id} resort={r} onToggle={onToggle} />
+                  ))}
+                </ul>
+              )}
             </div>
           )}
           <ul className="rule-section mt-5">

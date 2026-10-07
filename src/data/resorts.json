@@ -300,83 +300,6 @@
     ]
   },
   {
-    "id": "otis-ridge",
-    "name": "Otis Ridge",
-    "state": "MA",
-    "country": "US",
-    "region": "northeast",
-    "lat": 42.195,
-    "lon": -73.101,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 1560,
-    "baseFt": 1240,
-    "verticalFt": 320,
-    "websiteUrl": "https://www.otisridge.com/",
-    "opensOn": "2026-12-18",
-    "nws": {
-      "office": "ALY",
-      "zone": "MAZ025",
-      "county": "MAC003"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "ski-bradford",
-    "name": "Ski Bradford",
-    "state": "MA",
-    "country": "US",
-    "region": "northeast",
-    "lat": 42.743,
-    "lon": -71.0572,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 260,
-    "baseFt": 50,
-    "verticalFt": 220,
-    "websiteUrl": "https://skibradford.com/",
-    "nws": {
-      "office": "BOX",
-      "zone": "MAZ006",
-      "county": "MAC009"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "ski-ward",
-    "name": "Ski Ward",
-    "state": "MA",
-    "country": "US",
-    "region": "northeast",
-    "lat": 42.3003,
-    "lon": -71.6813,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 530,
-    "baseFt": 350,
-    "verticalFt": 190,
-    "websiteUrl": "https://skiward.com/",
-    "opensOn": "2026-11-14",
-    "nws": {
-      "office": "BOX",
-      "zone": "MAZ012",
-      "county": "MAC027"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "wachusett",
     "name": "Wachusett",
     "state": "MA",
@@ -395,31 +318,6 @@
       "office": "BOX",
       "zone": "MAZ004",
       "county": "MAC027"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "baker-mountain",
-    "name": "Baker Mountain",
-    "state": "ME",
-    "country": "US",
-    "region": "northeast",
-    "lat": 45.0871,
-    "lon": -69.9093,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 980,
-    "baseFt": 560,
-    "verticalFt": 420,
-    "websiteUrl": "https://www.facebook.com/Baker-Mt-Ski-Tow-Club-211892185489436/",
-    "nws": {
-      "office": "GYX",
-      "zone": "MEZ009",
-      "county": "MEC025"
     },
     "estimates": [
       "summitFt",
@@ -537,85 +435,6 @@
     ]
   },
   {
-    "id": "hermon-mountain",
-    "name": "Hermon Mountain",
-    "state": "ME",
-    "country": "US",
-    "region": "northeast",
-    "lat": 44.7795,
-    "lon": -68.9601,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 450,
-    "baseFt": 180,
-    "verticalFt": 270,
-    "websiteUrl": "https://skihermonmountain.com/",
-    "opensOn": "2026-12-18",
-    "nws": {
-      "office": "CAR",
-      "zone": "MEZ015",
-      "county": "MEC019"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "lonesome-pine",
-    "name": "Lonesome Pine Trails",
-    "state": "ME",
-    "country": "US",
-    "region": "northeast",
-    "lat": 47.2425,
-    "lon": -68.5948,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 980,
-    "baseFt": 560,
-    "verticalFt": 420,
-    "websiteUrl": "https://www.lonesomepines.org/",
-    "nws": {
-      "office": "CAR",
-      "zone": "MEZ001",
-      "county": "MEC003"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "lost-valley",
-    "name": "Lost Valley",
-    "state": "ME",
-    "country": "US",
-    "region": "northeast",
-    "lat": 44.1397,
-    "lon": -70.2844,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 490,
-    "baseFt": 250,
-    "verticalFt": 230,
-    "websiteUrl": "https://www.lostvalleyski.com/",
-    "opensOn": "2026-12-05",
-    "nws": {
-      "office": "GYX",
-      "zone": "MEZ020",
-      "county": "MEC001"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "mount-abram",
     "name": "Mount Abram",
     "state": "ME",
@@ -636,32 +455,6 @@
       "office": "GYX",
       "zone": "MEZ012",
       "county": "MEC017"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "mount-jefferson",
-    "name": "Mount Jefferson",
-    "state": "ME",
-    "country": "US",
-    "region": "northeast",
-    "lat": 45.3547,
-    "lon": -68.2833,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 750,
-    "baseFt": 410,
-    "verticalFt": 340,
-    "websiteUrl": "https://www.facebook.com/profile.php?id=100063549221774",
-    "opensOn": "2026-12-26",
-    "nws": {
-      "office": "CAR",
-      "zone": "MEZ011",
-      "county": "MEC019"
     },
     "estimates": [
       "summitFt",
@@ -723,31 +516,6 @@
       "county": "MEC007"
     },
     "estimates": [
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "spruce-mountain",
-    "name": "Spruce Mountain",
-    "state": "ME",
-    "country": "US",
-    "region": "northeast",
-    "lat": 44.4774,
-    "lon": -70.2054,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 600,
-    "baseFt": 350,
-    "verticalFt": 250,
-    "websiteUrl": "https://sprucemountain.org",
-    "nws": {
-      "office": "GYX",
-      "zone": "MEZ013",
-      "county": "MEC007"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
     ]
   },
@@ -815,80 +583,6 @@
     },
     "estimates": [
       "webcamUrl"
-    ]
-  },
-  {
-    "id": "titcomb",
-    "name": "Titcomb Mountain",
-    "state": "ME",
-    "country": "US",
-    "region": "northeast",
-    "lat": 44.648,
-    "lon": -70.1715,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 690,
-    "baseFt": 390,
-    "verticalFt": 300,
-    "websiteUrl": "https://www.titcombmountain.com/",
-    "nws": {
-      "office": "GYX",
-      "zone": "MEZ013",
-      "county": "MEC007"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "abenaki",
-    "name": "Abenaki",
-    "state": "NH",
-    "country": "US",
-    "region": "northeast",
-    "lat": 43.6037,
-    "lon": -71.229,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 800,
-    "baseFt": 600,
-    "verticalFt": 200,
-    "nws": {
-      "office": "GYX",
-      "zone": "NHZ006",
-      "county": "NHC003"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "arrowhead",
-    "name": "Arrowhead",
-    "state": "NH",
-    "country": "US",
-    "region": "northeast",
-    "lat": 43.3618,
-    "lon": -72.3319,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 740,
-    "baseFt": 600,
-    "verticalFt": 140,
-    "websiteUrl": "https://www.arrowheadnh.com/index.php",
-    "nws": {
-      "office": "GYX",
-      "zone": "NHZ007",
-      "county": "NHC019"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
     ]
   },
   {
@@ -971,31 +665,6 @@
       "zone": "NHZ002",
       "county": "NHC007"
     }
-  },
-  {
-    "id": "campton",
-    "name": "Campton Mountain",
-    "state": "NH",
-    "country": "US",
-    "region": "northeast",
-    "lat": 43.8662,
-    "lon": -71.6099,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 1490,
-    "baseFt": 1180,
-    "verticalFt": 310,
-    "websiteUrl": "https://camptonmountain.com/",
-    "nws": {
-      "office": "GYX",
-      "zone": "NHZ005",
-      "county": "NHC009"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
   },
   {
     "id": "cannon",
@@ -1165,34 +834,6 @@
     ]
   },
   {
-    "id": "king-pine",
-    "name": "King Pine",
-    "state": "NH",
-    "country": "US",
-    "region": "northeast",
-    "lat": 43.8657,
-    "lon": -71.0871,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 800,
-    "baseFt": 470,
-    "verticalFt": 330,
-    "websiteUrl": "https://www.kingpine.com",
-    "opensOn": "2026-12-11",
-    "nws": {
-      "office": "GYX",
-      "zone": "NHZ006",
-      "county": "NHC003"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "loon",
     "name": "Loon Mountain",
     "state": "NH",
@@ -1218,33 +859,6 @@
       "county": "NHC009"
     },
     "estimates": [
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "mcintyre",
-    "name": "McIntyre",
-    "state": "NH",
-    "country": "US",
-    "region": "northeast",
-    "lat": 43.0049,
-    "lon": -71.4399,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 510,
-    "baseFt": 350,
-    "verticalFt": 160,
-    "websiteUrl": "https://www.mcintyreskiarea.com/",
-    "nws": {
-      "office": "GYX",
-      "zone": "NHZ012",
-      "county": "NHC011"
-    },
-    "estimates": [
-      "summitFt",
       "baseFt",
       "verticalFt"
     ]
@@ -1360,33 +974,6 @@
     ]
   },
   {
-    "id": "veterans-memorial",
-    "name": "Veterans Memorial",
-    "state": "NH",
-    "country": "US",
-    "region": "northeast",
-    "lat": 43.4431,
-    "lon": -71.6912,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1000,
-    "baseFt": 770,
-    "verticalFt": 230,
-    "websiteUrl": "https://www.skithevets.org/",
-    "nws": {
-      "office": "GYX",
-      "zone": "NHZ008",
-      "county": "NHC013"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "waterville-valley",
     "name": "Waterville Valley",
     "state": "NH",
@@ -1493,32 +1080,6 @@
       "zone": "NYZ058",
       "county": "NYC039"
     }
-  },
-  {
-    "id": "yawgoo",
-    "name": "Yawgoo Valley",
-    "state": "RI",
-    "country": "US",
-    "region": "northeast",
-    "lat": 41.5173,
-    "lon": -71.53,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 300,
-    "baseFt": 110,
-    "verticalFt": 190,
-    "websiteUrl": "https://yawgoo.com/",
-    "opensOn": "2026-12-12",
-    "nws": {
-      "office": "BOX",
-      "zone": "RIZ006",
-      "county": "RIC009"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
   },
   {
     "id": "ascutney-outdoors",
@@ -1639,31 +1200,6 @@
     ]
   },
   {
-    "id": "cochrans",
-    "name": "Cochran's",
-    "state": "VT",
-    "country": "US",
-    "region": "northeast",
-    "lat": 44.3922,
-    "lon": -72.9819,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 710,
-    "baseFt": 380,
-    "verticalFt": 320,
-    "websiteUrl": "https://cochranskiarea.com/",
-    "nws": {
-      "office": "BTV",
-      "zone": "VTZ017",
-      "county": "VTC007"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "jay-peak",
     "name": "Jay Peak",
     "state": "VT",
@@ -1714,31 +1250,6 @@
       "zone": "VTZ019",
       "county": "VTC021"
     }
-  },
-  {
-    "id": "lyndon-outing-club",
-    "name": "Lyndon Outing Club",
-    "state": "VT",
-    "country": "US",
-    "region": "northeast",
-    "lat": 44.5322,
-    "lon": -71.9836,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 1250,
-    "baseFt": 850,
-    "verticalFt": 400,
-    "websiteUrl": "https://www.skilyndon.com/",
-    "nws": {
-      "office": "BTV",
-      "zone": "VTZ007",
-      "county": "VTC005"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
   },
   {
     "id": "mad-river-glen",
@@ -1860,31 +1371,6 @@
       "zone": "VTZ014",
       "county": "VTC025"
     }
-  },
-  {
-    "id": "northeast-slopes",
-    "name": "Northeast Slopes",
-    "state": "VT",
-    "country": "US",
-    "region": "northeast",
-    "lat": 44.0714,
-    "lon": -72.2527,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 1150,
-    "baseFt": 810,
-    "verticalFt": 340,
-    "websiteUrl": "https://www.northeastslopes.org/",
-    "nws": {
-      "office": "BTV",
-      "zone": "VTZ010",
-      "county": "VTC017"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
   },
   {
     "id": "okemo",
@@ -2092,31 +1578,6 @@
     ]
   },
   {
-    "id": "big-snow-american-dream",
-    "name": "Big SNOW American Dream",
-    "state": "NJ",
-    "country": "US",
-    "region": "northeast",
-    "lat": 40.8104,
-    "lon": -74.0704,
-    "timezone": "America/New_York",
-    "passes": [
-      "Snow Pass"
-    ],
-    "summitFt": 10,
-    "baseFt": 10,
-    "websiteUrl": "https://www.bigsnowamericandream.com/",
-    "nws": {
-      "office": "OKX",
-      "zone": "NJZ104",
-      "county": "NJC003"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt"
-    ]
-  },
-  {
     "id": "mountain-creek",
     "name": "Mountain Creek",
     "state": "NJ",
@@ -2133,33 +1594,6 @@
     "verticalFt": 1010,
     "websiteUrl": "https://www.mountaincreek.com/",
     "opensOn": "2026-12-05",
-    "nws": {
-      "office": "PHI",
-      "zone": "NJZ001",
-      "county": "NJC037"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "national-winter-activity-center",
-    "name": "National Winter Activity Center",
-    "state": "NJ",
-    "country": "US",
-    "region": "northeast",
-    "lat": 41.1843,
-    "lon": -74.4796,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1430,
-    "baseFt": 880,
-    "verticalFt": 550,
-    "websiteUrl": "http://winter4kids.org",
     "nws": {
       "office": "PHI",
       "zone": "NJZ001",
@@ -2218,89 +1652,6 @@
       "office": "BUF",
       "zone": "NYZ014",
       "county": "NYC069"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "buffalo-ski-club",
-    "name": "Buffalo Ski Club",
-    "state": "NY",
-    "country": "US",
-    "region": "northeast",
-    "lat": 42.6768,
-    "lon": -78.6959,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1480,
-    "baseFt": 1010,
-    "verticalFt": 470,
-    "websiteUrl": "https://www.buffaloskicenter.com/",
-    "opensOn": "2026-12-19",
-    "nws": {
-      "office": "BUF",
-      "zone": "NYZ085",
-      "county": "NYC029"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "cazenovia-ski-club",
-    "name": "Cazenovia Ski Club",
-    "state": "NY",
-    "country": "US",
-    "region": "northeast",
-    "lat": 42.9774,
-    "lon": -75.8558,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1430,
-    "baseFt": 950,
-    "verticalFt": 480,
-    "websiteUrl": "https://skicaz.com/",
-    "nws": {
-      "office": "BGM",
-      "zone": "NYZ036",
-      "county": "NYC053"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "dry-hill",
-    "name": "Dry Hill",
-    "state": "NY",
-    "country": "US",
-    "region": "northeast",
-    "lat": 43.929,
-    "lon": -75.9023,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 990,
-    "baseFt": 700,
-    "verticalFt": 290,
-    "websiteUrl": "https://skidryhill.com/",
-    "opensOn": "2026-12-02",
-    "nws": {
-      "office": "BUF",
-      "zone": "NYZ007",
-      "county": "NYC045"
     },
     "estimates": [
       "summitFt",
@@ -2419,80 +1770,6 @@
     ]
   },
   {
-    "id": "hunt-hollow",
-    "name": "Hunt Hollow",
-    "state": "NY",
-    "country": "US",
-    "region": "northeast",
-    "lat": 42.646,
-    "lon": -77.4807,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "opensOn": "2026-12-12",
-    "nws": {
-      "office": "BUF",
-      "zone": "NYZ014",
-      "county": "NYC069"
-    }
-  },
-  {
-    "id": "maple-ski-ridge",
-    "name": "Maple Ski Ridge",
-    "state": "NY",
-    "country": "US",
-    "region": "northeast",
-    "lat": 42.8157,
-    "lon": -74.033,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 810,
-    "baseFt": 540,
-    "verticalFt": 270,
-    "websiteUrl": "https://www.mapleskiridge.com/",
-    "opensOn": "2026-12-12",
-    "nws": {
-      "office": "ALY",
-      "zone": "NYZ049",
-      "county": "NYC093"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "mount-pisgah",
-    "name": "Mount Pisgah",
-    "state": "NY",
-    "country": "US",
-    "region": "northeast",
-    "lat": 44.3435,
-    "lon": -74.1267,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 2050,
-    "baseFt": 1770,
-    "verticalFt": 280,
-    "websiteUrl": "https://saranaclakeny.gov/mount-pisgah/",
-    "nws": {
-      "office": "BTV",
-      "zone": "NYZ034",
-      "county": "NYC031"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "oak-mountain",
     "name": "Oak Mountain",
     "state": "NY",
@@ -2567,33 +1844,6 @@
       "office": "BGM",
       "zone": "NYZ057",
       "county": "NYC025"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "skaneateles-ski-club",
-    "name": "Skaneateles Ski Club",
-    "state": "NY",
-    "country": "US",
-    "region": "northeast",
-    "lat": 42.915,
-    "lon": -76.335,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1110,
-    "baseFt": 800,
-    "verticalFt": 310,
-    "websiteUrl": "https://www.skiskan.com/",
-    "nws": {
-      "office": "BGM",
-      "zone": "NYZ018",
-      "county": "NYC067"
     },
     "estimates": [
       "summitFt",
@@ -3186,89 +2436,6 @@
     ]
   },
   {
-    "id": "ski-sawmill",
-    "name": "Ski Sawmill",
-    "state": "PA",
-    "country": "US",
-    "region": "northeast",
-    "lat": 41.5163,
-    "lon": -77.2902,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 2050,
-    "baseFt": 1680,
-    "verticalFt": 370,
-    "websiteUrl": "https://skisawmill.com/",
-    "opensOn": "2026-12-12",
-    "nws": {
-      "office": "CTP",
-      "zone": "PAZ041",
-      "county": "PAC081"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "spring-mountain",
-    "name": "Spring Mountain",
-    "state": "PA",
-    "country": "US",
-    "region": "northeast",
-    "lat": 40.2704,
-    "lon": -75.453,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 510,
-    "baseFt": 160,
-    "verticalFt": 350,
-    "websiteUrl": "https://springmountainadventures.com/",
-    "opensOn": "2026-12-12",
-    "nws": {
-      "office": "PHI",
-      "zone": "PAZ103",
-      "county": "PAC091"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "tussey-mountain",
-    "name": "Tussey Mountain",
-    "state": "PA",
-    "country": "US",
-    "region": "northeast",
-    "lat": 40.7681,
-    "lon": -77.7508,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1810,
-    "baseFt": 1320,
-    "verticalFt": 490,
-    "opensOn": "2026-12-12",
-    "nws": {
-      "office": "CTP",
-      "zone": "PAZ019",
-      "county": "PAC027"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "whitetail",
     "name": "Whitetail",
     "state": "PA",
@@ -3317,31 +2484,6 @@
       "office": "LWX",
       "zone": "MDZ509",
       "county": "MDC023"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "appalachian-mountain",
-    "name": "Appalachian Mountain",
-    "state": "NC",
-    "country": "US",
-    "region": "southeast",
-    "lat": 36.1726,
-    "lon": -81.6641,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 3910,
-    "baseFt": 3650,
-    "verticalFt": 260,
-    "opensOn": "2026-12-04",
-    "nws": {
-      "office": "RNK",
-      "zone": "NCZ018",
-      "county": "NCC189"
     },
     "estimates": [
       "summitFt",
@@ -3478,34 +2620,6 @@
       "office": "MRX",
       "zone": "TNZ074",
       "county": "TNC155"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "bryce-resort",
-    "name": "Bryce Resort",
-    "state": "VA",
-    "country": "US",
-    "region": "southeast",
-    "lat": 38.8131,
-    "lon": -78.7659,
-    "timezone": "America/New_York",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1690,
-    "baseFt": 1250,
-    "verticalFt": 440,
-    "websiteUrl": "https://bryceresort.com/",
-    "opensOn": "2026-12-09",
-    "nws": {
-      "office": "LWX",
-      "zone": "VAZ027",
-      "county": "VAC171"
     },
     "estimates": [
       "summitFt",
@@ -3680,34 +2794,6 @@
     ]
   },
   {
-    "id": "sundown-mountain",
-    "name": "Sundown Mountain",
-    "state": "IA",
-    "country": "US",
-    "region": "midwest",
-    "lat": 42.5165,
-    "lon": -90.8228,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1150,
-    "baseFt": 720,
-    "verticalFt": 430,
-    "websiteUrl": "https://sundownmtn.com/",
-    "opensOn": "2026-12-04",
-    "nws": {
-      "office": "DVN",
-      "zone": "IAZ042",
-      "county": "IAC061"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "chestnut-mountain",
     "name": "Chestnut Mountain",
     "state": "IL",
@@ -3728,34 +2814,6 @@
       "office": "DVN",
       "zone": "ILZ001",
       "county": "ILC085"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "ski-snowstar",
-    "name": "Ski Snowstar",
-    "state": "IL",
-    "country": "US",
-    "region": "midwest",
-    "lat": 41.4247,
-    "lon": -90.7474,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 790,
-    "baseFt": 600,
-    "verticalFt": 190,
-    "websiteUrl": "https://www.skisnowstar.com/",
-    "opensOn": "2026-12-11",
-    "nws": {
-      "office": "DVN",
-      "zone": "ILZ015",
-      "county": "ILC161"
     },
     "estimates": [
       "summitFt",
@@ -4014,62 +3072,6 @@
     ]
   },
   {
-    "id": "mt-holiday",
-    "name": "Mt. Holiday",
-    "state": "MI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 44.7415,
-    "lon": -85.5149,
-    "timezone": "America/Detroit",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 870,
-    "baseFt": 670,
-    "verticalFt": 200,
-    "websiteUrl": "https://mt-holiday.com/",
-    "opensOn": "2026-12-19",
-    "nws": {
-      "office": "APX",
-      "zone": "MIZ026",
-      "county": "MIC055"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "norway-mountain",
-    "name": "Norway Mountain",
-    "state": "MI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 45.7913,
-    "lon": -87.8675,
-    "timezone": "America/Menominee",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1320,
-    "baseFt": 1010,
-    "verticalFt": 310,
-    "websiteUrl": "https://www.norwaymountain.com/",
-    "opensOn": "2026-12-12",
-    "nws": {
-      "office": "MQT",
-      "zone": "MIZ011",
-      "county": "MIC043"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "nub-s-nob",
     "name": "Nub's Nob",
     "state": "MI",
@@ -4090,60 +3092,6 @@
       "office": "APX",
       "zone": "MIZ016",
       "county": "MIC047"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "pine-mountain-ski-hill",
-    "name": "Pine Mountain Ski Hill",
-    "state": "MI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 45.8369,
-    "lon": -88.0849,
-    "timezone": "America/Menominee",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1520,
-    "baseFt": 1150,
-    "verticalFt": 370,
-    "websiteUrl": "https://www.pinemountainresort.com/",
-    "opensOn": "2026-12-19",
-    "nws": {
-      "office": "MQT",
-      "zone": "MIZ011",
-      "county": "MIC043"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "schuss-mountain",
-    "name": "Schuss Mountain",
-    "state": "MI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 44.9438,
-    "lon": -85.1364,
-    "timezone": "America/Detroit",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1170,
-    "baseFt": 830,
-    "verticalFt": 340,
-    "nws": {
-      "office": "APX",
-      "zone": "MIZ021",
-      "county": "MIC009"
     },
     "estimates": [
       "summitFt",
@@ -4180,34 +3128,6 @@
     ]
   },
   {
-    "id": "treetops",
-    "name": "Treetops",
-    "state": "MI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 45.038,
-    "lon": -84.5903,
-    "timezone": "America/Detroit",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1340,
-    "baseFt": 1120,
-    "verticalFt": 220,
-    "websiteUrl": "https://www.treetops.com/winter-getaway/skiing/",
-    "opensOn": "2026-12-05",
-    "nws": {
-      "office": "APX",
-      "zone": "MIZ022",
-      "county": "MIC137"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "afton-alps",
     "name": "Afton Alps",
     "state": "MN",
@@ -4234,108 +3154,6 @@
       "baseFt",
       "verticalFt"
     ]
-  },
-  {
-    "id": "andes-tower-hills",
-    "name": "Andes Tower Hills",
-    "state": "MN",
-    "country": "US",
-    "region": "midwest",
-    "lat": 45.851,
-    "lon": -95.6196,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1620,
-    "baseFt": 1400,
-    "verticalFt": 220,
-    "websiteUrl": "https://www.andestowerhills.com/",
-    "opensOn": "2026-11-27",
-    "nws": {
-      "office": "MPX",
-      "zone": "MNZ041",
-      "county": "MNC041"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "coffee-mill",
-    "name": "Coffee Mill",
-    "state": "MN",
-    "country": "US",
-    "region": "midwest",
-    "lat": 44.3603,
-    "lon": -92.0435,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1160,
-    "baseFt": 750,
-    "verticalFt": 410,
-    "websiteUrl": "https://cmskiarea.com/",
-    "opensOn": "2026-12-04",
-    "nws": {
-      "office": "ARX",
-      "zone": "MNZ079",
-      "county": "MNC157"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "detroit-mountain",
-    "name": "Detroit Mountain",
-    "state": "MN",
-    "country": "US",
-    "region": "midwest",
-    "lat": 46.8153,
-    "lon": -95.7841,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1640,
-    "baseFt": 1440,
-    "verticalFt": 200,
-    "websiteUrl": "https://detroitmountain.com",
-    "nws": {
-      "office": "FGF",
-      "zone": "MNZ027",
-      "county": "MNC005"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "elm-creek",
-    "name": "Elm Creek",
-    "state": "MN",
-    "country": "US",
-    "region": "midwest",
-    "lat": 45.1385,
-    "lon": -93.4406,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "opensOn": "2026-12-18",
-    "nws": {
-      "office": "MPX",
-      "zone": "MNZ060",
-      "county": "MNC053"
-    }
   },
   {
     "id": "giants-ridge",
@@ -4422,62 +3240,6 @@
     ]
   },
   {
-    "id": "mount-kato",
-    "name": "Mount Kato",
-    "state": "MN",
-    "country": "US",
-    "region": "midwest",
-    "lat": 44.1302,
-    "lon": -94.0364,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1010,
-    "baseFt": 790,
-    "verticalFt": 220,
-    "websiteUrl": "https://mountkato.com/",
-    "opensOn": "2026-12-05",
-    "nws": {
-      "office": "MPX",
-      "zone": "MNZ083",
-      "county": "MNC013"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "powder-ridge-mn",
-    "name": "Powder Ridge",
-    "state": "MN",
-    "country": "US",
-    "region": "midwest",
-    "lat": 45.3441,
-    "lon": -94.3081,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1410,
-    "baseFt": 1160,
-    "verticalFt": 250,
-    "websiteUrl": "https://powderridge.com/",
-    "opensOn": "2026-11-28",
-    "nws": {
-      "office": "MPX",
-      "zone": "MNZ049",
-      "county": "MNC145"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "spirit-mountain",
     "name": "Spirit Mountain",
     "state": "MN",
@@ -4554,114 +3316,6 @@
       "office": "EAX",
       "zone": "MOZ028",
       "county": "MOC165"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "bottineau-winter-park",
-    "name": "Bottineau Winter Park",
-    "state": "ND",
-    "country": "US",
-    "region": "midwest",
-    "lat": 48.9505,
-    "lon": -100.4722,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 2450,
-    "baseFt": 2270,
-    "verticalFt": 180,
-    "websiteUrl": "https://skibwp.com/",
-    "nws": {
-      "office": "BIS",
-      "zone": "NDZ004",
-      "county": "NDC009"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "frost-fire-park",
-    "name": "Frost Fire Park",
-    "state": "ND",
-    "country": "US",
-    "region": "midwest",
-    "lat": 48.9108,
-    "lon": -98.0671,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1440,
-    "baseFt": 1080,
-    "verticalFt": 360,
-    "websiteUrl": "https://frostfirepark.org/",
-    "nws": {
-      "office": "FGF",
-      "zone": "NDZ007",
-      "county": "NDC019"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "huff-hills",
-    "name": "Huff Hills",
-    "state": "ND",
-    "country": "US",
-    "region": "midwest",
-    "lat": 46.6255,
-    "lon": -100.726,
-    "timezone": "America/North_Dakota/New_Salem",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 2190,
-    "baseFt": 1850,
-    "verticalFt": 340,
-    "websiteUrl": "https://www.huffhills.com/",
-    "nws": {
-      "office": "BIS",
-      "zone": "NDZ060",
-      "county": "NDC059"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "thrill-hills",
-    "name": "Thrill Hills",
-    "state": "ND",
-    "country": "US",
-    "region": "midwest",
-    "lat": 46.5315,
-    "lon": -97.9386,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1410,
-    "baseFt": 1150,
-    "verticalFt": 260,
-    "websiteUrl": "https://www.skibearsden.com/",
-    "nws": {
-      "office": "FGF",
-      "zone": "NDZ049",
-      "county": "NDC073"
     },
     "estimates": [
       "summitFt",
@@ -4782,32 +3436,6 @@
     ]
   },
   {
-    "id": "great-bear-recreation-park",
-    "name": "Great Bear Recreation Park",
-    "state": "SD",
-    "country": "US",
-    "region": "midwest",
-    "lat": 43.5774,
-    "lon": -96.6643,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1530,
-    "baseFt": 1350,
-    "verticalFt": 180,
-    "nws": {
-      "office": "FSD",
-      "zone": "SDZ062",
-      "county": "SDC099"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "terry-peak",
     "name": "Terry Peak",
     "state": "SD",
@@ -4836,61 +3464,6 @@
     ]
   },
   {
-    "id": "bruce-mound-winter-sports-area",
-    "name": "Bruce Mound Winter Sports Area",
-    "state": "WI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 44.4446,
-    "lon": -90.7877,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1320,
-    "baseFt": 1000,
-    "verticalFt": 320,
-    "websiteUrl": "https://www.clarkcountywi.gov/brucemound",
-    "opensOn": "2026-12-19",
-    "nws": {
-      "office": "ARX",
-      "zone": "WIZ029",
-      "county": "WIC019"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "camp-10",
-    "name": "Camp 10",
-    "state": "WI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 45.549,
-    "lon": -89.5047,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1720,
-    "baseFt": 1520,
-    "verticalFt": 200,
-    "websiteUrl": "https://www.facebook.com/CAMP10SKIAREA/",
-    "nws": {
-      "office": "GRB",
-      "zone": "WIZ018",
-      "county": "WIC069"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "cascade-mountain",
     "name": "Cascade Mountain",
     "state": "WI",
@@ -4909,34 +3482,6 @@
       "office": "MKX",
       "zone": "WIZ057",
       "county": "WIC021"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "christie-mountain",
-    "name": "Christie Mountain",
-    "state": "WI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 45.507,
-    "lon": -91.384,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1650,
-    "baseFt": 1300,
-    "verticalFt": 350,
-    "websiteUrl": "https://www.christiemountain.com/",
-    "opensOn": "2026-12-05",
-    "nws": {
-      "office": "MPX",
-      "zone": "WIZ016",
-      "county": "WIC107"
     },
     "estimates": [
       "summitFt",
@@ -5001,107 +3546,6 @@
     ]
   },
   {
-    "id": "mt-la-crosse",
-    "name": "Mt. La Crosse",
-    "state": "WI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 43.7414,
-    "lon": -91.1823,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1170,
-    "baseFt": 730,
-    "verticalFt": 440,
-    "websiteUrl": "https://www.mtlacrosse.com/",
-    "opensOn": "2026-12-04",
-    "nws": {
-      "office": "ARX",
-      "zone": "WIZ041",
-      "county": "WIC063"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "nutt-hill",
-    "name": "Nutt Hill",
-    "state": "WI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 43.7506,
-    "lon": -87.9906,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "nws": {
-      "office": "MKX",
-      "zone": "WIZ052",
-      "county": "WIC117"
-    }
-  },
-  {
-    "id": "paul-bunyan",
-    "name": "Paul Bunyan",
-    "state": "WI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 45.3245,
-    "lon": -88.5246,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1370,
-    "baseFt": 1240,
-    "verticalFt": 130,
-    "websiteUrl": "https://skipaulbunyan.com/",
-    "nws": {
-      "office": "GRB",
-      "zone": "WIZ021",
-      "county": "WIC083"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "sunburst",
-    "name": "Sunburst",
-    "state": "WI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 43.4946,
-    "lon": -88.2243,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1170,
-    "baseFt": 970,
-    "verticalFt": 200,
-    "websiteUrl": "https://skisunburst.com/",
-    "opensOn": "2026-12-04",
-    "nws": {
-      "office": "MKX",
-      "zone": "WIZ059",
-      "county": "WIC131"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "trollhaugen",
     "name": "Trollhaugen",
     "state": "WI",
@@ -5122,62 +3566,6 @@
       "office": "MPX",
       "zone": "WIZ014",
       "county": "WIC095"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "tyrol-basin",
-    "name": "Tyrol Basin",
-    "state": "WI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 43.0441,
-    "lon": -89.7846,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1150,
-    "baseFt": 870,
-    "verticalFt": 280,
-    "websiteUrl": "https://www.tyrolbasin.com",
-    "opensOn": "2026-12-04",
-    "nws": {
-      "office": "MKX",
-      "zone": "WIZ063",
-      "county": "WIC025"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "whitecap-mountain",
-    "name": "Whitecap Mountain",
-    "state": "WI",
-    "country": "US",
-    "region": "midwest",
-    "lat": 46.4041,
-    "lon": -90.4033,
-    "timezone": "America/Chicago",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1780,
-    "baseFt": 1450,
-    "verticalFt": 330,
-    "websiteUrl": "https://whitecapresort.com/",
-    "opensOn": "2026-12-19",
-    "nws": {
-      "office": "DLH",
-      "zone": "WIZ004",
-      "county": "WIC051"
     },
     "estimates": [
       "summitFt",
@@ -5490,24 +3878,6 @@
     ]
   },
   {
-    "id": "cuchara-mountain-park",
-    "name": "Cuchara Mountain Park",
-    "state": "CO",
-    "country": "US",
-    "region": "rockies",
-    "lat": 37.3498,
-    "lon": -105.1284,
-    "timezone": "America/Denver",
-    "passes": [
-      "Indy"
-    ],
-    "nws": {
-      "office": "PUB",
-      "zone": "COZ074",
-      "county": "COC055"
-    }
-  },
-  {
     "id": "echo-mountain",
     "name": "Echo Mountain",
     "state": "CO",
@@ -5592,33 +3962,6 @@
     ]
   },
   {
-    "id": "hoedown-hill",
-    "name": "Hoedown Hill",
-    "state": "CO",
-    "country": "US",
-    "region": "rockies",
-    "lat": 40.4541,
-    "lon": -104.9295,
-    "timezone": "America/Denver",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 4980,
-    "baseFt": 4880,
-    "verticalFt": 100,
-    "websiteUrl": "https://hoedownhill.com",
-    "nws": {
-      "office": "BOU",
-      "zone": "COZ043",
-      "county": "COC123"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "howelson-hill",
     "name": "Howelson Hill",
     "state": "CO",
@@ -5644,24 +3987,6 @@
       "baseFt",
       "verticalFt"
     ]
-  },
-  {
-    "id": "kendall-mountain",
-    "name": "Kendall Mountain",
-    "state": "CO",
-    "country": "US",
-    "region": "rockies",
-    "lat": 37.8112,
-    "lon": -107.6595,
-    "timezone": "America/Denver",
-    "passes": [
-      "Indy"
-    ],
-    "nws": {
-      "office": "GJT",
-      "zone": "COZ019",
-      "county": "COC111"
-    }
   },
   {
     "id": "keystone",
@@ -6151,33 +4476,6 @@
       "office": "PIH",
       "zone": "IDZ053",
       "county": "IDC065"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "little-ski-hill",
-    "name": "Little Ski Hill",
-    "state": "ID",
-    "country": "US",
-    "region": "rockies",
-    "lat": 44.9283,
-    "lon": -116.1611,
-    "timezone": "America/Boise",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 5580,
-    "baseFt": 5190,
-    "verticalFt": 390,
-    "websiteUrl": "https://www.littleskihill.org/",
-    "nws": {
-      "office": "BOI",
-      "zone": "IDZ011",
-      "county": "IDC003"
     },
     "estimates": [
       "summitFt",
@@ -7947,25 +6245,6 @@
     ]
   },
   {
-    "id": "cooper-spur",
-    "name": "Cooper Spur",
-    "state": "OR",
-    "country": "US",
-    "region": "pnw",
-    "lat": 45.4124,
-    "lon": -121.6077,
-    "timezone": "America/Los_Angeles",
-    "passes": [
-      "Indy"
-    ],
-    "opensOn": "2026-12-26",
-    "nws": {
-      "office": "PQR",
-      "zone": "ORZ126",
-      "county": "ORC027"
-    }
-  },
-  {
     "id": "hoodoo-ski-area",
     "name": "Hoodoo Ski Area",
     "state": "OR",
@@ -8267,33 +6546,6 @@
     ]
   },
   {
-    "id": "leavenworth-ski-hill",
-    "name": "Leavenworth Ski Hill",
-    "state": "WA",
-    "country": "US",
-    "region": "pnw",
-    "lat": 47.6141,
-    "lon": -120.6695,
-    "timezone": "America/Los_Angeles",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1700,
-    "baseFt": 1440,
-    "verticalFt": 260,
-    "websiteUrl": "https://skileavenworth.com/",
-    "nws": {
-      "office": "OTX",
-      "zone": "WAZ047",
-      "county": "WAC007"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "loup-loup-ski-bowl",
     "name": "Loup Loup Ski Bowl",
     "state": "WA",
@@ -8531,34 +6783,6 @@
       "office": "AJK",
       "zone": "AKZ325",
       "county": "AKC110"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "hilltop",
-    "name": "Hilltop",
-    "state": "AK",
-    "country": "US",
-    "region": "alaska",
-    "lat": 61.1409,
-    "lon": -149.738,
-    "timezone": "America/Anchorage",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 780,
-    "baseFt": 480,
-    "verticalFt": 300,
-    "websiteUrl": "https://www.hilltopskiarea.org/",
-    "opensOn": "2026-11-28",
-    "nws": {
-      "office": "AFC",
-      "zone": "AKZ702",
-      "county": "AKC020"
     },
     "estimates": [
       "summitFt",
@@ -9476,28 +7700,6 @@
     ]
   },
   {
-    "id": "hockley-valley",
-    "name": "Hockley Valley",
-    "state": "ON",
-    "country": "CA",
-    "region": "canada-east",
-    "lat": 43.9753,
-    "lon": -80.0477,
-    "timezone": "America/Toronto",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1310,
-    "baseFt": 1090,
-    "verticalFt": 220,
-    "websiteUrl": "https://www.hockley.com/",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "loch-lomond",
     "name": "Loch Lomond",
     "state": "ON",
@@ -9514,28 +7716,6 @@
     "verticalFt": 590,
     "websiteUrl": "https://www.lochlomond.ca/",
     "opensOn": "2026-12-12",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "mount-baldy",
-    "name": "Mount Baldy",
-    "state": "ON",
-    "country": "CA",
-    "region": "canada-east",
-    "lat": 48.5245,
-    "lon": -89.1235,
-    "timezone": "America/Toronto",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1600,
-    "baseFt": 1140,
-    "verticalFt": 460,
-    "websiteUrl": "https://www.skimountbaldy.ca",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -9609,29 +7789,6 @@
     ]
   },
   {
-    "id": "centre-vorlage",
-    "name": "Centre Vorlage",
-    "state": "QC",
-    "country": "CA",
-    "region": "canada-east",
-    "lat": 45.6455,
-    "lon": -75.9386,
-    "timezone": "America/Toronto",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 800,
-    "baseFt": 370,
-    "verticalFt": 430,
-    "websiteUrl": "https://centrevorlage.ca/",
-    "opensOn": "2026-12-04",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "le-massif",
     "name": "Le Massif",
     "state": "QC",
@@ -9678,28 +7835,6 @@
     ]
   },
   {
-    "id": "mont-kanasuta",
-    "name": "Mont Kanasuta",
-    "state": "QC",
-    "country": "CA",
-    "region": "canada-east",
-    "lat": 48.1789,
-    "lon": -79.4029,
-    "timezone": "America/Toronto",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1540,
-    "baseFt": 1070,
-    "verticalFt": 470,
-    "websiteUrl": "https://www.kanasuta.com/",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
     "id": "mont-orford",
     "name": "Mont Orford",
     "state": "QC",
@@ -9714,28 +7849,6 @@
     "verticalFt": 1710,
     "websiteUrl": "http://www.orford.com",
     "opensOn": "2026-12-04",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "mont-rigaud",
-    "name": "Mont Rigaud",
-    "state": "QC",
-    "country": "CA",
-    "region": "canada-east",
-    "lat": 45.4657,
-    "lon": -74.3352,
-    "timezone": "America/Toronto",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 550,
-    "baseFt": 190,
-    "verticalFt": 360,
-    "websiteUrl": "https://ski.montrigaud.com/home",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -9826,28 +7939,6 @@
     "verticalFt": 660,
     "websiteUrl": "https://www.skimontblanc.com",
     "opensOn": "2026-12-04",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "ski-saint-bruno",
-    "name": "Ski Saint-Bruno",
-    "state": "QC",
-    "country": "CA",
-    "region": "canada-east",
-    "lat": 45.5557,
-    "lon": -73.3322,
-    "timezone": "America/Toronto",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 590,
-    "baseFt": 150,
-    "verticalFt": 440,
-    "websiteUrl": "https://skisaintbruno.ca/",
     "estimates": [
       "summitFt",
       "baseFt",
@@ -9960,28 +8051,6 @@
     "baseFt": 1460,
     "verticalFt": 800,
     "websiteUrl": "https://valdi.ski/en/home.html",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
-  },
-  {
-    "id": "vallee-bleue",
-    "name": "Vallée Bleue",
-    "state": "QC",
-    "country": "CA",
-    "region": "canada-east",
-    "lat": 46.0238,
-    "lon": -74.2192,
-    "timezone": "America/Toronto",
-    "passes": [
-      "Indy"
-    ],
-    "summitFt": 1360,
-    "baseFt": 1040,
-    "verticalFt": 320,
-    "websiteUrl": "https://www.valleebleue.com/",
     "estimates": [
       "summitFt",
       "baseFt",
