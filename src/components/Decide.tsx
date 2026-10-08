@@ -212,12 +212,11 @@ export default function Decide() {
         )}
 
 
-        <p className="mt-6 px-4 text-[11px] text-ink-faint">
-          Drive times are estimated from distance, without traffic. Forecasts from{" "}
+        <p className="mt-6 px-4 text-[10px] text-ink-faint">
+          Drive times are estimated from distance, without traffic. Data:{" "}
           <a className="underline" href="https://open-meteo.com/">
             Open-Meteo
           </a>
-          .
         </p>
       </main>
     </>

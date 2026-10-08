@@ -452,12 +452,11 @@ export default function Home() {
             {states.includes("error") && (
               <p className="px-4 pt-3 text-[14px] text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>
             )}
-            <footer className="rule-row mt-6 px-4 pt-3 pb-8 text-[11px] text-ink-faint">
-              Forecasts from{" "}
+            <footer className="rule-row mt-6 px-4 pt-3 pb-8 text-[10px] text-ink-faint">
+              Data:{" "}
               <a className="underline" href="https://open-meteo.com/">
                 Open-Meteo
               </a>
-              .
             </footer>
           </>
         )}

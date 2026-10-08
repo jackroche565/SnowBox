@@ -326,12 +326,11 @@ export default function Explore() {
               {query.trim() ? `No mountains match “${query}”.` : `No ${regionLabel(region)} mountains on the passes you chose.`}
             </p>
           )}
-          <p className="rule-row px-4 pt-3 text-[11px] text-ink-faint">
-            Forecasts from{" "}
+          <p className="rule-row px-4 pt-3 text-[10px] text-ink-faint">
+            Modeled snow. Data:{" "}
             <a className="underline" href="https://open-meteo.com/">
               Open-Meteo
             </a>
-            . Snow is modeled, not resort-reported.
           </p>
         </section>
       </div>

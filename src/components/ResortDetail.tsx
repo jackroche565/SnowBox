@@ -629,12 +629,12 @@ export default function ResortDetail({ resort }: { resort: Resort }) {
         {nws && <ForecasterNotes nws={nws} resort={resort} />}
         <HourByHour resort={resort} detail={detail} />
         <Links resort={resort} />
-        <p className="rule-row px-4 pt-3 pb-10 text-[11px] text-ink-faint">
-          Forecasts from{" "}
+        <p className="rule-row px-4 pt-3 pb-10 text-[10px] text-ink-faint">
+          Modeled snow and base. Data:{" "}
           <a className="underline" href="https://open-meteo.com/">
             Open-Meteo
-          </a>{" "}
-          (GFS, ECMWF and GEM models). Snow and base are modeled, not resort-reported. {TERRAIN_CREDIT}
+          </a>
+          . {TERRAIN_CREDIT}
         </p>
       </main>
     </div>

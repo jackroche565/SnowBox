@@ -170,7 +170,14 @@ export default function ResortMap({ resorts, snow, favoriteIds, hoveredId, selec
       setReady(true);
     });
 
+    // The map credit opens expanded; fold it to its (i) button after 5 seconds, as
+    // OpenStreetMap's attribution guidelines allow.
+    const foldCredit = setTimeout(() => {
+      map.getContainer().querySelector(".maplibregl-compact-show")?.classList.remove("maplibregl-compact-show");
+    }, 5000);
+
     return () => {
+      clearTimeout(foldCredit);
       map.remove();
       mapRef.current = null;
     };

@@ -106,4 +106,4 @@ export function hillshadeLayer(exaggeration = 0.65): HillshadeLayerSpecification
   };
 }
 
-export const TERRAIN_CREDIT = "Terrain: AWS Terrain Tiles. Map data © OpenStreetMap contributors, OpenFreeMap.";
+export const TERRAIN_CREDIT = "Terrain: AWS. Map © OpenStreetMap, OpenFreeMap.";
