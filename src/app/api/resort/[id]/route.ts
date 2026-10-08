@@ -10,6 +10,8 @@ import {
 
 // Same cadence as the all-resort summary: every visitor shares a copy for 30 minutes.
 const REVALIDATE_SECONDS = 1800;
+/** Give up on a slow upstream rather than leave the page loading. */
+const TIMEOUT_MS = 15_000;
 
 export async function GET(_req: NextRequest, ctx: RouteContext<"/api/resort/[id]">) {
   await connection();
@@ -19,8 +21,8 @@ export async function GET(_req: NextRequest, ctx: RouteContext<"/api/resort/[id]
 
   try {
     const [hourlyRes, modelsRes] = await Promise.all([
-      fetch(buildHourlyUrl(resort), { next: { revalidate: REVALIDATE_SECONDS } }),
-      fetch(buildModelsUrl(resort), { next: { revalidate: REVALIDATE_SECONDS } }),
+      fetch(buildHourlyUrl(resort), { next: { revalidate: REVALIDATE_SECONDS }, signal: AbortSignal.timeout(TIMEOUT_MS) }),
+      fetch(buildModelsUrl(resort), { next: { revalidate: REVALIDATE_SECONDS }, signal: AbortSignal.timeout(TIMEOUT_MS) }),
     ]);
     if (!hourlyRes.ok || !modelsRes.ok) {
       return Response.json(

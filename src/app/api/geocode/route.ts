@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
   try {
     const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?${params}`, {
       next: { revalidate: 86400 },
+      signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) {
       return Response.json({ error: `Location service returned ${res.status}` }, { status: 502 });
