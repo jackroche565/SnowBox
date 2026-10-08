@@ -360,10 +360,11 @@ function Notes({ resort, forecast, detail, today }: { resort: Resort; forecast: 
 }
 
 function NextSevenDays({ resort, forecast, detail, today }: { resort: Resort; forecast: ResortForecast; detail: DetailState; today: string }) {
-  // Week two: one figure, with whether the three models agree.
-  const late = detail.data?.models.slice(7) ?? [];
+  // Week two: one figure, with whether the three models agree. GEM stops after about 10 days and
+  // ECMWF after 15, so compare them only on the days every model covers.
+  const late = (detail.data?.models.slice(7) ?? []).filter((d) => MODELS.every((m) => d.byModel[m.id] != null));
   const totals = MODELS.map((m) => sum(late.map((d) => d.byModel[m.id])));
-  const spread = totals.length ? Math.max(...totals) - Math.min(...totals) : 0;
+  const spread = Math.max(...totals) - Math.min(...totals);
 
   const storm = detail.data ? nextStorm(detail.data.summit.hours) : null;
   const stormDays = storm
@@ -377,7 +378,7 @@ function NextSevenDays({ resort, forecast, detail, today }: { resort: Resort; fo
         <>
           Days 8–16{" "}
           <span className="font-semibold text-ink">{forecast.outlook.length > NEAR_DAYS ? formatInches(forecast.days8to16In) : "—"}</span>
-          {detail.data && (spread >= DISAGREE_INCHES ? ", models disagree" : ", models agree")}
+          {late.length > 0 && (spread >= DISAGREE_INCHES ? ", models disagree" : ", models agree")}
         </>
       }
     >
