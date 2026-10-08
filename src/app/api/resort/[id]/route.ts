@@ -8,7 +8,7 @@ import {
   type ResortDetailForecast,
 } from "@/lib/resortForecast";
 
-// Same cadence as the all-resort summary: every visitor shares a copy for 30 minutes.
+// Every visitor shares a copy for 30 minutes.
 const REVALIDATE_SECONDS = 1800;
 /** Give up on a slow upstream rather than leave the page loading. */
 const TIMEOUT_MS = 15_000;

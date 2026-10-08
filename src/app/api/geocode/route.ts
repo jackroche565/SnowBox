@@ -19,6 +19,10 @@ type OpenMeteoPlace = {
 /** Snowbox covers the US and Canada. */
 const COUNTRIES = ["US", "CA"];
 
+/** Snowbox started in the Northeast, so a real Northeast city wins a bare name ("Portland" is Maine's). */
+const HOME_STATES = ["Maine", "New Hampshire", "Vermont", "Massachusetts", "Rhode Island", "Connecticut", "New York"];
+const HOME_MIN_POPULATION = 25_000;
+
 // Accepts a US zip code ("05672"), a city ("Burlington", "Montreal") or a city and state or
 // province ("Burlington, VT", "Banff, AB").
 export async function GET(request: NextRequest) {
@@ -51,7 +55,10 @@ export async function GET(request: NextRequest) {
     const matches = (data.results ?? []).filter(
       (r) => COUNTRIES.includes(r.country_code ?? "") && (!state || r.admin1 === state),
     );
-    const best = matches[0];
+    const home = state
+      ? undefined
+      : matches.find((r) => HOME_STATES.includes(r.admin1 ?? "") && (r.population ?? 0) >= HOME_MIN_POPULATION);
+    const best = home ?? matches[0];
     if (!best) {
       return Response.json({ error: `Couldn't find "${query}"` }, { status: 404 });
     }

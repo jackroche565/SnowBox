@@ -131,14 +131,19 @@ const GRID = "grid grid-cols-[112px_repeat(7,minmax(0,1fr))_40px] gap-x-[3px]";
 /** The biggest day's column gets a faint glacier tint. */
 const TINT = "rgb(31 95 139 / 0.07)";
 
-function DayCell({ inches, highlight }: { inches: number; highlight: boolean }) {
+function DayCell({ date, inches, highlight }: { date: string; inches: number; highlight: boolean }) {
   const bar = barStyle(inches);
   return (
     <span className="flex h-full items-end justify-center pb-2.5" style={{ backgroundColor: highlight ? TINT : undefined }}>
+      {/* The day headers are visual only, so each cell says its day to screen readers. */}
+      <span className="sr-only">
+        {formatDay(date, -1)}: {inches < MEASURABLE ? "no snow" : formatInches(inches)}.
+      </span>
       {inches < MEASURABLE ? (
-        <span className="h-[2px] w-full max-w-[28px] bg-snow-none" />
+        <span aria-hidden="true" className="h-[2px] w-full max-w-[28px] bg-snow-none" />
       ) : (
         <span
+          aria-hidden="true"
           className="type-figure flex w-full max-w-[34px] items-start justify-center pt-[3px] text-[12px]"
           style={{ height: bar.height, backgroundColor: bar.bg, color: bar.fg }}
         >
@@ -173,13 +178,14 @@ function WeekRow({
           <PassTags passes={resort.passes} held={myPasses} />
         </span>
         {forecast
-          ? dates.map((date, i) => <DayCell key={date} inches={dayOf(forecast, date)?.snowIn ?? 0} highlight={i === highlight} />)
+          ? dates.map((date, i) => <DayCell key={date} date={date} inches={dayOf(forecast, date)?.snowIn ?? 0} highlight={i === highlight} />)
           : Array.from({ length: 7 }, (_, i) => <span key={i} />)}
         <span
           className={`type-figure flex items-end justify-end pr-4 pb-2.5 text-[19px] ${
             forecast && forecast.next7In >= MEASURABLE ? "text-glacier" : "text-ink-zero"
           }`}
         >
+          {forecast && <span className="sr-only">7-day total: </span>}
           {forecast ? formatInches(forecast.next7In) : ""}
         </span>
       </Link>
