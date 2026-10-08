@@ -11,9 +11,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1500,
-    "baseFt": 910,
-    "verticalFt": 590,
+    "summitFt": 1600,
+    "baseFt": 960,
+    "verticalFt": 650,
     "websiteUrl": "https://www.mohawkmtn.com/",
     "opensOn": "2026-12-18",
     "nws": {
@@ -21,11 +21,10 @@
       "zone": "CTZ001",
       "county": "CTC005"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.mohawkmtn.com/snow-report/",
+    "trailMapUrl": "https://www.mohawkmtn.com/trail-map/",
+    "webcamUrl": "https://www.mohawkmtn.com/the-mountain/webcam/",
+    "trails": 27
   },
   {
     "id": "mount-southington",
@@ -41,7 +40,7 @@
     ],
     "summitFt": 560,
     "baseFt": 200,
-    "verticalFt": 360,
+    "verticalFt": 425,
     "websiteUrl": "https://mountsouthington.com/",
     "opensOn": "2026-12-12",
     "nws": {
@@ -51,9 +50,11 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://mountsouthington.com/trails-and-conditions",
+    "trailMapUrl": "https://mountsouthington.com/assets/mt_southington_v1_final1_web.jpg",
+    "trails": 14
   },
   {
     "id": "powder-ridge",
@@ -81,7 +82,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://powderridgepark.com/trail-report/",
+    "trailMapUrl": "https://powderridgepark.com/trail-map/",
+    "webcamUrl": "https://powderridgepark.com/powder-ridge-webcam/",
+    "trails": 17
   },
   {
     "id": "ski-sundown",
@@ -93,9 +98,9 @@
     "lon": -72.9416,
     "timezone": "America/New_York",
     "passes": [],
-    "summitFt": 1060,
-    "baseFt": 500,
-    "verticalFt": 560,
+    "summitFt": 1075,
+    "baseFt": 450,
+    "verticalFt": 625,
     "websiteUrl": "https://skisundown.com",
     "opensOn": "2026-12-04",
     "nws": {
@@ -103,11 +108,10 @@
       "zone": "CTZ002",
       "county": "CTC003"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://skisundown.com/the-mountain/mountain-information/conditions-report/",
+    "trailMapUrl": "https://skisundown.com/plan-your-trip/trail-map-statistics/",
+    "webcamUrl": "https://skisundown.com/the-mountain/mountain-information/#webcam",
+    "trails": 17
   },
   {
     "id": "berkshire-east",
@@ -121,9 +125,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1540,
+    "summitFt": 1840,
     "baseFt": 590,
-    "verticalFt": 950,
+    "verticalFt": 1180,
     "websiteUrl": "https://berkshireeast.com/",
     "nws": {
       "office": "BOX",
@@ -131,10 +135,12 @@
       "county": "MAC011"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://berkshireeast.com/winter/mountain-conditions",
+    "trailMapUrl": "https://berkshireeast.com/plan/trail-maps",
+    "webcamUrl": "https://berkshireeast.com/winter/mountain-conditions#webcams",
+    "trails": 45
   },
   {
     "id": "blue-hills",
@@ -150,7 +156,7 @@
     ],
     "summitFt": 580,
     "baseFt": 260,
-    "verticalFt": 320,
+    "verticalFt": 309,
     "websiteUrl": "https://www.bluehillsboston.com/",
     "nws": {
       "office": "BOX",
@@ -159,9 +165,11 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://bluehillsboston.com/conditions/",
+    "trailMapUrl": "https://bluehillsboston.com/wp-content/uploads/2025/12/Updated-Trail-Map.avif",
+    "trails": 16
   },
   {
     "id": "bousquet",
@@ -175,9 +183,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1800,
-    "baseFt": 1110,
-    "verticalFt": 690,
+    "summitFt": 1818,
+    "baseFt": 1068,
+    "verticalFt": 750,
     "websiteUrl": "https://bousquetmountain.com/",
     "opensOn": "2026-12-11",
     "nws": {
@@ -185,11 +193,10 @@
       "zone": "MAZ001",
       "county": "MAC003"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://bousquetmountain.com/lift-trail-status/",
+    "trailMapUrl": "https://bousquetmountain.com/wp-content/uploads/2025/10/Trail-Map-1.pdf",
+    "webcamUrl": "https://bousquetmountain.com/live-cam/",
+    "trails": 23
   },
   {
     "id": "butternut",
@@ -203,9 +210,9 @@
     "passes": [
       "Snow Pass"
     ],
-    "summitFt": 1770,
+    "summitFt": 1800,
     "baseFt": 830,
-    "verticalFt": 940,
+    "verticalFt": 1000,
     "websiteUrl": "https://skibutternut.com/",
     "opensOn": "2026-12-11",
     "nws": {
@@ -214,10 +221,12 @@
       "county": "MAC003"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://skibutternut.com/the-mountain/trails-conditions/condition-report/",
+    "trailMapUrl": "https://skibutternut.com/uploads/images/Trails-Conditions/2025-butternut-trail-map-final-web-2.webp",
+    "webcamUrl": "https://skibutternut.com/livestream/",
+    "trails": 22
   },
   {
     "id": "catamount",
@@ -233,7 +242,7 @@
     ],
     "summitFt": 1890,
     "baseFt": 920,
-    "verticalFt": 970,
+    "verticalFt": 1000,
     "websiteUrl": "https://www.catamountski.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -243,9 +252,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://catamountski.com/winter/the-mountain/mountain-conditions",
+    "trailMapUrl": "https://catamountski.com/winter/the-mountain/trail-map",
+    "webcamUrl": "https://catamountski.com/winter/the-mountain/mountain-conditions#webcams",
+    "trails": 44
   },
   {
     "id": "jiminy-peak",
@@ -259,7 +271,7 @@
     "passes": [],
     "summitFt": 2380,
     "baseFt": 1250,
-    "verticalFt": 1130,
+    "verticalFt": 1150,
     "websiteUrl": "https://www.jiminypeak.com/",
     "opensOn": "2026-11-27",
     "nws": {
@@ -268,10 +280,12 @@
       "county": "MAC003"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.jiminypeak.com/the-mountain/mountain-information/snow-report/",
+    "trailMapUrl": "https://www.jiminypeak.com/the-mountain/mountain-information/jiminy-maps/",
+    "webcamUrl": "https://www.jiminypeak.com/webcams/",
+    "trails": 45
   },
   {
     "id": "nashoba-valley",
@@ -285,7 +299,7 @@
     "passes": [],
     "summitFt": 430,
     "baseFt": 200,
-    "verticalFt": 230,
+    "verticalFt": 240,
     "websiteUrl": "https://www.skinashoba.com/",
     "opensOn": "2026-12-12",
     "nws": {
@@ -295,9 +309,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://skinashoba.com/snow_report/",
+    "trailMapUrl": "https://skinashoba.com/trail-map/",
+    "webcamUrl": "https://skinashoba.com/webcams/",
+    "trails": 17
   },
   {
     "id": "wachusett",
@@ -323,7 +340,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.wachusett.com/the-mountain/your-visit/snow-report/",
+    "trailMapUrl": "https://www.wachusett.com/the-mountain/about-wachusett/trail-map/",
+    "webcamUrl": "https://www.wachusett.com/the-mountain/media-center/webcams/"
   },
   {
     "id": "big-moose",
@@ -351,7 +371,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://skibigmoose.com/trail-report-1",
+    "trailMapUrl": "https://skibigmoose.com/trail-map",
+    "webcamUrl": "https://skibigmoose.com/live-web-cam"
   },
   {
     "id": "big-rock",
@@ -365,9 +388,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1600,
+    "summitFt": 1748,
     "baseFt": 660,
-    "verticalFt": 940,
+    "verticalFt": 980,
     "websiteUrl": "https://www.bigrockmaine.com",
     "nws": {
       "office": "CAR",
@@ -375,10 +398,11 @@
       "county": "MEC003"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://bigrockmaine.com/mountain/trail-report/",
+    "trailMapUrl": "https://bigrockmaine.com/wp-content/uploads/2026/09/Big-Rock_Trail-Map_Web-scaled.jpg",
+    "trails": 26
   },
   {
     "id": "black-mountain-me",
@@ -405,7 +429,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://skiblackmountain.org/mountain-report",
+    "trailMapUrl": "https://skiblackmountain.org/maps3"
   },
   {
     "id": "camden-snow-bowl",
@@ -432,7 +458,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://camdensnowbowl.com/current-conditions/",
+    "trailMapUrl": "https://camdensnowbowl.com/ski-trail-map/",
+    "webcamUrl": "https://camdensnowbowl.com/web-cam/",
+    "trails": 15
   },
   {
     "id": "mount-abram",
@@ -448,7 +478,7 @@
     ],
     "summitFt": 1990,
     "baseFt": 950,
-    "verticalFt": 1040,
+    "verticalFt": 1150,
     "websiteUrl": "https://www.mtabram.com/",
     "opensOn": "2026-12-19",
     "nws": {
@@ -458,9 +488,10 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.mtabram.com/winter/mountain-report/",
+    "trailMapUrl": "https://www.mtabram.com/winter/trail-map/"
   },
   {
     "id": "pleasant-mountain",
@@ -488,7 +519,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.pleasantmountain.com/mountain-report",
+    "trailMapUrl": "https://www.pleasantmountain.com/trail-map",
+    "webcamUrl": "https://www.pleasantmountain.com/mountain-report"
   },
   {
     "id": "saddleback",
@@ -678,9 +712,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 4040,
-    "baseFt": 1880,
-    "verticalFt": 2150,
+    "summitFt": 4080,
+    "baseFt": 1900,
+    "verticalFt": 2180,
     "websiteUrl": "https://www.cannonmt.com/",
     "opensOn": "2026-11-27",
     "nws": {
@@ -688,11 +722,10 @@
       "zone": "NHZ003",
       "county": "NHC009"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.cannonmt.com/mountain-report",
+    "trailMapUrl": "https://www.cannonmt.com/trail-map",
+    "webcamUrl": "https://www.cannonmt.com/webcam",
+    "trails": 98
   },
   {
     "id": "cranmore",
@@ -706,7 +739,7 @@
     "passes": [],
     "summitFt": 1670,
     "baseFt": 550,
-    "verticalFt": 1130,
+    "verticalFt": 1200,
     "websiteUrl": "https://www.cranmore.com/",
     "opensOn": "2026-12-04",
     "liveCams": [
@@ -722,9 +755,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://cranmore.com/snow-report",
+    "trailMapUrl": "https://cranmore.com/trail-map",
+    "webcamUrl": "https://cranmore.com/cams",
+    "trails": 60
   },
   {
     "id": "crotched",
@@ -738,8 +774,8 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 1920,
-    "baseFt": 1040,
+    "summitFt": 2066,
+    "baseFt": 1050,
     "verticalFt": 880,
     "websiteUrl": "https://www.crotchedmtn.com/",
     "opensOn": "2026-12-11",
@@ -749,10 +785,12 @@
       "county": "NHC011"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.crotchedmtn.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.crotchedmtn.com/the-mountain/about-the-mountain/trail-maps.aspx",
+    "webcamUrl": "https://www.crotchedmtn.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 25
   },
   {
     "id": "dartmouth-skiway",
@@ -766,21 +804,16 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1900,
-    "baseFt": 920,
-    "verticalFt": 980,
-    "websiteUrl": "http://skiway.dartmouth.edu/",
+    "summitFt": 1943,
+    "baseFt": 975,
+    "verticalFt": 968,
+    "websiteUrl": "https://dartmouthskiway.com/",
     "opensOn": "2026-12-18",
     "nws": {
       "office": "GYX",
       "zone": "NHZ005",
       "county": "NHC009"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    }
   },
   {
     "id": "granite-gorge",
@@ -805,7 +838,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://granitegorge.com/conditions/",
+    "webcamUrl": "https://granitegorge.com/webcam/"
   },
   {
     "id": "gunstock",
@@ -817,9 +852,9 @@
     "lon": -71.3654,
     "timezone": "America/New_York",
     "passes": [],
-    "summitFt": 2250,
+    "summitFt": 2300,
     "baseFt": 940,
-    "verticalFt": 1300,
+    "verticalFt": 1340,
     "websiteUrl": "https://www.gunstock.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -828,10 +863,11 @@
       "county": "NHC001"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.gunstock.com/winter/snow-report/",
+    "trailMapUrl": "https://www.gunstock.com/discover/resort-maps/",
+    "webcamUrl": "https://www.gunstock.com/discover/webcams/"
   },
   {
     "id": "loon",
@@ -943,7 +979,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.raggedmountainresort.com/mountain-report-cams/",
+    "webcamUrl": "https://www.raggedmountainresort.com/mountain-report-cams/#mountain_cams",
+    "trails": 57
   },
   {
     "id": "tenney",
@@ -957,9 +996,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 2140,
+    "summitFt": 2100,
     "baseFt": 740,
-    "verticalFt": 1410,
+    "verticalFt": 1500,
     "websiteUrl": "https://www.skitenney.com/",
     "opensOn": "2026-12-05",
     "nws": {
@@ -968,9 +1007,7 @@
       "county": "NHC009"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
+      "baseFt"
     ]
   },
   {
@@ -987,7 +1024,7 @@
     ],
     "summitFt": 3820,
     "baseFt": 1820,
-    "verticalFt": 2000,
+    "verticalFt": 2020,
     "websiteUrl": "https://www.waterville.com/",
     "opensOn": "2026-11-28",
     "nws": {
@@ -997,9 +1034,9 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "trails": 62
   },
   {
     "id": "whaleback",
@@ -1027,7 +1064,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.whaleback.com/trail-report"
   },
   {
     "id": "wildcat",
@@ -1195,7 +1233,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://bromley.com/snow-report",
+    "trails": 48
   },
   {
     "id": "burke",
@@ -1211,7 +1251,7 @@
     ],
     "summitFt": 3210,
     "baseFt": 1220,
-    "verticalFt": 1990,
+    "verticalFt": 2010,
     "websiteUrl": "https://www.skiburke.com/",
     "opensOn": "2026-12-05",
     "nws": {
@@ -1221,9 +1261,9 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "trails": 53
   },
   {
     "id": "jay-peak",
@@ -1301,7 +1341,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://www.madriverglen.com/trail-maps/"
   },
   {
     "id": "magic-mountain",
@@ -1370,7 +1411,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://middleburysnowbowl.com/trail-map/"
   },
   {
     "id": "mount-snow",
@@ -1436,9 +1478,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 3930,
+    "summitFt": 3967,
     "baseFt": 2000,
-    "verticalFt": 1930,
+    "verticalFt": 1967,
     "websiteUrl": "https://www.picomountain.com/",
     "opensOn": "2026-12-11",
     "nws": {
@@ -1446,11 +1488,10 @@
       "zone": "VTZ019",
       "county": "VTC021"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://picomountain.com/mountain-report",
+    "trailMapUrl": "https://picomountain.com/winter-trail-map",
+    "webcamUrl": "https://picomountain.com/webcams",
+    "trails": 58
   },
   {
     "id": "saskadena-six",
@@ -1478,7 +1519,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.saskadenasix.com/winter/conditions",
+    "trailMapUrl": "https://www.saskadenasix.com/sites/default/files/2025-11/S6%20Trail%20Map%202025-26.pdf",
+    "trails": 28
   },
   {
     "id": "smugglers-notch",
@@ -1494,7 +1538,7 @@
     ],
     "summitFt": 3650,
     "baseFt": 1110,
-    "verticalFt": 2540,
+    "verticalFt": 2610,
     "websiteUrl": "https://www.smuggs.com/",
     "opensOn": "2026-11-27",
     "nws": {
@@ -1504,9 +1548,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.smuggs.com/conditions/winter-report/",
+    "trailMapUrl": "https://www.smuggs.com/resort-info/trail-map/",
+    "webcamUrl": "https://www.smuggs.com/conditions-stats/web-cams/",
+    "trails": 78
   },
   {
     "id": "stowe",
@@ -1629,7 +1676,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://mountaincreek.com/skiing-riding/mountain-report/snow-overview/",
+    "trailMapUrl": "https://mountaincreek.com/skiing-riding/mountain-report/trail-map/",
+    "webcamUrl": "https://mountaincreek.com/skiing-riding/mountain-report/live-cam/"
   },
   {
     "id": "belleayre-mountain",
@@ -1643,9 +1693,9 @@
     "passes": [
       "Snow Pass"
     ],
-    "summitFt": 3430,
-    "baseFt": 2020,
-    "verticalFt": 1410,
+    "summitFt": 3429,
+    "baseFt": 2025,
+    "verticalFt": 1404,
     "websiteUrl": "https://www.belleayre.com/",
     "opensOn": "2026-11-20",
     "nws": {
@@ -1653,11 +1703,9 @@
       "zone": "NYZ063",
       "county": "NYC111"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.belleayre.com/mountain/conditions-1/",
+    "trailMapUrl": "https://www.belleayre.com/mountain/trail-map-and-mountain-stats/",
+    "webcamUrl": "https://www.belleayre.com/mountain/web-cams/"
   },
   {
     "id": "bristol-mountain",
@@ -1671,7 +1719,7 @@
     "passes": [],
     "summitFt": 2150,
     "baseFt": 1010,
-    "verticalFt": 1140,
+    "verticalFt": 1200,
     "websiteUrl": "https://www.bristolmountain.com/",
     "opensOn": "2026-12-11",
     "nws": {
@@ -1681,9 +1729,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.bristolmountain.com/conditions/",
+    "trailMapUrl": "https://www.bristolmountain.com/trail-map/",
+    "webcamUrl": "https://www.bristolmountain.com/webcam/",
+    "trails": 39
   },
   {
     "id": "gore-mountain",
@@ -1697,7 +1748,7 @@
     "passes": [
       "Snow Pass"
     ],
-    "summitFt": 3580,
+    "summitFt": 3600,
     "baseFt": 1050,
     "verticalFt": 2530,
     "websiteUrl": "https://goremountain.com",
@@ -1708,10 +1759,12 @@
       "county": "NYC113"
     },
     "estimates": [
-      "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://goremountain.com/the-mountain/conditions/",
+    "trailMapUrl": "https://goremountain.com/the-mountain/trail-maps/",
+    "webcamUrl": "https://goremountain.com/the-mountain/webcam/"
   },
   {
     "id": "greek-peak-mountain",
@@ -1739,7 +1792,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.greekpeak.net/ski-ride/current-conditions/",
+    "trailMapUrl": "https://www.greekpeak.net/ski-ride/current-conditions/",
+    "webcamUrl": "https://www.greekpeak.net/ski-ride/webcams/",
+    "trails": 56
   },
   {
     "id": "holiday-valley",
@@ -1765,7 +1822,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.holidayvalley.com/snow-report/",
+    "trailMapUrl": "https://www.holidayvalley.com/resort-maps/",
+    "webcamUrl": "https://www.holidayvalley.com/webcams/",
+    "trails": 60
   },
   {
     "id": "holimont",
@@ -1781,7 +1842,7 @@
     ],
     "summitFt": 2260,
     "baseFt": 1590,
-    "verticalFt": 670,
+    "verticalFt": 700,
     "websiteUrl": "https://holimont.com/",
     "opensOn": "2026-12-12",
     "nws": {
@@ -1791,9 +1852,11 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://holimont.com/slope-report/",
+    "trailMapUrl": "https://holimont.com/resources/trail-maps/",
+    "trails": 56
   },
   {
     "id": "oak-mountain",
@@ -1821,7 +1884,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://oakmountainski.com/the-mountain/snowreport",
+    "trailMapUrl": "https://oakmountainski.com/the-mountain/trailmap",
+    "webcamUrl": "https://oakmountainski.com/the-mountain/webcam",
+    "trails": 22
   },
   {
     "id": "peek-n-peak",
@@ -1849,7 +1916,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.pknpk.com/conditions-report/",
+    "trails": 26
   },
   {
     "id": "plattekill-mountain",
@@ -1861,9 +1930,9 @@
     "lon": -74.6563,
     "timezone": "America/New_York",
     "passes": [],
-    "summitFt": 3310,
-    "baseFt": 2340,
-    "verticalFt": 970,
+    "summitFt": 3500,
+    "baseFt": 2400,
+    "verticalFt": 1100,
     "websiteUrl": "https://plattekill.com",
     "opensOn": "2026-12-12",
     "nws": {
@@ -1871,11 +1940,10 @@
       "zone": "NYZ057",
       "county": "NYC025"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://plattekill.com/on-the-trail/",
+    "trailMapUrl": "https://plattekill.com/wp-content/uploads/2024/11/plattekill_trailmap_2025-LARGE-1-scaled.jpg",
+    "webcamUrl": "https://plattekill.com/on-the-trail/#webCams",
+    "trails": 41
   },
   {
     "id": "snow-ridge",
@@ -1889,9 +1957,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1760,
-    "baseFt": 1310,
-    "verticalFt": 450,
+    "summitFt": 1850,
+    "baseFt": 1350,
+    "verticalFt": 500,
     "websiteUrl": "https://snowridge.com",
     "opensOn": "2026-12-12",
     "nws": {
@@ -1899,11 +1967,10 @@
       "zone": "NYZ008",
       "county": "NYC049"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://snowridge.com/trail-conditions/",
+    "trailMapUrl": "https://snowridge.com/trail-mapstats/",
+    "webcamUrl": "https://snowridge.com/live-feed/",
+    "trails": 31
   },
   {
     "id": "swain",
@@ -1917,9 +1984,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1870,
+    "summitFt": 1970,
     "baseFt": 1320,
-    "verticalFt": 550,
+    "verticalFt": 650,
     "websiteUrl": "https://www.swain.com/",
     "opensOn": "2026-12-19",
     "nws": {
@@ -1927,11 +1994,9 @@
       "zone": "NYZ021",
       "county": "NYC003"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://swain.com/trail-report/",
+    "trailMapUrl": "https://swain.com/trail-map/",
+    "trails": 35
   },
   {
     "id": "titus-mountain",
@@ -1959,7 +2024,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.titusmountain.com/conditions",
+    "trailMapUrl": "https://www.titusmountain.com/trail-map",
+    "webcamUrl": "https://www.titusmountain.com/snowcams"
   },
   {
     "id": "west-mountain",
@@ -1973,8 +2041,8 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1440,
-    "baseFt": 430,
+    "summitFt": 1470,
+    "baseFt": 460,
     "verticalFt": 1010,
     "websiteUrl": "https://westmountain.com/",
     "opensOn": "2026-12-12",
@@ -1983,11 +2051,9 @@
       "zone": "NYZ083",
       "county": "NYC113"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://westmountain.com/trail-conditions/",
+    "trailMapUrl": "https://westmountain.com/trail-maps/",
+    "trails": 35
   },
   {
     "id": "whiteface-mountain",
@@ -2002,9 +2068,9 @@
       "Snow Pass",
       "Mountain Collective"
     ],
-    "summitFt": 4370,
+    "summitFt": 4386,
     "baseFt": 1220,
-    "verticalFt": 3150,
+    "verticalFt": 3166,
     "websiteUrl": "https://www.whiteface.com/",
     "opensOn": "2026-11-21",
     "nws": {
@@ -2012,11 +2078,10 @@
       "zone": "NYZ034",
       "county": "NYC031"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://whiteface.com/mountain/conditions/",
+    "trailMapUrl": "https://whiteface.com/mountain/trail-map/",
+    "webcamUrl": "https://whiteface.com/mountain/webcams/",
+    "trails": 94
   },
   {
     "id": "windham-mountain",
@@ -2028,9 +2093,9 @@
     "lon": -74.2566,
     "timezone": "America/New_York",
     "passes": [],
-    "summitFt": 3050,
+    "summitFt": 3100,
     "baseFt": 1630,
-    "verticalFt": 1420,
+    "verticalFt": 1600,
     "websiteUrl": "https://www.windhammountain.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -2039,10 +2104,12 @@
       "county": "NYC039"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.windhammountainclub.com/mountain-report/",
+    "trailMapUrl": "https://www.windhammountainclub.com/maps/",
+    "webcamUrl": "https://www.windhammountainclub.com/mountain-cam/",
+    "trails": 60
   },
   {
     "id": "bear-creek",
@@ -2070,7 +2137,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.bcmountainresort.com/activities/ski-snowboarding/ski-conditions/"
   },
   {
     "id": "big-boulder",
@@ -2114,7 +2182,7 @@
     ],
     "summitFt": 3150,
     "baseFt": 2130,
-    "verticalFt": 1020,
+    "verticalFt": 1070,
     "websiteUrl": "https://www.blueknob.com/",
     "opensOn": "2026-12-11",
     "nws": {
@@ -2124,9 +2192,11 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://blueknob.com/trail-map-conditions/",
+    "trailMapUrl": "https://blueknob.com/trail-map-conditions/",
+    "trails": 34
   },
   {
     "id": "blue-mountain",
@@ -2142,7 +2212,7 @@
     ],
     "summitFt": 1540,
     "baseFt": 450,
-    "verticalFt": 1090,
+    "verticalFt": 1080,
     "websiteUrl": "https://www.skibluemt.com/",
     "opensOn": "2026-12-10",
     "nws": {
@@ -2152,9 +2222,11 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "trailMapUrl": "https://www.skibluemt.com/winter-sports/skiing-snowboarding/trail-map/",
+    "webcamUrl": "https://www.skibluemt.com/mountain-cams/",
+    "trails": 40
   },
   {
     "id": "camelback",
@@ -2171,7 +2243,7 @@
     "summitFt": 2050,
     "baseFt": 1150,
     "verticalFt": 900,
-    "websiteUrl": "https://www.skicamelback.com/",
+    "websiteUrl": "https://www.camelbackresort.com/",
     "opensOn": "2026-12-11",
     "nws": {
       "office": "PHI",
@@ -2182,7 +2254,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://www.camelbackresort.com/trail-map",
+    "trails": 39
   },
   {
     "id": "elk-mountain",
@@ -2208,7 +2282,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trails": 27
   },
   {
     "id": "hidden-valley-pa",
@@ -2236,7 +2311,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.hiddenvalleyresort.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trails": 26
   },
   {
     "id": "jack-frost",
@@ -2319,7 +2396,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.libertymountainresort.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx"
   },
   {
     "id": "montage-mountain",
@@ -2347,7 +2425,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trails": 27
   },
   {
     "id": "roundtop",
@@ -2361,9 +2440,9 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 1350,
-    "baseFt": 770,
-    "verticalFt": 580,
+    "summitFt": 1335,
+    "baseFt": 735,
+    "verticalFt": 600,
     "websiteUrl": "https://www.skiroundtop.com/",
     "opensOn": "2026-12-12",
     "nws": {
@@ -2371,11 +2450,7 @@
       "zone": "PAZ065",
       "county": "PAC133"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "trails": 21
   },
   {
     "id": "seven-springs",
@@ -2389,8 +2464,8 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 3000,
-    "baseFt": 2260,
+    "summitFt": 2994,
+    "baseFt": 2240,
     "verticalFt": 740,
     "websiteUrl": "https://www.7springs.com/",
     "opensOn": "2026-12-05",
@@ -2400,10 +2475,12 @@
       "county": "PAC111"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.7springs.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.7springs.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.7springs.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 33
   },
   {
     "id": "shawnee-mountain",
@@ -2447,7 +2524,7 @@
     ],
     "summitFt": 1290,
     "baseFt": 700,
-    "verticalFt": 590,
+    "verticalFt": 650,
     "websiteUrl": "https://www.ski-bigbear.com/",
     "opensOn": "2026-12-11",
     "nws": {
@@ -2457,9 +2534,9 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "trails": 18
   },
   {
     "id": "whitetail",
@@ -2473,8 +2550,8 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 1790,
-    "baseFt": 810,
+    "summitFt": 1800,
+    "baseFt": 865,
     "verticalFt": 980,
     "websiteUrl": "https://www.skiwhitetail.com/",
     "opensOn": "2026-12-12",
@@ -2484,10 +2561,12 @@
       "county": "PAC055"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.skiwhitetail.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.skiwhitetail.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.skiwhitetail.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 23
   },
   {
     "id": "wisp-resort",
@@ -2501,7 +2580,7 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 3100,
+    "summitFt": 3115,
     "baseFt": 2460,
     "verticalFt": 640,
     "websiteUrl": "https://www.wispresort.com/",
@@ -2512,10 +2591,13 @@
       "county": "MDC023"
     },
     "estimates": [
-      "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.wispresort.com/mountain-report-cams/",
+    "trailMapUrl": "https://www.wispresort.com/wp-content/uploads/2026/08/WispWinterTrailMap26.27.pdf",
+    "webcamUrl": "https://www.wispresort.com/mountain-report-cams/#mountain_cams",
+    "trails": 33
   },
   {
     "id": "beech-mountain",
@@ -2527,9 +2609,9 @@
     "lon": -81.8823,
     "timezone": "America/New_York",
     "passes": [],
-    "summitFt": 5450,
-    "baseFt": 4640,
-    "verticalFt": 810,
+    "summitFt": 5506,
+    "baseFt": 4675,
+    "verticalFt": 830,
     "websiteUrl": "https://www.beechmountainresort.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -2537,11 +2619,10 @@
       "zone": "NCZ018",
       "county": "NCC189"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.beechmountainresort.com/mountain/winter-trail-map/",
+    "trailMapUrl": "https://www.beechmountainresort.com/wp-content/uploads/2025/10/Beech_winter-25-26-Final.pdf",
+    "webcamUrl": "https://www.beechmountainresort.com/mountain/webcams/",
+    "trails": 17
   },
   {
     "id": "cataloochee",
@@ -2555,9 +2636,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 5190,
-    "baseFt": 4460,
-    "verticalFt": 730,
+    "summitFt": 5400,
+    "baseFt": 4660,
+    "verticalFt": 740,
     "websiteUrl": "https://cataloochee.com/",
     "opensOn": "2026-11-28",
     "nws": {
@@ -2565,11 +2646,10 @@
       "zone": "NCZ052",
       "county": "NCC087"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://cataloochee.com/the-mountain/snow-report/",
+    "trailMapUrl": "https://cataloochee.com/the-mountain/trail-map/",
+    "webcamUrl": "https://cataloochee.com/the-mountain/webcams/",
+    "trails": 18
   },
   {
     "id": "hatley-pointe",
@@ -2583,9 +2663,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 4590,
+    "summitFt": 4700,
     "baseFt": 3940,
-    "verticalFt": 650,
+    "verticalFt": 700,
     "websiteUrl": "https://hatleypointe.com/",
     "opensOn": "2026-12-26",
     "nws": {
@@ -2594,10 +2674,12 @@
       "county": "NCC115"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://hatleypointe.com/slope-report/",
+    "trailMapUrl": "https://hatleypointe.com/wp-content/uploads/2025/10/HP_TrailMap_2526_FINAL.pdf",
+    "webcamUrl": "https://hatleypointe.com/the-mountain/webcams/",
+    "trails": 21
   },
   {
     "id": "sugar-mountain",
@@ -2609,9 +2691,9 @@
     "lon": -81.8672,
     "timezone": "America/New_York",
     "passes": [],
-    "summitFt": 5230,
-    "baseFt": 4060,
-    "verticalFt": 1170,
+    "summitFt": 5300,
+    "baseFt": 4100,
+    "verticalFt": 1200,
     "websiteUrl": "https://skisugar.com/",
     "opensOn": "2026-11-11",
     "nws": {
@@ -2619,11 +2701,10 @@
       "zone": "NCZ033",
       "county": "NCC011"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://skisugar.com/trailmap/",
+    "trailMapUrl": "https://skisugar.com/trailmap/",
+    "webcamUrl": "https://skisugar.com/cams/",
+    "trails": 20
   },
   {
     "id": "ober-mountain",
@@ -2640,7 +2721,7 @@
     "summitFt": 3450,
     "baseFt": 1310,
     "verticalFt": 2140,
-    "websiteUrl": "https://obermountain.com/",
+    "websiteUrl": "https://obergatlinburg.com/",
     "opensOn": "2026-11-26",
     "nws": {
       "office": "MRX",
@@ -2651,7 +2732,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.obergatlinburg.com/slope-report",
+    "trailMapUrl": "https://www.obergatlinburg.com/mountain-maps",
+    "webcamUrl": "https://www.obergatlinburg.com/webcams",
+    "trails": 10
   },
   {
     "id": "massanutten",
@@ -2679,7 +2764,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.massresort.com/play/snow-sports/snow-conditions/",
+    "trailMapUrl": "https://www.massresort.com/upload/photos/page_73_massanutten-ski-trail-map-2026-small.pdf",
+    "webcamUrl": "https://www.massresort.com/play/snow-sports/snow-webcams/"
   },
   {
     "id": "wintergreen",
@@ -2693,7 +2781,7 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 3500,
+    "summitFt": 3515,
     "baseFt": 2510,
     "verticalFt": 990,
     "websiteUrl": "https://www.wintergreenresort.com",
@@ -2704,10 +2792,13 @@
       "county": "VAC125"
     },
     "estimates": [
-      "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.wintergreenresort.com/mountain-report-cams/",
+    "trailMapUrl": "https://www.wintergreenresort.com/wp-content/uploads/2023/07/wintergreen-trail-map.pdf",
+    "webcamUrl": "https://www.wintergreenresort.com/mountain-report-cams/#mountain_cams",
+    "trails": 27
   },
   {
     "id": "canaan-valley",
@@ -2732,10 +2823,12 @@
       "county": "WVC093"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.canaanresort.com/trail-report",
+    "trailMapUrl": "https://www.canaanresort.com/general-uploads/Files/2026-Canaan-Valley-Trail-Map-Final-2.pdf",
+    "webcamUrl": "https://www.canaanresort.com/resort-webcam",
+    "trails": 26
   },
   {
     "id": "snowshoe",
@@ -2775,9 +2868,9 @@
     "lon": -79.3948,
     "timezone": "America/New_York",
     "passes": [],
-    "summitFt": 4260,
+    "summitFt": 4268,
     "baseFt": 3290,
-    "verticalFt": 970,
+    "verticalFt": 1000,
     "websiteUrl": "https://timberlinemountain.com",
     "opensOn": "2026-12-04",
     "nws": {
@@ -2786,10 +2879,11 @@
       "county": "WVC093"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://timberlinemountain.com/snow-report/",
+    "trailMapUrl": "https://timberlinemountain.com/trail-map/",
+    "webcamUrl": "https://timberlinemountain.com/snow-cams/"
   },
   {
     "id": "winterplace",
@@ -2803,9 +2897,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 3550,
-    "baseFt": 3030,
-    "verticalFt": 520,
+    "summitFt": 3600,
+    "baseFt": 2997,
+    "verticalFt": 603,
     "websiteUrl": "https://www.winterplace.com/",
     "opensOn": "2026-12-05",
     "nws": {
@@ -2813,11 +2907,10 @@
       "zone": "WVZ516",
       "county": "WVC081"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://winterplace.com/real-time-snow-report-mountain-conditions-winterplace",
+    "trailMapUrl": "https://winterplace.com/mountain/trail-map",
+    "webcamUrl": "https://winterplace.com/mountain/mountainhouse-cam",
+    "trails": 28
   },
   {
     "id": "chestnut-mountain",
@@ -2833,7 +2926,7 @@
     ],
     "summitFt": 1020,
     "baseFt": 600,
-    "verticalFt": 420,
+    "verticalFt": 475,
     "websiteUrl": "https://www.chestnutmtn.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -2843,9 +2936,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.chestnutmtn.com/slope-report/",
+    "trailMapUrl": "https://www.chestnutmtn.com/mountain-trail-map/",
+    "webcamUrl": "https://www.chestnutmtn.com/live-cameras/",
+    "trails": 19
   },
   {
     "id": "paoli-peaks",
@@ -2859,9 +2955,9 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 820,
-    "baseFt": 540,
-    "verticalFt": 280,
+    "summitFt": 900,
+    "baseFt": 600,
+    "verticalFt": 300,
     "websiteUrl": "https://www.paolipeaks.com/",
     "opensOn": "2026-12-18",
     "nws": {
@@ -2869,11 +2965,10 @@
       "zone": "INZ076",
       "county": "INC117"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.paolipeaks.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.paolipeaks.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.paolipeaks.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 15
   },
   {
     "id": "big-powderhorn-mountain",
@@ -2887,9 +2982,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1640,
-    "baseFt": 1210,
-    "verticalFt": 430,
+    "summitFt": 1631,
+    "baseFt": 1214,
+    "verticalFt": 417,
     "websiteUrl": "https://bigpowderhorn.net/",
     "opensOn": "2026-12-26",
     "nws": {
@@ -2897,11 +2992,10 @@
       "zone": "MIZ009",
       "county": "MIC053"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://bigpowderhorn.net/mountain-report/",
+    "trailMapUrl": "https://bigpowderhorn.net/trail-map/",
+    "webcamUrl": "https://bigpowderhorn.net/webcams/",
+    "trails": 45
   },
   {
     "id": "boyne-highlands",
@@ -2915,21 +3009,20 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 1310,
-    "baseFt": 790,
-    "verticalFt": 520,
-    "websiteUrl": "https://www.boynehighlands.com",
+    "summitFt": 1325,
+    "baseFt": 773,
+    "verticalFt": 552,
+    "websiteUrl": "https://www.highlandsharborsprings.com/",
     "opensOn": "2026-12-04",
     "nws": {
       "office": "APX",
       "zone": "MIZ016",
       "county": "MIC047"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.highlandsharborsprings.com/mountain-report",
+    "trailMapUrl": "https://www.highlandsharborsprings.com/resort-maps",
+    "webcamUrl": "https://www.highlandsharborsprings.com/mountain-report#webcams",
+    "trails": 55
   },
   {
     "id": "boyne-mountain",
@@ -2945,8 +3038,8 @@
     ],
     "summitFt": 1150,
     "baseFt": 710,
-    "verticalFt": 440,
-    "websiteUrl": "https://www.boyne.com/BoyneMountain/",
+    "verticalFt": 500,
+    "websiteUrl": "https://www.boynemountain.com/",
     "opensOn": "2026-12-04",
     "nws": {
       "office": "APX",
@@ -2955,9 +3048,11 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.boynemountain.com/mountain-report",
+    "trailMapUrl": "https://www.boynemountain.com/mountain-maps",
+    "webcamUrl": "https://www.boynemountain.com/mountain-report#mountain-webcams"
   },
   {
     "id": "caberfae-peaks",
@@ -2985,7 +3080,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://caberfaepeaks.com/snow-report/",
+    "trailMapUrl": "https://caberfaepeaks.com/home/trail-map/",
+    "webcamUrl": "https://caberfaepeaks.com/live-cam-caberfae/",
+    "trails": 27
   },
   {
     "id": "crystal-mountain-mi",
@@ -3001,7 +3100,7 @@
     ],
     "summitFt": 1130,
     "baseFt": 790,
-    "verticalFt": 340,
+    "verticalFt": 375,
     "websiteUrl": "https://www.crystalmountain.com",
     "opensOn": "2026-11-27",
     "nws": {
@@ -3011,9 +3110,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.crystalmountain.com/ski/cams-conditions/mountain-report",
+    "trailMapUrl": "https://www.crystalmountain.com/ski/our-mountain/winter-trail-maps",
+    "webcamUrl": "https://www.crystalmountain.com/ski/cams-conditions/webcams",
+    "trails": 59
   },
   {
     "id": "marquette-mountain",
@@ -3027,9 +3129,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1300,
+    "summitFt": 1275,
     "baseFt": 770,
-    "verticalFt": 530,
+    "verticalFt": 540,
     "websiteUrl": "https://marquettemountain.com/",
     "opensOn": "2026-12-11",
     "nws": {
@@ -3038,10 +3140,12 @@
       "county": "MIC103"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.marquettemountain.com/the-mountain/lift-terrain-status/",
+    "trailMapUrl": "https://www.marquettemountain.com/the-mountain/trail-map/",
+    "webcamUrl": "https://www.marquettemountain.com/the-mountain/live-trail-view/",
+    "trails": 29
   },
   {
     "id": "mount-bohemia",
@@ -3055,7 +3159,7 @@
     "passes": [],
     "summitFt": 1460,
     "baseFt": 650,
-    "verticalFt": 810,
+    "verticalFt": 900,
     "websiteUrl": "https://www.mtbohemia.com/",
     "opensOn": "2026-12-05",
     "nws": {
@@ -3065,9 +3169,10 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.mtbohemia.com/current-conditions/",
+    "trailMapUrl": "https://www.mtbohemia.com/trail-maps/"
   },
   {
     "id": "mt-brighton",
@@ -3081,9 +3186,9 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 1120,
-    "baseFt": 940,
-    "verticalFt": 180,
+    "summitFt": 1330,
+    "baseFt": 1100,
+    "verticalFt": 230,
     "websiteUrl": "https://www.mtbrighton.com/",
     "opensOn": "2026-12-09",
     "nws": {
@@ -3091,11 +3196,10 @@
       "zone": "MIZ068",
       "county": "MIC093"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.mtbrighton.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.mtbrighton.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.mtbrighton.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 24
   },
   {
     "id": "nub-s-nob",
@@ -3111,7 +3215,7 @@
     ],
     "summitFt": 1330,
     "baseFt": 920,
-    "verticalFt": 410,
+    "verticalFt": 427,
     "websiteUrl": "https://www.nubsnob.com/",
     "opensOn": "2026-12-05",
     "nws": {
@@ -3121,9 +3225,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.nubsnob.com/conditions-new/",
+    "trailMapUrl": "https://www.nubsnob.com/trail-maps/",
+    "webcamUrl": "https://www.nubsnob.com/cam/",
+    "trails": 53
   },
   {
     "id": "snowriver",
@@ -3137,9 +3244,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 1740,
-    "baseFt": 1210,
-    "verticalFt": 530,
+    "summitFt": 1750,
+    "baseFt": 1212,
+    "verticalFt": 538,
     "websiteUrl": "https://www.snowriver.com/",
     "opensOn": "2026-11-27",
     "nws": {
@@ -3147,11 +3254,10 @@
       "zone": "MIZ009",
       "county": "MIC053"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.snowriver.com/mountain-info/mountain-report",
+    "trailMapUrl": "https://www.snowriver.com/mountain-info/trail-map-mountain-stats",
+    "webcamUrl": "https://www.snowriver.com/mountain-info/our-webcams",
+    "trails": 73
   },
   {
     "id": "afton-alps",
@@ -3167,7 +3273,7 @@
     ],
     "summitFt": 1020,
     "baseFt": 700,
-    "verticalFt": 320,
+    "verticalFt": 350,
     "websiteUrl": "https://www.aftonalps.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -3177,9 +3283,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.aftonalps.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.aftonalps.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.aftonalps.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 50
   },
   {
     "id": "giants-ridge",
@@ -3195,7 +3304,7 @@
     ],
     "summitFt": 1850,
     "baseFt": 1410,
-    "verticalFt": 440,
+    "verticalFt": 500,
     "websiteUrl": "https://www.giantsridge.com/",
     "opensOn": "2026-11-28",
     "nws": {
@@ -3205,9 +3314,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.giantsridge.com/mountain-report/",
+    "trailMapUrl": "https://www.giantsridge.com/wp-content/uploads/2025/03/2024-Alpine-Map-FInal-scaled.jpg",
+    "webcamUrl": "https://www.giantsridge.com/live-webcam/",
+    "trails": 35
   },
   {
     "id": "hyland-hills",
@@ -3235,7 +3347,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.threeriversparks.org/page/hyland-hills-ski-runs-terrain-park",
+    "trailMapUrl": "https://www.threeriversparks.org/sites/default/files/inline-images/HylandHills_TrailMap-2022.jpg",
+    "trails": 12
   },
   {
     "id": "lutsen-mountains",
@@ -3263,7 +3378,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.lutsen.com/mountain-info/mountain-report",
+    "trailMapUrl": "https://www.lutsen.com/mountain-info/trail-map-mountain-stats",
+    "webcamUrl": "https://www.lutsen.com/mountain-info/our-webcam",
+    "trails": 95
   },
   {
     "id": "spirit-mountain",
@@ -3291,7 +3410,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://spiritmt.com/winter/snow-report/",
+    "trailMapUrl": "https://spiritmt.com/wp-content/uploads/2025/12/Map_for_2025-11.png",
+    "webcamUrl": "https://spiritmt.com/live-cam/",
+    "trails": 22
   },
   {
     "id": "hidden-valley",
@@ -3307,7 +3430,7 @@
     ],
     "summitFt": 860,
     "baseFt": 560,
-    "verticalFt": 300,
+    "verticalFt": 320,
     "websiteUrl": "https://www.hiddenvalleyski.com/",
     "opensOn": "2026-12-12",
     "nws": {
@@ -3316,10 +3439,12 @@
       "county": "MOC189"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.hiddenvalleyski.com/the-mountain/mountain-conditions/lift-and-terrain-status.aspx",
+    "trailMapUrl": "https://www.hiddenvalleyski.com/the-mountain/about-the-mountain/trail-maps.aspx",
+    "webcamUrl": "https://www.hiddenvalleyski.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 13
   },
   {
     "id": "snow-creek",
@@ -3333,9 +3458,9 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 1090,
-    "baseFt": 820,
-    "verticalFt": 270,
+    "summitFt": 1100,
+    "baseFt": 800,
+    "verticalFt": 300,
     "websiteUrl": "https://skisnowcreek.com/",
     "opensOn": "2026-12-26",
     "nws": {
@@ -3343,11 +3468,10 @@
       "zone": "MOZ028",
       "county": "MOC165"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.skisnowcreek.com/the-mountain/mountain-conditions/lift-and-terrain-status.aspx",
+    "trailMapUrl": "https://www.skisnowcreek.com/the-mountain/about-the-mountain/trail-maps.aspx",
+    "webcamUrl": "https://www.skisnowcreek.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 14
   },
   {
     "id": "alpine-valley",
@@ -3363,7 +3487,7 @@
     ],
     "summitFt": 1350,
     "baseFt": 1120,
-    "verticalFt": 230,
+    "verticalFt": 240,
     "websiteUrl": "https://www.alpinevalleyohio.com/",
     "opensOn": "2026-12-19",
     "nws": {
@@ -3373,9 +3497,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.alpinevalleyohio.com/the-mountain/mountain-conditions/lift-and-terrain-status.aspx",
+    "trailMapUrl": "https://www.alpinevalleyohio.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.alpinevalleyohio.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 9
   },
   {
     "id": "boston-mills",
@@ -3403,7 +3530,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.bmbw.com/the-mountain/mountain-conditions/lift-and-terrain-status.aspx",
+    "trailMapUrl": "https://www.bmbw.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.bmbw.com/the-mountain/mountain-conditions/mountain-cams.aspx"
   },
   {
     "id": "brandywine",
@@ -3431,7 +3561,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.bmbw.com/the-mountain/mountain-conditions/lift-and-terrain-status.aspx",
+    "trailMapUrl": "https://www.bmbw.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.bmbw.com/the-mountain/mountain-conditions/mountain-cams.aspx"
   },
   {
     "id": "mad-river-mountain",
@@ -3456,10 +3589,12 @@
       "county": "OHC091"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.skimadriver.com/the-mountain/mountain-conditions/lift-and-terrain-status.aspx",
+    "trailMapUrl": "https://www.skimadriver.com/the-mountain/about-the-mountain/trail-maps.aspx",
+    "webcamUrl": "https://www.skimadriver.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 16
   },
   {
     "id": "terry-peak",
@@ -3473,9 +3608,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 6990,
+    "summitFt": 7100,
     "baseFt": 5920,
-    "verticalFt": 1070,
+    "verticalFt": 1100,
     "websiteUrl": "https://terrypeak.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -3484,10 +3619,11 @@
       "county": "SDC081"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://terrypeak.com/the-mountain/trails-lifts/",
+    "trailMapUrl": "https://terrypeak.com/the-mountain/trails-lifts/",
+    "webcamUrl": "https://terrypeak.com/the-mountain/live-web-cams/"
   },
   {
     "id": "cascade-mountain",
@@ -3513,7 +3649,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.cascademountain.com/snow-report/",
+    "trailMapUrl": "https://www.cascademountain.com/trail-map/",
+    "webcamUrl": "https://www.cascademountain.com/snow-cams/",
+    "trails": 48
   },
   {
     "id": "devil-s-head",
@@ -3541,7 +3681,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.devilsheadresort.com/ski-resort-mountain-sauk-merrimac-wi-wisconsin/snow-report/",
+    "trailMapUrl": "https://www.devilsheadresort.com/ski-resort-mountain-sauk-merrimac-wi-wisconsin/trail-map/",
+    "webcamUrl": "https://www.devilsheadresort.com/photos-pictures-video-golf-ski-resort-sauk-merrimac-wi-wisconsin/"
   },
   {
     "id": "granite-peak",
@@ -3555,9 +3698,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 1880,
-    "baseFt": 1220,
-    "verticalFt": 660,
+    "summitFt": 1942,
+    "baseFt": 1242,
+    "verticalFt": 700,
     "websiteUrl": "https://www.skigranitepeak.com/",
     "opensOn": "2026-11-21",
     "nws": {
@@ -3565,11 +3708,10 @@
       "zone": "WIZ030",
       "county": "WIC073"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.skigranitepeak.com/mountain-info/mountain-report",
+    "trailMapUrl": "https://www.skigranitepeak.com/mountain-info/trail-map-mountain-stats",
+    "webcamUrl": "https://www.skigranitepeak.com/mountain-info/live-web-cams",
+    "trails": 68
   },
   {
     "id": "trollhaugen",
@@ -3585,7 +3727,7 @@
     ],
     "summitFt": 1190,
     "baseFt": 950,
-    "verticalFt": 240,
+    "verticalFt": 280,
     "websiteUrl": "https://www.trollhaugen.com/",
     "opensOn": "2026-11-13",
     "nws": {
@@ -3595,9 +3737,11 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://trollhaugen.com/snow-report/",
+    "trailMapUrl": "https://trollhaugen.com/trail-map/",
+    "trails": 30
   },
   {
     "id": "wilmot",
@@ -3612,8 +3756,8 @@
       "Epic"
     ],
     "summitFt": 960,
-    "baseFt": 760,
-    "verticalFt": 200,
+    "baseFt": 770,
+    "verticalFt": 190,
     "websiteUrl": "https://www.wilmotmountain.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -3621,11 +3765,10 @@
       "zone": "WIZ072",
       "county": "WIC059"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.wilmotmountain.com/the-mountain/mountain-conditions/lift-and-terrain-status.aspx",
+    "trailMapUrl": "https://www.wilmotmountain.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.wilmotmountain.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 25
   },
   {
     "id": "arizona-snowbowl",
@@ -3651,7 +3794,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.snowbowl.ski/the-mountain/weather-conditions-webcams/",
+    "trailMapUrl": "https://www.snowbowl.ski/trail-maps/",
+    "webcamUrl": "https://www.snowbowl.ski/the-mountain/weather-conditions-webcams/webcams/",
+    "trails": 61
   },
   {
     "id": "sunrise-park",
@@ -3691,9 +3838,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 12480,
+    "summitFt": 13050,
     "baseFt": 10790,
-    "verticalFt": 1690,
+    "verticalFt": 2530,
     "websiteUrl": "https://www.arapahoebasin.com/",
     "opensOn": "2026-10-09",
     "nws": {
@@ -3702,10 +3849,12 @@
       "county": "COC117"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.arapahoebasin.com/snow-report/",
+    "trailMapUrl": "https://www.arapahoebasin.com/trail-maps/",
+    "webcamUrl": "https://www.arapahoebasin.com/mountain-cams/",
+    "trails": 147
   },
   {
     "id": "aspen-highlands",
@@ -3720,20 +3869,19 @@
       "Ikon",
       "Mountain Collective"
     ],
-    "summitFt": 11570,
-    "baseFt": 8070,
-    "verticalFt": 3500,
+    "summitFt": 11675,
+    "baseFt": 8040,
+    "verticalFt": 3635,
     "websiteUrl": "https://www.aspensnowmass.com/four-mountains/aspen-highlands",
     "nws": {
       "office": "GJT",
       "zone": "COZ010",
       "county": "COC097"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.aspensnowmass.com/four-mountains/aspen-highlands/snow-and-grooming-report",
+    "trailMapUrl": "https://www.aspensnowmass.com/four-mountains/aspen-highlands/trail-maps",
+    "webcamUrl": "https://www.aspensnowmass.com/four-mountains/aspen-highlands/mountain-cams",
+    "trails": 118
   },
   {
     "id": "aspen-mountain",
@@ -3748,20 +3896,19 @@
       "Ikon",
       "Mountain Collective"
     ],
-    "summitFt": 11260,
-    "baseFt": 7960,
-    "verticalFt": 3300,
+    "summitFt": 11212,
+    "baseFt": 7945,
+    "verticalFt": 3267,
     "websiteUrl": "https://www.aspensnowmass.com/four-mountains/aspen-mountain",
     "nws": {
       "office": "GJT",
       "zone": "COZ010",
       "county": "COC097"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.aspensnowmass.com/four-mountains/aspen-mountain/snow-and-grooming-report",
+    "trailMapUrl": "https://www.aspensnowmass.com/four-mountains/aspen-mountain/trail-maps",
+    "webcamUrl": "https://www.aspensnowmass.com/four-mountains/aspen-mountain/mountain-cams",
+    "trails": 76
   },
   {
     "id": "beaver-creek",
@@ -3775,8 +3922,8 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 11430,
-    "baseFt": 7410,
+    "summitFt": 11440,
+    "baseFt": 8100,
     "verticalFt": 4020,
     "websiteUrl": "https://www.beavercreek.com/",
     "opensOn": "2026-11-25",
@@ -3786,10 +3933,12 @@
       "county": "COC037"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.beavercreek.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.beavercreek.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.beavercreek.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 167
   },
   {
     "id": "breckenridge",
@@ -3803,8 +3952,8 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 12840,
-    "baseFt": 9550,
+    "summitFt": 12998,
+    "baseFt": 9600,
     "verticalFt": 3290,
     "websiteUrl": "https://www.breckenridge.com/",
     "opensOn": "2026-11-06",
@@ -3814,10 +3963,12 @@
       "county": "COC117"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.breckenridge.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.breckenridge.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.breckenridge.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 187
   },
   {
     "id": "buttermilk",
@@ -3832,20 +3983,19 @@
       "Ikon",
       "Mountain Collective"
     ],
-    "summitFt": 9880,
+    "summitFt": 9900,
     "baseFt": 7870,
-    "verticalFt": 2010,
+    "verticalFt": 2030,
     "websiteUrl": "https://www.aspensnowmass.com/four-mountains/buttermilk",
     "nws": {
       "office": "GJT",
       "zone": "COZ010",
       "county": "COC097"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.aspensnowmass.com/four-mountains/buttermilk/snow-and-grooming-report",
+    "trailMapUrl": "https://www.aspensnowmass.com/four-mountains/buttermilk/trail-maps",
+    "webcamUrl": "https://www.aspensnowmass.com/four-mountains/buttermilk/mountain-cams",
+    "trails": 44
   },
   {
     "id": "copper-mountain",
@@ -3859,9 +4009,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 12320,
-    "baseFt": 9710,
-    "verticalFt": 2610,
+    "summitFt": 12441,
+    "baseFt": 9712,
+    "verticalFt": 2738,
     "websiteUrl": "https://www.coppercolorado.com/",
     "opensOn": "2026-11-06",
     "nws": {
@@ -3869,11 +4019,10 @@
       "zone": "COZ034",
       "county": "COC117"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.coppercolorado.com/the-mountain/conditions-weather/snow-report/",
+    "trailMapUrl": "https://www.coppercolorado.com/the-mountain/trail-area-maps/winter-trail-map/",
+    "webcamUrl": "https://www.coppercolorado.com/the-mountain/webcams/",
+    "trails": 157
   },
   {
     "id": "crested-butte",
@@ -3887,8 +4036,8 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 11880,
-    "baseFt": 9130,
+    "summitFt": 12162,
+    "baseFt": 9375,
     "verticalFt": 2750,
     "websiteUrl": "https://www.skicb.com/",
     "opensOn": "2026-11-25",
@@ -3898,10 +4047,12 @@
       "county": "COC051"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.skicb.com/the-mountain/mountain-conditions/weather-report.aspx",
+    "trailMapUrl": "https://www.skicb.com/the-mountain/about-the-mountain/trail-maps.aspx",
+    "webcamUrl": "https://www.skicb.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 165
   },
   {
     "id": "echo-mountain",
@@ -3929,7 +4080,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://echomtn.com/mountain-conditions",
+    "trailMapUrl": "https://echomtn.com/mountain-conditions"
   },
   {
     "id": "eldora",
@@ -3957,7 +4110,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.eldora.com/the-mountain/current-conditions/snow-report-weather/",
+    "trailMapUrl": "https://www.eldora.com/the-mountain/maps/alpine-trail-map/",
+    "webcamUrl": "https://www.eldora.com/the-mountain/current-conditions/webcams/"
   },
   {
     "id": "granby-ranch",
@@ -3971,9 +4127,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 9170,
-    "baseFt": 8330,
-    "verticalFt": 840,
+    "summitFt": 9202,
+    "baseFt": 8202,
+    "verticalFt": 1000,
     "websiteUrl": "https://granbyranch.com/",
     "opensOn": "2026-11-27",
     "nws": {
@@ -3981,11 +4137,10 @@
       "zone": "COZ032",
       "county": "COC049"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://granbyranch.com/mountain-info/",
+    "trailMapUrl": "https://granbyranch.com/wp-content/uploads/2025/11/GR-Winter-Trail-Map-25-26-ALPINE.jpg",
+    "webcamUrl": "https://granbyranch.com/granby-ranch-webcam/",
+    "trails": 41
   },
   {
     "id": "howelson-hill",
@@ -3999,8 +4154,8 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 7170,
-    "baseFt": 6720,
+    "summitFt": 7136,
+    "baseFt": 6696,
     "verticalFt": 450,
     "websiteUrl": "https://steamboatsprings.net/131/Howelsen-Hill-Ski-Area",
     "nws": {
@@ -4009,10 +4164,10 @@
       "county": "COC107"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://steamboatsprings.net/983/Trail-Maps",
+    "trails": 17
   },
   {
     "id": "keystone",
@@ -4026,7 +4181,7 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 12280,
+    "summitFt": 12408,
     "baseFt": 9280,
     "verticalFt": 3000,
     "websiteUrl": "http://keystoneresort.com/",
@@ -4037,10 +4192,12 @@
       "county": "COC117"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.keystoneresort.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.keystoneresort.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.keystoneresort.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 140
   },
   {
     "id": "loveland-basin",
@@ -4054,9 +4211,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 12680,
-    "baseFt": 10880,
-    "verticalFt": 1800,
+    "summitFt": 13010,
+    "baseFt": 10800,
+    "verticalFt": 2210,
     "websiteUrl": "https://www.skiloveland.com/",
     "opensOn": "2026-11-06",
     "nws": {
@@ -4064,11 +4221,10 @@
       "zone": "COZ034",
       "county": "COC019"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://skiloveland.com/snow-report/",
+    "trailMapUrl": "https://skiloveland.com/the-mountain/trail-map-mountain-stats/",
+    "webcamUrl": "https://skiloveland.com/webcams/",
+    "trails": 94
   },
   {
     "id": "monarch-mountain",
@@ -4082,9 +4238,9 @@
     "passes": [
       "Snow Pass"
     ],
-    "summitFt": 11800,
-    "baseFt": 10690,
-    "verticalFt": 1110,
+    "summitFt": 11952,
+    "baseFt": 10727,
+    "verticalFt": 1225,
     "websiteUrl": "https://skimonarch.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -4092,11 +4248,10 @@
       "zone": "COZ060",
       "county": "COC015"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://skimonarch.com/conditions/",
+    "trailMapUrl": "https://skimonarch.com/mountain-maps/",
+    "webcamUrl": "https://skimonarch.com/conditions/cams/",
+    "trails": 80
   },
   {
     "id": "powderhorn",
@@ -4124,7 +4279,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.powderhorn.com/conditions/",
+    "trailMapUrl": "https://www.powderhorn.com/winter-trail-map/",
+    "webcamUrl": "https://www.powderhorn.com/webcams/",
+    "trails": 56
   },
   {
     "id": "purgatory",
@@ -4136,8 +4295,8 @@
     "lon": -107.8357,
     "timezone": "America/Denver",
     "passes": [],
-    "summitFt": 10800,
-    "baseFt": 8790,
+    "summitFt": 10822,
+    "baseFt": 8793,
     "verticalFt": 2010,
     "websiteUrl": "https://www.purgatory.ski/",
     "opensOn": "2026-11-20",
@@ -4147,10 +4306,9 @@
       "county": "COC067"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trails": 107
   },
   {
     "id": "silverton-mountain",
@@ -4188,9 +4346,9 @@
     "lon": -106.2888,
     "timezone": "America/Denver",
     "passes": [],
-    "summitFt": 11750,
-    "baseFt": 10580,
-    "verticalFt": 1170,
+    "summitFt": 11700,
+    "baseFt": 10500,
+    "verticalFt": 1200,
     "websiteUrl": "https://www.skicooper.com/",
     "opensOn": "2026-12-09",
     "nws": {
@@ -4198,11 +4356,10 @@
       "zone": "COZ010",
       "county": "COC037"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.skicooper.com/snow-trail-report/",
+    "trailMapUrl": "https://www.skicooper.com/mountain-stats-map/",
+    "webcamUrl": "https://www.skicooper.com/weather-webcams/",
+    "trails": 64
   },
   {
     "id": "snowmass",
@@ -4217,9 +4374,9 @@
       "Ikon",
       "Mountain Collective"
     ],
-    "summitFt": 12530,
-    "baseFt": 8120,
-    "verticalFt": 4410,
+    "summitFt": 12510,
+    "baseFt": 8104,
+    "verticalFt": 4406,
     "websiteUrl": "https://www.aspensnowmass.com/four-mountains/snowmass",
     "opensOn": "2026-11-26",
     "nws": {
@@ -4227,11 +4384,10 @@
       "zone": "COZ010",
       "county": "COC097"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.aspensnowmass.com/four-mountains/snowmass/snow-and-grooming-report",
+    "trailMapUrl": "https://www.aspensnowmass.com/four-mountains/snowmass/trail-maps",
+    "webcamUrl": "https://www.aspensnowmass.com/four-mountains/snowmass/mountain-cams",
+    "trails": 91
   },
   {
     "id": "steamboat",
@@ -4245,21 +4401,16 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 10540,
-    "baseFt": 6810,
-    "verticalFt": 3730,
+    "summitFt": 10568,
+    "baseFt": 6900,
+    "verticalFt": 3668,
     "websiteUrl": "https://www.steamboat.com/",
     "opensOn": "2026-11-21",
     "nws": {
       "office": "GJT",
       "zone": "COZ004",
       "county": "COC107"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    }
   },
   {
     "id": "sunlight-mountain",
@@ -4275,7 +4426,7 @@
     ],
     "summitFt": 9880,
     "baseFt": 8140,
-    "verticalFt": 1740,
+    "verticalFt": 2010,
     "websiteUrl": "https://sunlightmtn.com/",
     "opensOn": "2026-12-12",
     "nws": {
@@ -4285,9 +4436,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://sunlightmtn.com/explore/mountain-status/",
+    "trailMapUrl": "https://sunlightmtn.com/explore/trail-maps/",
+    "webcamUrl": "https://sunlightmtn.com/explore/mountain-status/",
+    "trails": 77
   },
   {
     "id": "telluride",
@@ -4301,9 +4455,9 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 12500,
-    "baseFt": 8730,
-    "verticalFt": 3770,
+    "summitFt": 12515,
+    "baseFt": 8725,
+    "verticalFt": 3790,
     "websiteUrl": "https://tellurideskiresort.com",
     "opensOn": "2026-11-26",
     "nws": {
@@ -4311,11 +4465,9 @@
       "zone": "COZ018",
       "county": "COC113"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://tellurideskiresort.com/snow-report/",
+    "webcamUrl": "https://tellurideskiresort.com/webcams/",
+    "trails": 148
   },
   {
     "id": "vail",
@@ -4330,7 +4482,7 @@
       "Epic"
     ],
     "summitFt": 11570,
-    "baseFt": 8030,
+    "baseFt": 8120,
     "verticalFt": 3540,
     "websiteUrl": "https://www.vail.com",
     "opensOn": "2026-11-13",
@@ -4340,10 +4492,12 @@
       "county": "COC037"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.vail.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.vail.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.vail.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 278
   },
   {
     "id": "winter-park",
@@ -4357,9 +4511,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 11990,
-    "baseFt": 9090,
-    "verticalFt": 2900,
+    "summitFt": 12060,
+    "baseFt": 9000,
+    "verticalFt": 3060,
     "websiteUrl": "https://www.winterparkresort.com",
     "opensOn": "2026-10-30",
     "nws": {
@@ -4367,11 +4521,9 @@
       "zone": "COZ034",
       "county": "COC049"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.winterparkresort.com/the-mountain/mountain-report",
+    "webcamUrl": "https://www.winterparkresort.com/the-mountain/mountain-cams",
+    "trails": 171
   },
   {
     "id": "wolf-creek",
@@ -4383,9 +4535,9 @@
     "lon": -106.786,
     "timezone": "America/Denver",
     "passes": [],
-    "summitFt": 11760,
-    "baseFt": 10260,
-    "verticalFt": 1500,
+    "summitFt": 11904,
+    "baseFt": 10300,
+    "verticalFt": 1604,
     "websiteUrl": "https://wolfcreekski.com/",
     "opensOn": "2026-11-21",
     "nws": {
@@ -4393,11 +4545,9 @@
       "zone": "COZ068",
       "county": "COC079"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://wolfcreekski.com/wcs-snow-report/",
+    "trailMapUrl": "https://wolfcreekski.com/area-maps/",
+    "trails": 133
   },
   {
     "id": "bogus-basin",
@@ -4409,9 +4559,9 @@
     "lon": -116.0936,
     "timezone": "America/Boise",
     "passes": [],
-    "summitFt": 7560,
-    "baseFt": 5770,
-    "verticalFt": 1790,
+    "summitFt": 7590,
+    "baseFt": 5790,
+    "verticalFt": 1800,
     "websiteUrl": "https://bogusbasin.org",
     "opensOn": "2026-11-28",
     "nws": {
@@ -4419,11 +4569,9 @@
       "zone": "IDZ013",
       "county": "IDC015"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://bogusbasin.org/your-mountain/conditions-webcams/",
+    "trailMapUrl": "https://bogusbasin.org/your-mountain/maps-statistics/",
+    "webcamUrl": "https://bogusbasin.org/your-mountain/conditions-webcams/"
   },
   {
     "id": "brundage-mountain",
@@ -4437,9 +4585,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 7600,
-    "baseFt": 5880,
-    "verticalFt": 1720,
+    "summitFt": 7640,
+    "baseFt": 6050,
+    "verticalFt": 1590,
     "websiteUrl": "https://brundage.com/",
     "opensOn": "2026-11-27",
     "nws": {
@@ -4447,11 +4595,10 @@
       "zone": "IDZ011",
       "county": "IDC003"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://brundage.com/on-the-mountain/snow-report/",
+    "trailMapUrl": "https://brundage.com/winter-maps/",
+    "webcamUrl": "https://brundage.com/live-cams/",
+    "trails": 70
   },
   {
     "id": "dollar-mountain",
@@ -4466,20 +4613,18 @@
       "Ikon",
       "Mountain Collective"
     ],
-    "summitFt": 6570,
-    "baseFt": 5950,
-    "verticalFt": 620,
+    "summitFt": 6638,
+    "baseFt": 6010,
+    "verticalFt": 628,
     "websiteUrl": "https://www.sunvalley.com/",
     "nws": {
       "office": "PIH",
       "zone": "IDZ073",
       "county": "IDC013"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.sunvalley.com/the-mountain/mountain-report",
+    "trailMapUrl": "https://www.sunvalley.com/the-mountain/maps-guides",
+    "webcamUrl": "https://www.sunvalley.com/the-mountain/web-cams/"
   },
   {
     "id": "kelly-canyon",
@@ -4523,7 +4668,7 @@
     ],
     "summitFt": 8190,
     "baseFt": 6430,
-    "verticalFt": 1760,
+    "verticalFt": 1800,
     "websiteUrl": "https://losttrail.com/trail-map/",
     "nws": {
       "office": "MSO",
@@ -4532,9 +4677,11 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://losttrail.com/snow-report/",
+    "trailMapUrl": "https://losttrail.com/trail-map/",
+    "trails": 69
   },
   {
     "id": "magic-mountain-id",
@@ -4548,7 +4695,7 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 7360,
+    "summitFt": 7240,
     "baseFt": 6700,
     "verticalFt": 660,
     "websiteUrl": "https://magicmountainresort.com/",
@@ -4558,7 +4705,6 @@
       "county": "IDC083"
     },
     "estimates": [
-      "summitFt",
       "baseFt",
       "verticalFt"
     ]
@@ -4589,7 +4735,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://pebblecreekskiarea.com/snow-report/",
+    "trailMapUrl": "https://pebblecreekskiarea.com/the-mountain/trails-grooming/",
+    "webcamUrl": "https://pebblecreekskiarea.com/the-mountain/webcam/"
   },
   {
     "id": "pomerelle-mountain",
@@ -4606,7 +4755,7 @@
     "summitFt": 8660,
     "baseFt": 7720,
     "verticalFt": 940,
-    "websiteUrl": "https://www.pomerelle-mtn.com/",
+    "websiteUrl": "https://www.pomerelle.com/",
     "opensOn": "2026-12-18",
     "nws": {
       "office": "PIH",
@@ -4617,7 +4766,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://www.pomerelle.com/trail-map"
   },
   {
     "id": "schweitzer",
@@ -4631,9 +4781,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 6390,
+    "summitFt": 6400,
     "baseFt": 4010,
-    "verticalFt": 2380,
+    "verticalFt": 2400,
     "websiteUrl": "https://www.schweitzer.com/",
     "opensOn": "2026-11-27",
     "nws": {
@@ -4642,10 +4792,12 @@
       "county": "IDC017"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.schweitzer.com/mountain-info/mountain-report",
+    "trailMapUrl": "https://www.schweitzer.com/mountain-info/maps",
+    "webcamUrl": "https://www.schweitzer.com/mountain-info/webcam",
+    "trails": 92
   },
   {
     "id": "silver-mountain",
@@ -4661,7 +4813,7 @@
     ],
     "summitFt": 6250,
     "baseFt": 2300,
-    "verticalFt": 3950,
+    "verticalFt": 2200,
     "websiteUrl": "https://www.silvermt.com/",
     "opensOn": "2026-11-28",
     "nws": {
@@ -4671,9 +4823,11 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.silvermt.com/mountain-info/expanded-conditions",
+    "trailMapUrl": "https://www.silvermt.com/mountain/trail-map",
+    "webcamUrl": "https://www.silvermt.com/mountain/about/webcams"
   },
   {
     "id": "soldier-mountain",
@@ -4716,9 +4870,9 @@
       "Ikon",
       "Mountain Collective"
     ],
-    "summitFt": 9120,
-    "baseFt": 5760,
-    "verticalFt": 3360,
+    "summitFt": 9150,
+    "baseFt": 5750,
+    "verticalFt": 3400,
     "websiteUrl": "https://www.sunvalley.com/",
     "opensOn": "2026-11-26",
     "nws": {
@@ -4726,11 +4880,10 @@
       "zone": "IDZ073",
       "county": "IDC013"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.sunvalley.com/the-mountain/mountain-report/",
+    "trailMapUrl": "https://www.sunvalley.com/the-mountain/maps-guides/",
+    "webcamUrl": "https://www.sunvalley.com/the-mountain/web-cams/",
+    "trails": 120
   },
   {
     "id": "tamarack",
@@ -4745,9 +4898,9 @@
       "Ikon",
       "Indy"
     ],
-    "summitFt": 7640,
-    "baseFt": 4880,
-    "verticalFt": 2760,
+    "summitFt": 7700,
+    "baseFt": 4900,
+    "verticalFt": 2800,
     "websiteUrl": "https://tamarackidaho.com",
     "opensOn": "2026-10-27",
     "nws": {
@@ -4755,11 +4908,10 @@
       "zone": "IDZ011",
       "county": "IDC085"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://tamarackidaho.com/the-mountain/snow-report",
+    "trailMapUrl": "https://tamarackidaho.com/the-mountain/maps",
+    "webcamUrl": "https://tamarackidaho.com/about/webcams",
+    "trails": 57
   },
   {
     "id": "big-sky",
@@ -4788,7 +4940,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.bigskyresort.com/current-conditions",
+    "trailMapUrl": "https://www.bigskyresort.com/trail-maps",
+    "webcamUrl": "https://www.bigskyresort.com/current-conditions/webcams",
+    "trails": 320
   },
   {
     "id": "bridger-bowl",
@@ -4800,9 +4956,9 @@
     "lon": -110.9087,
     "timezone": "America/Denver",
     "passes": [],
-    "summitFt": 8680,
+    "summitFt": 8700,
     "baseFt": 6120,
-    "verticalFt": 2560,
+    "verticalFt": 2600,
     "websiteUrl": "https://bridgerbowl.com",
     "opensOn": "2026-12-18",
     "nws": {
@@ -4811,10 +4967,12 @@
       "county": "MTC031"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://bridgerbowl.com/weather/report",
+    "trailMapUrl": "https://bridgerbowl.com/mountain/trail-map",
+    "webcamUrl": "https://bridgerbowl.com/weather/webcams",
+    "trails": 75
   },
   {
     "id": "discovery",
@@ -4826,9 +4984,9 @@
     "lon": -113.2522,
     "timezone": "America/Denver",
     "passes": [],
-    "summitFt": 8160,
+    "summitFt": 8158,
     "baseFt": 5720,
-    "verticalFt": 2440,
+    "verticalFt": 2388,
     "websiteUrl": "https://www.skidiscovery.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -4837,10 +4995,11 @@
       "county": "MTC039"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.skidiscovery.com/conditions/",
+    "trailMapUrl": "https://www.skidiscovery.com/trail-maps/",
+    "trails": 67
   },
   {
     "id": "montana-snowbowl",
@@ -4854,9 +5013,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 7530,
-    "baseFt": 4980,
-    "verticalFt": 2550,
+    "summitFt": 7600,
+    "baseFt": 5000,
+    "verticalFt": 2600,
     "websiteUrl": "https://www.montanasnowbowl.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -4864,11 +5023,9 @@
       "zone": "MTZ043",
       "county": "MTC063"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.montanasnowbowl.com/report.php",
+    "trailMapUrl": "https://montanasnowbowl.com/sbblog/trail-map-2/",
+    "webcamUrl": "https://montanasnowbowl.com/sbblog/base-web-cam/"
   },
   {
     "id": "red-lodge-mountain",
@@ -4882,9 +5039,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 9380,
-    "baseFt": 7090,
-    "verticalFt": 2290,
+    "summitFt": 9416,
+    "baseFt": 7016,
+    "verticalFt": 2400,
     "websiteUrl": "https://www.redlodgemountain.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -4892,11 +5049,10 @@
       "zone": "MTZ067",
       "county": "MTC009"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.redlodgemountain.com/mountain/snow-report/",
+    "trailMapUrl": "https://www.redlodgemountain.com/wp-content/uploads/RLM-2025-26-Map.pdf",
+    "webcamUrl": "https://www.redlodgemountain.com/webcam/",
+    "trails": 70
   },
   {
     "id": "showdown",
@@ -4910,8 +5066,8 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 8190,
-    "baseFt": 6870,
+    "summitFt": 8200,
+    "baseFt": 6800,
     "verticalFt": 1320,
     "websiteUrl": "https://www.showdownmontana.com/",
     "nws": {
@@ -4920,10 +5076,12 @@
       "county": "MTC059"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.showdownmontana.com/mountain-report",
+    "trailMapUrl": "https://www.showdownmontana.com/s/sdmt-trailmap.pdf",
+    "webcamUrl": "https://www.showdownmontana.com/mountain-cams",
+    "trails": 39
   },
   {
     "id": "whitefish-mountain",
@@ -4935,9 +5093,9 @@
     "lon": -114.3242,
     "timezone": "America/Denver",
     "passes": [],
-    "summitFt": 6770,
-    "baseFt": 4480,
-    "verticalFt": 2290,
+    "summitFt": 6817,
+    "baseFt": 4464,
+    "verticalFt": 2353,
     "websiteUrl": "https://skiwhitefish.com",
     "opensOn": "2026-12-04",
     "nws": {
@@ -4945,11 +5103,10 @@
       "zone": "MTZ002",
       "county": "MTC029"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://skiwhitefish.com/snowreport/",
+    "trailMapUrl": "https://skiwhitefish.com/trail-maps/",
+    "webcamUrl": "https://skiwhitefish.com/webcams/",
+    "trails": 110
   },
   {
     "id": "angel-fire",
@@ -4961,9 +5118,9 @@
     "lon": -105.2468,
     "timezone": "America/Denver",
     "passes": [],
-    "summitFt": 10680,
-    "baseFt": 8590,
-    "verticalFt": 2090,
+    "summitFt": 10677,
+    "baseFt": 8554,
+    "verticalFt": 2123,
     "websiteUrl": "https://www.angelfireresort.com/",
     "opensOn": "2026-12-11",
     "nws": {
@@ -4971,11 +5128,9 @@
       "zone": "NMZ215",
       "county": "NMC007"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.angelfireresort.com/trail-and-lift-status/",
+    "trailMapUrl": "https://www.angelfireresort.com/activities/winter-activities/skiing-and-snowboarding/mountain-stats/trail-map/",
+    "trails": 96
   },
   {
     "id": "red-river",
@@ -4987,9 +5142,9 @@
     "lon": -105.4088,
     "timezone": "America/Denver",
     "passes": [],
-    "summitFt": 10270,
-    "baseFt": 8650,
-    "verticalFt": 1620,
+    "summitFt": 10350,
+    "baseFt": 8750,
+    "verticalFt": 1600,
     "websiteUrl": "https://www.redriverskiarea.com/",
     "opensOn": "2026-11-26",
     "nws": {
@@ -4997,11 +5152,10 @@
       "zone": "NMZ213",
       "county": "NMC055"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.redriverskiarea.com/winter/winter-mountain/snow-report/",
+    "trailMapUrl": "https://www.redriverskiarea.com/winter/winter-mountain/interactive-trail-map/",
+    "webcamUrl": "https://www.redriverskiarea.com/explore/about/webcams/",
+    "trails": 64
   },
   {
     "id": "sipapu",
@@ -5013,9 +5167,9 @@
     "lon": -105.5523,
     "timezone": "America/Denver",
     "passes": [],
-    "summitFt": 9260,
-    "baseFt": 8180,
-    "verticalFt": 1080,
+    "summitFt": 9255,
+    "baseFt": 8200,
+    "verticalFt": 1055,
     "websiteUrl": "https://www.sipapu.ski/",
     "opensOn": "2026-11-20",
     "nws": {
@@ -5023,11 +5177,10 @@
       "zone": "NMZ214",
       "county": "NMC055"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.sipapu.ski/snow-report/",
+    "trailMapUrl": "https://www.sipapu.ski/trail-map/",
+    "webcamUrl": "https://www.sipapu.ski/the-mountain/sipapu-webcams/",
+    "trails": 43
   },
   {
     "id": "ski-santa-fe",
@@ -5039,9 +5192,9 @@
     "lon": -105.7895,
     "timezone": "America/Denver",
     "passes": [],
-    "summitFt": 12090,
-    "baseFt": 10340,
-    "verticalFt": 1750,
+    "summitFt": 12075,
+    "baseFt": 10350,
+    "verticalFt": 1725,
     "websiteUrl": "https://www.skisantafe.com/",
     "opensOn": "2026-11-26",
     "nws": {
@@ -5049,11 +5202,10 @@
       "zone": "NMZ214",
       "county": "NMC049"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.skisantafe.com/conditions/lift-trail-report",
+    "trailMapUrl": "https://www.skisantafe.com/api/media/file/2024-ski-santa-fe-trail-map-and-legend.pdf",
+    "webcamUrl": "https://www.skisantafe.com/conditions/webcams",
+    "trails": 87
   },
   {
     "id": "taos-ski-valley",
@@ -5068,9 +5220,9 @@
       "Ikon",
       "Mountain Collective"
     ],
-    "summitFt": 12450,
+    "summitFt": 12481,
     "baseFt": 9350,
-    "verticalFt": 3100,
+    "verticalFt": 3131,
     "websiteUrl": "https://www.skitaos.com/",
     "opensOn": "2026-11-26",
     "nws": {
@@ -5078,11 +5230,10 @@
       "zone": "NMZ213",
       "county": "NMC055"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.skitaos.com/lifts",
+    "trailMapUrl": "https://www.skitaos.com/lifts",
+    "webcamUrl": "https://www.skitaos.com/weather",
+    "trails": 110
   },
   {
     "id": "alta",
@@ -5097,9 +5248,9 @@
       "Ikon",
       "Mountain Collective"
     ],
-    "summitFt": 10550,
-    "baseFt": 8540,
-    "verticalFt": 2010,
+    "summitFt": 11068,
+    "baseFt": 8530,
+    "verticalFt": 2538,
     "websiteUrl": "https://www.alta.com/",
     "opensOn": "2026-11-20",
     "nws": {
@@ -5107,11 +5258,9 @@
       "zone": "UTZ111",
       "county": "UTC035"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.alta.com/lift-terrain-status",
+    "trailMapUrl": "https://res.cloudinary.com/altaskiarea/image/upload/v1759862670/resources/Maps/Alta_Trailmap_2025_26.pdf",
+    "trails": 118
   },
   {
     "id": "beaver-mountain",
@@ -5127,7 +5276,7 @@
     ],
     "summitFt": 8760,
     "baseFt": 7150,
-    "verticalFt": 1610,
+    "verticalFt": 1700,
     "websiteUrl": "https://www.skithebeav.com/",
     "opensOn": "2026-12-26",
     "nws": {
@@ -5137,9 +5286,10 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.skithebeav.com/mountain/conditions/",
+    "trails": 48
   },
   {
     "id": "brian-head",
@@ -5165,7 +5315,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.brianhead.com/weather-conditions-webcams/",
+    "trailMapUrl": "https://www.brianhead.com/trail-map/",
+    "webcamUrl": "https://www.brianhead.com/weather-conditions-webcams/webcams/"
   },
   {
     "id": "brighton",
@@ -5193,7 +5346,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.brightonresort.com/conditions",
+    "trailMapUrl": "https://www.brightonresort.com/trail-maps",
+    "webcamUrl": "https://www.brightonresort.com/conditions"
   },
   {
     "id": "cherry-peak",
@@ -5207,20 +5363,17 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 6990,
-    "baseFt": 5790,
-    "verticalFt": 1200,
+    "summitFt": 7040,
+    "baseFt": 5775,
+    "verticalFt": 1265,
     "websiteUrl": "https://www.skicpr.com/",
     "nws": {
       "office": "SLC",
       "zone": "UTZ110",
       "county": "UTC005"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.skicpr.com/ski-report",
+    "trailMapUrl": "https://www.skicpr.com/trail-map"
   },
   {
     "id": "deer-valley",
@@ -5234,9 +5387,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 9550,
+    "summitFt": 9570,
     "baseFt": 6450,
-    "verticalFt": 3100,
+    "verticalFt": 3120,
     "websiteUrl": "https://www.deervalley.com/",
     "opensOn": "2026-12-05",
     "nws": {
@@ -5244,11 +5397,9 @@
       "zone": "UTZ111",
       "county": "UTC051"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.deervalley.com/explore-the-mountain/mountain-report",
+    "trailMapUrl": "https://www.deervalley.com/blog/deer-valley-winter-trail-map",
+    "webcamUrl": "https://www.deervalley.com/explore-the-mountain/webcams"
   },
   {
     "id": "eagle-point",
@@ -5330,7 +5481,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://powdermountain.com/conditions",
+    "trailMapUrl": "https://powdermountain.com/trail-map"
   },
   {
     "id": "snowbasin",
@@ -5359,7 +5512,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.snowbasin.com/the-mountain/mountain-report/",
+    "trailMapUrl": "https://www.snowbasin.com/the-mountain/trail-maps/",
+    "webcamUrl": "https://www.snowbasin.com/the-mountain/web-cams/",
+    "trails": 115
   },
   {
     "id": "snowbird",
@@ -5388,7 +5545,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.snowbird.com/the-mountain/mountain-report/lift-trail-report/"
   },
   {
     "id": "solitude",
@@ -5402,9 +5560,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 10010,
-    "baseFt": 8000,
-    "verticalFt": 2010,
+    "summitFt": 10490,
+    "baseFt": 7990,
+    "verticalFt": 2490,
     "websiteUrl": "https://solitudemountain.com/",
     "opensOn": "2026-11-20",
     "nws": {
@@ -5412,11 +5570,9 @@
       "zone": "UTZ111",
       "county": "UTC035"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.solitudemountain.com/mountain-and-village/conditions-and-maps",
+    "webcamUrl": "https://www.solitudemountain.com/mountain-and-village/webcams",
+    "trails": 82
   },
   {
     "id": "sundance",
@@ -5439,10 +5595,10 @@
       "county": "UTC049"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.sundanceresort.com/mountain-report/",
+    "webcamUrl": "https://www.sundanceresort.com/webcams/"
   },
   {
     "id": "antelope-butte",
@@ -5457,7 +5613,7 @@
       "Indy"
     ],
     "summitFt": 9370,
-    "baseFt": 8410,
+    "baseFt": 8400,
     "verticalFt": 960,
     "websiteUrl": "https://www.skiantelopebutte.com/",
     "nws": {
@@ -5467,7 +5623,6 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
       "verticalFt"
     ]
   },
@@ -5497,7 +5652,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.grandtarghee.com/the-mountain/cams-conditions/mountain-report",
+    "trailMapUrl": "https://www.grandtarghee.com/the-mountain/mountain-information/trail-maps"
   },
   {
     "id": "jackson-hole",
@@ -5512,9 +5669,9 @@
       "Ikon",
       "Mountain Collective"
     ],
-    "summitFt": 10400,
-    "baseFt": 6320,
-    "verticalFt": 4080,
+    "summitFt": 10450,
+    "baseFt": 6310,
+    "verticalFt": 4140,
     "websiteUrl": "https://www.jacksonhole.com",
     "opensOn": "2026-11-27",
     "nws": {
@@ -5522,11 +5679,8 @@
       "zone": "WYZ012",
       "county": "WYC039"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "trailMapUrl": "https://www.jacksonhole.com/maps/mountain-winter",
+    "trails": 131
   },
   {
     "id": "snow-king-mountain",
@@ -5541,9 +5695,9 @@
       "Indy",
       "Snow Pass"
     ],
-    "summitFt": 7930,
+    "summitFt": 7810,
     "baseFt": 6240,
-    "verticalFt": 1690,
+    "verticalFt": 1570,
     "websiteUrl": "https://snowkingmountain.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -5552,10 +5706,9 @@
       "county": "WYC039"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "trailMapUrl": "https://snowkingmountain.com/mountain/trail-map/"
   },
   {
     "id": "snowy-range",
@@ -5583,7 +5736,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trails": 30
   },
   {
     "id": "white-pine",
@@ -5600,7 +5754,7 @@
     "summitFt": 9330,
     "baseFt": 8440,
     "verticalFt": 890,
-    "websiteUrl": "https://whitepinewyoming.com/",
+    "websiteUrl": "https://www.whitepineresort.com/",
     "opensOn": "2026-12-19",
     "nws": {
       "office": "RIW",
@@ -5625,20 +5779,19 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 8490,
-    "baseFt": 6220,
-    "verticalFt": 2270,
+    "summitFt": 8637,
+    "baseFt": 6835,
+    "verticalFt": 1802,
     "websiteUrl": "https://whitewolftahoe.com/",
     "nws": {
       "office": "STO",
       "zone": "CAZ133",
       "county": "CAC061"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.palisadestahoe.com/mountain-information/mountain-report",
+    "trailMapUrl": "https://www.palisadestahoe.com/mountain-information/trail-maps",
+    "webcamUrl": "https://www.palisadestahoe.com/mountain-information/webcams",
+    "trails": 109
   },
   {
     "id": "bear-mountain",
@@ -5652,20 +5805,19 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 8790,
-    "baseFt": 7120,
-    "verticalFt": 1670,
+    "summitFt": 8805,
+    "baseFt": 7140,
+    "verticalFt": 1665,
     "websiteUrl": "https://www.bigbearmountainresort.com/",
     "nws": {
       "office": "SGX",
       "zone": "CAZ055",
       "county": "CAC071"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.bigbearmountainresort.com/mountain-information",
+    "trailMapUrl": "https://www.bigbearmountainresort.com/mountain-information/trail-maps",
+    "webcamUrl": "https://www.bigbearmountainresort.com/webcams",
+    "trails": 26
   },
   {
     "id": "bear-valley",
@@ -5693,7 +5845,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.bearvalley.com/lift-and-trail-status",
+    "trailMapUrl": "https://www.bearvalley.com/trail-map",
+    "webcamUrl": "https://www.bearvalley.com/webcam",
+    "trails": 75
   },
   {
     "id": "boreal-mountain",
@@ -5719,7 +5875,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.rideboreal.com/explore/status-conditions/lift-trail-status/",
+    "trailMapUrl": "https://www.rideboreal.com/explore/facilities/trail-maps/",
+    "webcamUrl": "https://www.rideboreal.com/explore/webcams/"
   },
   {
     "id": "china-peak-mountain",
@@ -5735,7 +5894,7 @@
     ],
     "summitFt": 8630,
     "baseFt": 7030,
-    "verticalFt": 1600,
+    "verticalFt": 1679,
     "websiteUrl": "https://www.skichinapeak.com/",
     "opensOn": "2026-11-27",
     "nws": {
@@ -5744,10 +5903,11 @@
       "county": "CAC019"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "summitFt"
+    ],
+    "snowReportUrl": "https://www.skichinapeak.com/conditions",
+    "trailMapUrl": "https://www.skichinapeak.com/trail-map",
+    "webcamUrl": "https://www.skichinapeak.com/webcam/"
   },
   {
     "id": "dodge-ridge",
@@ -5763,7 +5923,7 @@
     ],
     "summitFt": 8150,
     "baseFt": 6560,
-    "verticalFt": 1590,
+    "verticalFt": 1600,
     "websiteUrl": "https://www.dodgeridge.com/site/",
     "opensOn": "2026-12-26",
     "nws": {
@@ -5773,9 +5933,11 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://dodgeridge.com/snow-report/",
+    "trailMapUrl": "https://dodgeridge.com/trail-maps/",
+    "webcamUrl": "https://dodgeridge.com/webcams/"
   },
   {
     "id": "donner-ski-ranch",
@@ -5803,7 +5965,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.donnerskiranch.com/liftstatus",
+    "trailMapUrl": "https://www.donnerskiranch.com/mountain-info",
+    "webcamUrl": "https://www.donnerskiranch.com/webcams"
   },
   {
     "id": "homewood",
@@ -5816,8 +5981,8 @@
     "timezone": "America/Los_Angeles",
     "passes": [],
     "summitFt": 7880,
-    "baseFt": 6240,
-    "verticalFt": 1640,
+    "baseFt": 6230,
+    "verticalFt": 1650,
     "websiteUrl": "https://www.skihomewood.com/",
     "opensOn": "2026-12-26",
     "nws": {
@@ -5825,11 +5990,10 @@
       "zone": "CAZ072",
       "county": "CAC061"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://skihomewood.com/snowreport/",
+    "trailMapUrl": "https://skihomewood.com/trailmap/",
+    "webcamUrl": "https://skihomewood.com/webcams/",
+    "trails": 66
   },
   {
     "id": "june-mountain",
@@ -5843,9 +6007,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 10140,
-    "baseFt": 7570,
-    "verticalFt": 2570,
+    "summitFt": 10090,
+    "baseFt": 7545,
+    "verticalFt": 2590,
     "websiteUrl": "https://www.junemountain.com/",
     "opensOn": "2026-12-19",
     "nws": {
@@ -5853,11 +6017,10 @@
       "zone": "CAZ073",
       "county": "CAC051"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.junemountain.com/mountain-information/mountain-report",
+    "trailMapUrl": "https://www.junemountain.com/mountain-information/trail-map",
+    "webcamUrl": "https://www.junemountain.com/mountain-information/live-cams",
+    "trails": 41
   },
   {
     "id": "kirkwood",
@@ -5872,8 +6035,8 @@
       "Epic"
     ],
     "summitFt": 9470,
-    "baseFt": 7810,
-    "verticalFt": 1660,
+    "baseFt": 7800,
+    "verticalFt": 2000,
     "websiteUrl": "https://www.kirkwood.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -5882,10 +6045,12 @@
       "county": "CAC003"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "summitFt"
+    ],
+    "snowReportUrl": "https://www.kirkwood.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.kirkwood.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.kirkwood.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 86
   },
   {
     "id": "mammoth-mountain",
@@ -5899,9 +6064,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 11030,
-    "baseFt": 8060,
-    "verticalFt": 2970,
+    "summitFt": 11053,
+    "baseFt": 7953,
+    "verticalFt": 3100,
     "websiteUrl": "https://www.mammothmountain.com/",
     "opensOn": "2026-11-13",
     "nws": {
@@ -5909,11 +6074,10 @@
       "zone": "CAZ073",
       "county": "CAC051"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.mammothmountain.com/on-the-mountain/mountain-report",
+    "trailMapUrl": "https://www.mammothmountain.com/on-the-mountain/winter-trail-map",
+    "webcamUrl": "https://www.mammothmountain.com/on-the-mountain/mammoth-webcam",
+    "trails": 180
   },
   {
     "id": "mountain-high",
@@ -5927,8 +6091,8 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 8180,
-    "baseFt": 6580,
+    "summitFt": 8200,
+    "baseFt": 6600,
     "verticalFt": 1600,
     "websiteUrl": "https://www.mthigh.com/",
     "opensOn": "2026-11-27",
@@ -5937,11 +6101,9 @@
       "zone": "CAZ380",
       "county": "CAC037"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.mthigh.com/site/trails-and-conditions/conditions/snow-and-weather-report",
+    "trailMapUrl": "https://www.mthigh.com/site/mountain/mountain-info/interactive-trailmap.html",
+    "webcamUrl": "https://www.mthigh.com/site/mountain/mountain-info/livecams"
   },
   {
     "id": "mt-baldy",
@@ -5953,9 +6115,9 @@
     "lon": -117.612,
     "timezone": "America/Los_Angeles",
     "passes": [],
-    "summitFt": 8560,
-    "baseFt": 6480,
-    "verticalFt": 2080,
+    "summitFt": 8600,
+    "baseFt": 6500,
+    "verticalFt": 2100,
     "websiteUrl": "https://www.mtbaldyresort.com/",
     "opensOn": "2026-11-27",
     "nws": {
@@ -5963,11 +6125,10 @@
       "zone": "CAZ055",
       "county": "CAC071"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.mtbaldyresort.com/mountain-report",
+    "trailMapUrl": "https://www.mtbaldyresort.com/trail-map-and-mountain-stats",
+    "webcamUrl": "https://www.mtbaldyresort.com/web-cam",
+    "trails": 26
   },
   {
     "id": "mt-shasta-ski-park",
@@ -5982,8 +6143,8 @@
       "Indy"
     ],
     "summitFt": 7540,
-    "baseFt": 5470,
-    "verticalFt": 2070,
+    "baseFt": 5500,
+    "verticalFt": 2036,
     "websiteUrl": "https://www.skipark.com/",
     "opensOn": "2026-12-26",
     "nws": {
@@ -5992,10 +6153,12 @@
       "county": "CAC093"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "summitFt"
+    ],
+    "snowReportUrl": "https://www.skipark.com/winter/conditions",
+    "trailMapUrl": "https://www.skipark.com/winter/trail-map-stats",
+    "webcamUrl": "https://www.skipark.com/winter/conditions",
+    "trails": 38
   },
   {
     "id": "northstar",
@@ -6010,8 +6173,8 @@
       "Epic"
     ],
     "summitFt": 8610,
-    "baseFt": 6300,
-    "verticalFt": 2310,
+    "baseFt": 6330,
+    "verticalFt": 2280,
     "websiteUrl": "https://www.northstarcalifornia.com/",
     "opensOn": "2026-11-20",
     "nws": {
@@ -6019,11 +6182,10 @@
       "zone": "CAZ072",
       "county": "CAC061"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.northstarcalifornia.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.northstarcalifornia.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.northstarcalifornia.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 100
   },
   {
     "id": "palisades-tahoe",
@@ -6037,9 +6199,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 8750,
+    "summitFt": 9050,
     "baseFt": 6200,
-    "verticalFt": 2550,
+    "verticalFt": 2850,
     "websiteUrl": "https://www.palisadestahoe.com",
     "opensOn": "2026-11-25",
     "nws": {
@@ -6047,11 +6209,9 @@
       "zone": "CAZ072",
       "county": "CAC061"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.palisadestahoe.com/mountain-information/mountain-report",
+    "trailMapUrl": "https://www.palisadestahoe.com/mountain-information/trail-maps",
+    "webcamUrl": "https://www.palisadestahoe.com/mountain-information/webcams"
   },
   {
     "id": "sierra-at-tahoe",
@@ -6065,9 +6225,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 8850,
+    "summitFt": 8852,
     "baseFt": 6640,
-    "verticalFt": 2210,
+    "verticalFt": 2212,
     "websiteUrl": "https://www.sierraattahoe.com/",
     "opensOn": "2026-12-26",
     "nws": {
@@ -6075,11 +6235,10 @@
       "zone": "CAZ136",
       "county": "CAC017"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://sierraattahoe.com/weather-snow-report/",
+    "trailMapUrl": "https://sierraattahoe.com/maps-and-stats/",
+    "webcamUrl": "https://sierraattahoe.com/live-cams/",
+    "trails": 50
   },
   {
     "id": "snow-summit",
@@ -6093,9 +6252,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 8180,
-    "baseFt": 6940,
-    "verticalFt": 1240,
+    "summitFt": 8200,
+    "baseFt": 7000,
+    "verticalFt": 1200,
     "websiteUrl": "https://www.bigbearmountainresort.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -6103,11 +6262,10 @@
       "zone": "CAZ055",
       "county": "CAC071"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.bigbearmountainresort.com/mountain-information",
+    "trailMapUrl": "https://www.bigbearmountainresort.com/mountain-information/trail-maps",
+    "webcamUrl": "https://www.bigbearmountainresort.com/webcams",
+    "trails": 33
   },
   {
     "id": "snow-valley",
@@ -6149,8 +6307,8 @@
     "passes": [
       "Mountain Collective"
     ],
-    "summitFt": 8370,
-    "baseFt": 6870,
+    "summitFt": 8383,
+    "baseFt": 6883,
     "verticalFt": 1500,
     "websiteUrl": "https://www.sugarbowl.com/",
     "opensOn": "2026-11-27",
@@ -6159,11 +6317,10 @@
       "zone": "CAZ133",
       "county": "CAC061"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.sugarbowl.com/conditions",
+    "trailMapUrl": "https://www.sugarbowl.com/interactive-map",
+    "webcamUrl": "https://www.sugarbowl.com/webcams",
+    "trails": 105
   },
   {
     "id": "diamond-peak",
@@ -6175,9 +6332,9 @@
     "lon": -119.9141,
     "timezone": "America/Los_Angeles",
     "passes": [],
-    "summitFt": 8520,
-    "baseFt": 6730,
-    "verticalFt": 1790,
+    "summitFt": 8540,
+    "baseFt": 6700,
+    "verticalFt": 1840,
     "websiteUrl": "https://www.diamondpeak.com/",
     "opensOn": "2026-12-03",
     "nws": {
@@ -6185,11 +6342,10 @@
       "zone": "NVZ002",
       "county": "NVC031"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.diamondpeak.com/the-mountain/mountain-report/",
+    "trailMapUrl": "https://www.diamondpeak.com/the-mountain/trail-map/",
+    "webcamUrl": "https://www.diamondpeak.com/the-mountain/web-cams/",
+    "trails": 40
   },
   {
     "id": "heavenly",
@@ -6203,20 +6359,19 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 9960,
-    "baseFt": 6280,
-    "verticalFt": 3680,
+    "summitFt": 10067,
+    "baseFt": 6657,
+    "verticalFt": 3410,
     "websiteUrl": "https://www.skiheavenly.com/",
     "nws": {
       "office": "REV",
       "zone": "NVZ002",
       "county": "NVC005"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.skiheavenly.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.skiheavenly.com/the-mountain/about-the-mountain/trail-map.aspx",
+    "webcamUrl": "https://www.skiheavenly.com/the-mountain/mountain-conditions/mountain-cams.aspx",
+    "trails": 111
   },
   {
     "id": "mt-rose",
@@ -6242,7 +6397,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://skirose.com/trail-maps/",
+    "webcamUrl": "https://skirose.com/the-mountain-web-cams/"
   },
   {
     "id": "anthony-lakes",
@@ -6255,8 +6412,8 @@
     "timezone": "America/Los_Angeles",
     "passes": [],
     "summitFt": 7930,
-    "baseFt": 7130,
-    "verticalFt": 800,
+    "baseFt": 7100,
+    "verticalFt": 900,
     "websiteUrl": "https://anthonylakes.com/",
     "opensOn": "2026-12-19",
     "nws": {
@@ -6265,10 +6422,10 @@
       "county": "ORC001"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "summitFt"
+    ],
+    "snowReportUrl": "https://anthonylakes.com/berts-daily-report/",
+    "trailMapUrl": "https://anthonylakes.com/winter/maps-stats/"
   },
   {
     "id": "hoodoo-ski-area",
@@ -6282,9 +6439,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 5670,
-    "baseFt": 4680,
-    "verticalFt": 990,
+    "summitFt": 5703,
+    "baseFt": 4668,
+    "verticalFt": 1035,
     "websiteUrl": "https://skihoodoo.com/",
     "opensOn": "2026-11-27",
     "nws": {
@@ -6292,11 +6449,10 @@
       "zone": "ORZ127",
       "county": "ORC043"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://hoodoo.com/the-mountain/mountain-lift-status/",
+    "trailMapUrl": "https://hoodoo.com/explore/trail-map/",
+    "webcamUrl": "https://hoodoo.com/the-mountain/webcams/",
+    "trails": 34
   },
   {
     "id": "mount-ashland",
@@ -6308,9 +6464,9 @@
     "lon": -122.7112,
     "timezone": "America/Los_Angeles",
     "passes": [],
-    "summitFt": 7480,
-    "baseFt": 6320,
-    "verticalFt": 1160,
+    "summitFt": 7533,
+    "baseFt": 6344,
+    "verticalFt": 1150,
     "websiteUrl": "https://www.mtashland.com/",
     "opensOn": "2026-12-18",
     "nws": {
@@ -6318,11 +6474,10 @@
       "zone": "ORZ028",
       "county": "ORC029"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.mtashland.com/mountain-report/",
+    "trailMapUrl": "https://www.mtashland.com/mountain-statistics/",
+    "webcamUrl": "https://www.mtashland.com/webcams/",
+    "trails": 45
   },
   {
     "id": "mt-bachelor",
@@ -6336,9 +6491,9 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 8940,
+    "summitFt": 9065,
     "baseFt": 5700,
-    "verticalFt": 3240,
+    "verticalFt": 3365,
     "websiteUrl": "https://www.mtbachelor.com/",
     "opensOn": "2026-12-04",
     "nws": {
@@ -6346,11 +6501,10 @@
       "zone": "ORZ509",
       "county": "ORC017"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.mtbachelor.com/the-mountain/lift-trail-report/",
+    "trailMapUrl": "https://www.mtbachelor.com/the-mountain/maps/winter-lift-trail-map/",
+    "webcamUrl": "https://www.mtbachelor.com/the-mountain/webcams/",
+    "trails": 124
   },
   {
     "id": "mt-hood-meadows",
@@ -6364,7 +6518,7 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 7310,
+    "summitFt": 7305,
     "baseFt": 4530,
     "verticalFt": 2780,
     "websiteUrl": "https://www.skihood.com/",
@@ -6375,10 +6529,12 @@
       "county": "ORC027"
     },
     "estimates": [
-      "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.skihood.com/mountain-report",
+    "trailMapUrl": "https://www.skihood.com/explore/trail-maps",
+    "webcamUrl": "https://www.skihood.com/mountain-report/mountain-cams"
   },
   {
     "id": "mt-hood-skibowl",
@@ -6404,7 +6560,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://skibowl.com/winter-condition-and-lift-status/",
+    "trailMapUrl": "https://skibowl.com/about-skibowl/trail-map/",
+    "webcamUrl": "https://skibowl.com/winter-condition-and-lift-status/"
   },
   {
     "id": "timberline-lodge",
@@ -6416,9 +6575,9 @@
     "lon": -121.7241,
     "timezone": "America/Los_Angeles",
     "passes": [],
-    "summitFt": 8500,
-    "baseFt": 3980,
-    "verticalFt": 4520,
+    "summitFt": 8540,
+    "baseFt": 4000,
+    "verticalFt": 4540,
     "websiteUrl": "https://www.timberlinelodge.com/",
     "opensOn": "2026-12-26",
     "nws": {
@@ -6426,11 +6585,9 @@
       "zone": "ORZ126",
       "county": "ORC005"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://timberlinelodge.com/conditions/",
+    "trailMapUrl": "https://timberlinelodge.com/mountain/trail-map/",
+    "webcamUrl": "https://timberlinelodge.com/webcams/"
   },
   {
     "id": "49-degrees-north",
@@ -6444,9 +6601,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 5760,
-    "baseFt": 3900,
-    "verticalFt": 1860,
+    "summitFt": 5774,
+    "baseFt": 3923,
+    "verticalFt": 1871,
     "websiteUrl": "https://www.ski49n.com",
     "opensOn": "2026-12-30",
     "nws": {
@@ -6454,11 +6611,10 @@
       "zone": "WAZ037",
       "county": "WAC065"
     },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.ski49n.com/mountain-info/trail-status",
+    "trailMapUrl": "https://www.ski49n.com/mountain-info/trail-map-stats",
+    "webcamUrl": "https://www.ski49n.com/webcams/",
+    "trails": 90
   },
   {
     "id": "alpental",
@@ -6474,7 +6630,7 @@
     ],
     "summitFt": 5450,
     "baseFt": 3140,
-    "verticalFt": 2310,
+    "verticalFt": 2290,
     "websiteUrl": "https://summitatsnoqualmie.com/",
     "opensOn": "2026-12-26",
     "nws": {
@@ -6484,9 +6640,11 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.summitatsnoqualmie.com/alpental/mountain-report",
+    "trailMapUrl": "https://www.summitatsnoqualmie.com/trail-maps",
+    "webcamUrl": "https://www.summitatsnoqualmie.com/webcams"
   },
   {
     "id": "bluewood",
@@ -6514,7 +6672,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://bluewood.com/conditions",
+    "trailMapUrl": "https://bluewood.com/travel"
   },
   {
     "id": "crystal-mountain",
@@ -6557,7 +6717,7 @@
       "Indy"
     ],
     "summitFt": 5450,
-    "baseFt": 4870,
+    "baseFt": 4800,
     "verticalFt": 580,
     "websiteUrl": "https://hurricaneridge.com/",
     "nws": {
@@ -6567,9 +6727,12 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.hurricaneridge.com/hurricane-ridge-forecast/",
+    "trailMapUrl": "https://www.hurricaneridge.com/ski-area-map/",
+    "webcamUrl": "https://www.hurricaneridge.com/hurricane-ridge-forecast/#hurricane-ridge-cams",
+    "trails": 10
   },
   {
     "id": "loup-loup-ski-bowl",
@@ -6584,8 +6747,8 @@
       "Indy"
     ],
     "summitFt": 5280,
-    "baseFt": 4050,
-    "verticalFt": 1230,
+    "baseFt": 4020,
+    "verticalFt": 1240,
     "websiteUrl": "https://skitheloup.org/",
     "nws": {
       "office": "OTX",
@@ -6593,10 +6756,12 @@
       "county": "WAC047"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "summitFt"
+    ],
+    "snowReportUrl": "https://skitheloup.org/mountain/conditions-weather/",
+    "trailMapUrl": "https://skitheloup.org/mountain/winter-fun/alpine-skiing-snowboarding/",
+    "webcamUrl": "https://skitheloup.org/mountain/conditions-weather/",
+    "trails": 10
   },
   {
     "id": "mission-ridge",
@@ -6622,7 +6787,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.missionridge.com/mountain-report/",
+    "trailMapUrl": "https://www.missionridge.com/maps/",
+    "webcamUrl": "https://www.missionridge.com/mountain-report#webcam"
   },
   {
     "id": "mt-baker",
@@ -6662,8 +6830,8 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 5670,
-    "baseFt": 3820,
+    "summitFt": 5845,
+    "baseFt": 4061,
     "verticalFt": 1850,
     "websiteUrl": "https://www.stevenspass.com/site",
     "opensOn": "2026-12-26",
@@ -6673,10 +6841,9 @@
       "county": "WAC033"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trails": 52
   },
   {
     "id": "summit-at-snoqualmie",
@@ -6703,7 +6870,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.summitatsnoqualmie.com/mountain-report",
+    "trailMapUrl": "https://www.summitatsnoqualmie.com/trail-maps",
+    "webcamUrl": "https://www.summitatsnoqualmie.com/webcams"
   },
   {
     "id": "white-pass",
@@ -6731,7 +6901,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://skiwhitepass.com/the-mountain/trail-maps",
+    "webcamUrl": "https://skiwhitepass.com/mountain-cams"
   },
   {
     "id": "alyeska",
@@ -6759,7 +6931,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trails": 76
   },
   {
     "id": "arctic-valley",
@@ -6786,7 +6959,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://arcticvalley.org/conditions/",
+    "trailMapUrl": "https://arcticvalley.org/wp/wp-content/uploads/2022/04/2021trailmap.png",
+    "webcamUrl": "https://arcticvalley.org/conditions/"
   },
   {
     "id": "eaglecrest",
@@ -6800,9 +6976,9 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 2580,
+    "summitFt": 2750,
     "baseFt": 1150,
-    "verticalFt": 1430,
+    "verticalFt": 1620,
     "websiteUrl": "https://skieaglecrest.com/",
     "opensOn": "2026-12-12",
     "nws": {
@@ -6811,10 +6987,12 @@
       "county": "AKC110"
     },
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://skieaglecrest.com/conditions/",
+    "trailMapUrl": "https://skieaglecrest.com/wp-content/uploads/2019/12/Map-Key-Only.pdf",
+    "webcamUrl": "https://skieaglecrest.com/conditions/#webcams",
+    "trails": 36
   },
   {
     "id": "moose-mountain",
@@ -6832,7 +7010,9 @@
       "office": "AFG",
       "zone": "AKZ844",
       "county": "AKC090"
-    }
+    },
+    "trailMapUrl": "https://shredthemoose.com/wp-content/uploads/2017/09/Moose-Mtn-Trail-Map-Color.pdf",
+    "verticalFt": 1300
   },
   {
     "id": "mount-eyak",
@@ -6846,20 +7026,15 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1230,
-    "baseFt": 410,
-    "verticalFt": 820,
+    "summitFt": 1200,
+    "baseFt": 400,
+    "verticalFt": 800,
     "websiteUrl": "https://www.mteyak.org/",
     "nws": {
       "office": "AFC",
       "zone": "AKZ735",
       "county": "AKC063"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    }
   },
   {
     "id": "skeetawk",
@@ -6877,7 +7052,10 @@
       "office": "AFC",
       "zone": "AKZ712",
       "county": "AKC170"
-    }
+    },
+    "snowReportUrl": "https://skeetawk.com/snow-report",
+    "trailMapUrl": "https://skeetawk.com/trail-map",
+    "webcamUrl": "https://skeetawk.com/webcams"
   },
   {
     "id": "ski-land-mt-aurora",
@@ -6904,7 +7082,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://skilandfairbanks.com/map/"
   },
   {
     "id": "castle-mountain",
@@ -6918,16 +7097,15 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 7410,
-    "baseFt": 4620,
-    "verticalFt": 2790,
+    "summitFt": 7529,
+    "baseFt": 4675,
+    "verticalFt": 2845,
     "websiteUrl": "https://www.skicastle.ca",
     "opensOn": "2026-12-12",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.skicastle.ca/snowreport/",
+    "trailMapUrl": "https://www.skicastle.ca/wintermaps/",
+    "webcamUrl": "https://www.skicastle.ca/webcams/",
+    "trails": 115
   },
   {
     "id": "lake-louise",
@@ -6942,16 +7120,18 @@
       "Ikon",
       "Mountain Collective"
     ],
-    "summitFt": 8670,
+    "summitFt": 8650,
     "baseFt": 5400,
-    "verticalFt": 3270,
+    "verticalFt": 3250,
     "websiteUrl": "https://www.skilouise.com/",
     "opensOn": "2026-11-06",
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.skilouise.com/snow-conditions/",
+    "trailMapUrl": "https://www.skilouise.com/explore-winter/winter-ski-ride/lift-runs-parks-status/",
+    "webcamUrl": "https://www.skilouise.com/mountain-cam/",
+    "trails": 170
   },
   {
     "id": "marmot-basin",
@@ -6965,16 +7145,15 @@
     "passes": [
       "Mountain Collective"
     ],
-    "summitFt": 8210,
-    "baseFt": 5650,
-    "verticalFt": 2560,
+    "summitFt": 8570,
+    "baseFt": 5570,
+    "verticalFt": 3000,
     "websiteUrl": "https://www.skimarmot.com",
     "opensOn": "2026-11-25",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.skimarmot.com/mountain/weather-conditions/",
+    "trailMapUrl": "https://www.skimarmot.com/mountain/trail-map-lift-status/",
+    "webcamUrl": "https://www.skimarmot.com/mountain/weather-conditions/",
+    "trails": 91
   },
   {
     "id": "mt-norquay",
@@ -6997,7 +7176,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://banffnorquay.com/conditions/",
+    "trailMapUrl": "https://banffnorquay.com/trail-map/",
+    "webcamUrl": "https://banffnorquay.com/webcam/"
   },
   {
     "id": "nakiska",
@@ -7011,16 +7193,15 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 7930,
-    "baseFt": 4920,
-    "verticalFt": 3010,
+    "summitFt": 7415,
+    "baseFt": 5003,
+    "verticalFt": 2412,
     "websiteUrl": "https://www.skinakiska.com",
     "opensOn": "2026-11-07",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://skinakiska.com/conditions/snow-report/",
+    "trailMapUrl": "https://skinakiska.com/discover-nakiska/resort-map/",
+    "webcamUrl": "https://skinakiska.com/conditions/mountain-cam/",
+    "trails": 71
   },
   {
     "id": "pass-powderkeg-ski",
@@ -7036,13 +7217,16 @@
     ],
     "summitFt": 5210,
     "baseFt": 4240,
-    "verticalFt": 970,
+    "verticalFt": 1000,
     "websiteUrl": "https://www.passpowderkeg.com/",
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.passpowderkeg.com/home/snow-report/",
+    "trailMapUrl": "https://www.passpowderkeg.com/home/trail-map-2/",
+    "webcamUrl": "https://www.passpowderkeg.com/home/snowcam/",
+    "trails": 27
   },
   {
     "id": "sunshine-village",
@@ -7066,7 +7250,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.skibanff.com/the-mountain/mountain-report/current-conditions",
+    "trailMapUrl": "https://www.skibanff.com/the-mountain/lifts-terrain/trail-maps",
+    "webcamUrl": "https://www.skibanff.com/the-mountain/mountain-report/webcams"
   },
   {
     "id": "apex-mountain",
@@ -7082,14 +7269,17 @@
     ],
     "summitFt": 7130,
     "baseFt": 5270,
-    "verticalFt": 1860,
+    "verticalFt": 2000,
     "websiteUrl": "https://apexresort.com/",
     "opensOn": "2026-12-12",
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://apexresort.com/weather/",
+    "trailMapUrl": "https://apexresort.com/wp-content/uploads/2023/12/Apex-Mountain-Winter-Trail-Map-2023-PDF.pdf",
+    "webcamUrl": "https://apexresort.com/weather/#live-webcams",
+    "trails": 85
   },
   {
     "id": "baldy-mountain",
@@ -7103,16 +7293,18 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 6950,
-    "baseFt": 5680,
+    "summitFt": 7580,
+    "baseFt": 5665,
     "verticalFt": 1270,
     "websiteUrl": "https://baldyresort.com/",
     "opensOn": "2026-11-28",
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://baldyresort.com/baldy-weather-cams/",
+    "trailMapUrl": "https://baldyresort.com/wp-content/uploads/2025/11/baldy-trail-map.webp",
+    "webcamUrl": "https://baldyresort.com/baldy-weather-cams/#webcams",
+    "trails": 35
   },
   {
     "id": "big-white",
@@ -7135,7 +7327,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.bigwhite.com/daily-snow-report",
+    "trailMapUrl": "https://www.bigwhite.com/explore/mountain-info/maps",
+    "webcamUrl": "https://www.bigwhite.com/mountain-conditions/webcams",
+    "trails": 119
   },
   {
     "id": "cypress-mountain",
@@ -7158,7 +7354,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.cypressmountain.com/mountain-report",
+    "trailMapUrl": "https://www.cypressmountain.com/trail-maps-and-stats",
+    "webcamUrl": "https://www.cypressmountain.com/webcams",
+    "trails": 61
   },
   {
     "id": "fairmont-hot-springs",
@@ -7180,7 +7380,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://document-tc.galaxy.tf/wdpdf-db5so183ffl9taa5ok9hpjeqf/file.pdf?download=true",
+    "webcamUrl": "https://www.fairmonthotsprings.com/resort-webcams",
+    "trails": 14
   },
   {
     "id": "fernie",
@@ -7194,16 +7397,14 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 6880,
-    "baseFt": 3470,
-    "verticalFt": 3410,
+    "summitFt": 7000,
+    "baseFt": 3450,
+    "verticalFt": 3550,
     "websiteUrl": "https://www.skifernie.com",
     "opensOn": "2026-12-05",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://skifernie.com/conditions/snow-report/",
+    "trailMapUrl": "https://skifernie.com/discover-fernie/resort-map/",
+    "webcamUrl": "https://skifernie.com/conditions/mountain-cam/"
   },
   {
     "id": "grouse-mountain",
@@ -7224,7 +7425,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.grousemountain.com/current_conditions",
+    "trailMapUrl": "https://www.grousemountain.com/maps/winter-map",
+    "webcamUrl": "https://www.grousemountain.com/web-cams"
   },
   {
     "id": "hudson-bay-mountain",
@@ -7240,14 +7444,16 @@
     ],
     "summitFt": 5480,
     "baseFt": 3750,
-    "verticalFt": 1730,
-    "websiteUrl": "https://hudsonbaymountain.ca/",
+    "verticalFt": 1759,
+    "websiteUrl": "https://hudsonbaymountain.com/",
     "opensOn": "2026-11-21",
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.hudsonbaymountain.com/snowreport",
+    "trailMapUrl": "https://www.hudsonbaymountain.com/trailmap",
+    "trails": 44
   },
   {
     "id": "kicking-horse",
@@ -7261,16 +7467,15 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 7950,
-    "baseFt": 4140,
-    "verticalFt": 3810,
+    "summitFt": 8218,
+    "baseFt": 3900,
+    "verticalFt": 4314,
     "websiteUrl": "https://kickinghorseresort.com/",
     "opensOn": "2026-12-11",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://kickinghorseresort.com/conditions/snow-report/",
+    "trailMapUrl": "https://kickinghorseresort.com/discover-kickinghorse/resort-map/",
+    "webcamUrl": "https://kickinghorseresort.com/conditions/mountain-cam/",
+    "trails": 120
   },
   {
     "id": "kimberley",
@@ -7284,16 +7489,15 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 6250,
-    "baseFt": 4050,
-    "verticalFt": 2200,
+    "summitFt": 6500,
+    "baseFt": 4035,
+    "verticalFt": 2465,
     "websiteUrl": "https://www.skikimberley.com",
     "opensOn": "2026-12-12",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://skikimberley.com/conditions/snow-report/",
+    "trailMapUrl": "https://skikimberley.com/discover-kimberley/resort-map/",
+    "webcamUrl": "https://skikimberley.com/conditions/mountain-cam/",
+    "trails": 80
   },
   {
     "id": "manning-park",
@@ -7307,16 +7511,15 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 5870,
-    "baseFt": 4460,
-    "verticalFt": 1410,
+    "summitFt": 5868,
+    "baseFt": 4451,
+    "verticalFt": 1417,
     "websiteUrl": "https://www.manningpark.com/",
     "opensOn": "2026-12-11",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://manningpark.com/weather-webcams-trail-stats/",
+    "trailMapUrl": "https://manningpark.com/maps-stats/",
+    "webcamUrl": "https://manningpark.com/webcams/",
+    "trails": 35
   },
   {
     "id": "mount-washington",
@@ -7332,14 +7535,16 @@
     ],
     "summitFt": 5150,
     "baseFt": 3550,
-    "verticalFt": 1600,
+    "verticalFt": 1660,
     "websiteUrl": "https://www.mountwashington.ca",
     "opensOn": "2026-12-18",
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.mountwashington.ca/the-mountain/snow-report/",
+    "trailMapUrl": "https://www.mountwashington.ca/the-mountain/maps-guides/",
+    "webcamUrl": "https://www.mountwashington.ca/webcams/"
   },
   {
     "id": "mt-seymour",
@@ -7354,13 +7559,17 @@
     "summitFt": 4120,
     "baseFt": 3060,
     "verticalFt": 1060,
-    "websiteUrl": "https://www.mountseymour.com/",
+    "websiteUrl": "https://mtseymour.ca/",
     "opensOn": "2026-12-19",
     "estimates": [
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://mtseymour.ca/the-mountain/todays-conditions-hours",
+    "trailMapUrl": "https://mtseymour.ca/the-mountain/trail-map",
+    "webcamUrl": "https://mtseymour.ca/the-mountain/todays-conditions-hours",
+    "trails": 40
   },
   {
     "id": "murray-ridge",
@@ -7382,7 +7591,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.murrayridge.com/conditions",
+    "trailMapUrl": "https://www.murrayridge.com/trail-map",
+    "trails": 23
   },
   {
     "id": "panorama",
@@ -7397,16 +7609,15 @@
       "Ikon",
       "Mountain Collective"
     ],
-    "summitFt": 7770,
-    "baseFt": 3740,
-    "verticalFt": 4030,
+    "summitFt": 8038,
+    "baseFt": 3773,
+    "verticalFt": 4265,
     "websiteUrl": "https://www.panoramaresort.com",
     "opensOn": "2026-12-04",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.panoramaresort.com/panorama-today/daily-snow-report",
+    "trailMapUrl": "https://www.panoramaresort.com/while-you-are-here/map",
+    "webcamUrl": "https://www.panoramaresort.com/panorama-today/mountain-webcams/",
+    "trails": 135
   },
   {
     "id": "phoenix-mountain",
@@ -7422,13 +7633,15 @@
     ],
     "summitFt": 4850,
     "baseFt": 4150,
-    "verticalFt": 700,
+    "verticalFt": 800,
     "websiteUrl": "https://skiphoenix.ca/",
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://skiphoenix.ca/index.php/mountain-conditions/",
+    "webcamUrl": "https://skiphoenix.ca/index.php/mountain-conditions/",
+    "trails": 22
   },
   {
     "id": "red-mountain",
@@ -7442,16 +7655,15 @@
     "passes": [
       "Ikon"
     ],
-    "summitFt": 6680,
-    "baseFt": 3790,
-    "verticalFt": 2890,
+    "summitFt": 6807,
+    "baseFt": 3887,
+    "verticalFt": 2919,
     "websiteUrl": "https://www.redresort.com/",
     "opensOn": "2026-12-12",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.redresort.com/report/",
+    "trailMapUrl": "https://www.redresort.com/maps-stats/",
+    "webcamUrl": "https://www.redresort.com/report/",
+    "trails": 111
   },
   {
     "id": "revelstoke",
@@ -7471,11 +7683,10 @@
     "verticalFt": 5620,
     "websiteUrl": "https://www.revelstokemountainresort.com/",
     "opensOn": "2026-12-05",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://www.revelstokemountainresort.com/mountain/conditions/snow-report/",
+    "trailMapUrl": "https://www.revelstokemountainresort.com/discover/about/trail-maps/",
+    "webcamUrl": "https://www.revelstokemountainresort.com/mountain/conditions/webcams/",
+    "trails": 75
   },
   {
     "id": "sasquatch-mountain",
@@ -7498,7 +7709,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://sasquatchmountain.ca/snow-report/",
+    "trailMapUrl": "https://sasquatchmountain.ca/trail-map-2/",
+    "webcamUrl": "https://sasquatchmountain.ca/webcams/",
+    "trails": 37
   },
   {
     "id": "shames-mountain",
@@ -7512,15 +7727,14 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 3810,
-    "baseFt": 2340,
-    "verticalFt": 1470,
-    "websiteUrl": "http://www.shamesmountain.com",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "summitFt": 3900,
+    "baseFt": 2300,
+    "verticalFt": 1600,
+    "websiteUrl": "https://mymountaincoop.ca/",
+    "snowReportUrl": "https://mymountaincoop.ca/shames-mountain/our-mountain/snow-report/",
+    "trailMapUrl": "https://mymountaincoop.ca/shames-mountain/our-mountain/trail-map/",
+    "webcamUrl": "https://mymountaincoop.ca/shames-mountain/our-mountain/snow-report#webcam",
+    "trails": 28
   },
   {
     "id": "silverstar",
@@ -7536,14 +7750,17 @@
     ],
     "summitFt": 6190,
     "baseFt": 3760,
-    "verticalFt": 2430,
+    "verticalFt": 2490,
     "websiteUrl": "https://www.skisilverstar.com/",
     "opensOn": "2026-11-27",
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.skisilverstar.com/the-mountain/weather-conditions/snow-report-forecast/",
+    "trailMapUrl": "https://www.skisilverstar.com/the-mountain/mountain-maps/winter-maps/",
+    "webcamUrl": "https://www.skisilverstar.com/the-mountain/webcams/",
+    "trails": 133
   },
   {
     "id": "sun-peaks",
@@ -7567,7 +7784,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.sunpeaksresort.com/ski-ride/weather-conditions-cams/weather-snow-report",
+    "trailMapUrl": "https://www.sunpeaksresort.com/ski-ride/the-mountain/trail-maps-stats",
+    "webcamUrl": "https://www.sunpeaksresort.com/ski-ride/weather-conditions-cams/webcams",
+    "trails": 144
   },
   {
     "id": "whistler-blackcomb",
@@ -7581,16 +7802,17 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 7410,
-    "baseFt": 2140,
+    "summitFt": 7497,
+    "baseFt": 2214,
     "verticalFt": 5270,
     "websiteUrl": "https://www.whistlerblackcomb.com",
     "opensOn": "2026-11-20",
     "estimates": [
-      "summitFt",
-      "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.whistlerblackcomb.com/the-mountain/mountain-conditions/snow-and-weather-report.aspx",
+    "trailMapUrl": "https://www.whistlerblackcomb.com/the-mountain/about-the-mountain/trail-maps.aspx",
+    "webcamUrl": "https://www.whistlerblackcomb.com/the-mountain/mountain-conditions/mountain-cams.aspx"
   },
   {
     "id": "whitewater",
@@ -7605,13 +7827,17 @@
     "summitFt": 6760,
     "baseFt": 4560,
     "verticalFt": 2200,
-    "websiteUrl": "https://www.skiwhitewater.com/",
+    "websiteUrl": "https://whitewatermountainresort.com/",
     "opensOn": "2026-12-18",
     "estimates": [
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://whitewatermountainresort.com/conditions/",
+    "trailMapUrl": "https://whitewatermountainresort.com/trail-maps/",
+    "webcamUrl": "https://whitewatermountainresort.com/webcams/",
+    "trails": 113
   },
   {
     "id": "marble-mountain",
@@ -7625,15 +7851,14 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 1540,
-    "baseFt": 60,
-    "verticalFt": 1480,
+    "summitFt": 1791,
+    "baseFt": 33,
+    "verticalFt": 1758,
     "websiteUrl": "https://www.skimarble.com/",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "snowReportUrl": "https://skimarble.com/snow-report/",
+    "trailMapUrl": "https://skimarble.com/trail-map/",
+    "webcamUrl": "https://skimarble.com/live-web-cam/",
+    "trails": 43
   },
   {
     "id": "smokey-mountain-ski-club",
@@ -7647,15 +7872,15 @@
     "passes": [
       "Indy"
     ],
-    "summitFt": 2580,
+    "summitFt": 2769,
     "baseFt": 1930,
     "verticalFt": 650,
     "websiteUrl": "http://www.skismokey.ca/",
     "estimates": [
-      "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trails": 24
   },
   {
     "id": "ski-martock",
@@ -7677,7 +7902,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.martock.com/mountain/conditions/",
+    "trailMapUrl": "https://www.martock.com/mountain/trail-map/",
+    "webcamUrl": "https://www.martock.com/mountain/webcam/"
   },
   {
     "id": "blue-mountain-on",
@@ -7698,9 +7926,12 @@
     "opensOn": "2026-12-18",
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://www.bluemountain.ca/mountain/mountain-report",
+    "trailMapUrl": "https://www.bluemountain.ca/about-us/maps",
+    "webcamUrl": "https://www.bluemountain.ca/mountain/webcams",
+    "trails": 43
   },
   {
     "id": "calabogie-peaks",
@@ -7723,7 +7954,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://calabogie.com/trail-status/",
+    "trailMapUrl": "https://calabogie.com/trail-map/",
+    "webcamUrl": "https://calabogie.com/live-webcam/"
   },
   {
     "id": "loch-lomond",
@@ -7746,7 +7980,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.lochlomond.ca/conditions/",
+    "trailMapUrl": "https://www.lochlomond.ca/downhill-trail-map/"
   },
   {
     "id": "mount-st-louis-moonstone",
@@ -7767,7 +8003,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.mountstlouis.com/status/",
+    "trailMapUrl": "https://mountstlouis.com/pdf/MSLM-Trail-Guide.pdf",
+    "webcamUrl": "https://www.mountstlouis.com/webcams/"
   },
   {
     "id": "bromont",
@@ -7789,7 +8028,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.bromontmontagne.com/en/detailed-conditions/",
+    "trailMapUrl": "https://www.bromontmontagne.com/en/maps-of-the-mountain/",
+    "webcamUrl": "https://www.bromontmontagne.com/en/webcams/",
+    "trails": 123
   },
   {
     "id": "camp-fortune",
@@ -7812,7 +8055,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://campfortune.com/en/conditions/",
+    "trailMapUrl": "https://campfortune.com/en/trail-map/",
+    "webcamUrl": "https://campfortune.com/en/webcam/"
   },
   {
     "id": "le-massif",
@@ -7836,7 +8082,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.lemassif.com/en/the-mountain/winter/lifts-trails-grooming",
+    "trailMapUrl": "https://www.lemassif.com/en/winter-trail-maps"
   },
   {
     "id": "mont-edouard",
@@ -7858,7 +8106,9 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://www.montedouard.com/fr/cartes-des-pistes",
+    "webcamUrl": "https://www.montedouard.com/fr/cameradirect"
   },
   {
     "id": "mont-orford",
@@ -7872,14 +8122,16 @@
     "passes": [],
     "summitFt": 2750,
     "baseFt": 1040,
-    "verticalFt": 1710,
-    "websiteUrl": "http://www.orford.com",
+    "verticalFt": 1930,
+    "websiteUrl": "https://montorford.com/",
     "opensOn": "2026-12-04",
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://montorford.com/en-ca/winter/conditions-ski",
+    "trailMapUrl": "https://montorford.com/en-ca/winter/maps-of-the-mountain/",
+    "webcamUrl": "https://montorford.com/en-ca/winter/services/cameras/"
   },
   {
     "id": "mont-sutton",
@@ -7902,7 +8154,8 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://montsutton.com/wp-content/uploads/2023/01/TEMP_CartePistes_2026_WEB.pdf"
   },
   {
     "id": "mont-sainte-anne",
@@ -7916,16 +8169,17 @@
     "passes": [
       "Epic"
     ],
-    "summitFt": 2640,
+    "summitFt": 2630,
     "baseFt": 580,
-    "verticalFt": 2060,
+    "verticalFt": 2050,
     "websiteUrl": "https://mont-sainte-anne.com/en/",
     "opensOn": "2026-11-21",
     "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+      "baseFt"
+    ],
+    "snowReportUrl": "https://mont-sainte-anne.com/en/alpine-skiing-snow-conditions/",
+    "trailMapUrl": "https://mont-sainte-anne.com/en/alpine-skiing-trail-maps/",
+    "trails": 71
   },
   {
     "id": "owl-s-head",
@@ -7948,7 +8202,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://owlshead.com/en/ski-conditions/",
+    "trailMapUrl": "https://owlshead.com/wp-content/uploads/2025/01/OWLS_HEAD_MAP_2024_ARTWORK_WEB_OPTIMIZED-scaled.jpg",
+    "webcamUrl": "https://owlshead.com/webcams/",
+    "trails": 50
   },
   {
     "id": "ski-mont-blanc",
@@ -7969,7 +8227,11 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://skimontblanc.com/en/conditions-pistes-hiver/",
+    "trailMapUrl": "https://skimontblanc.com/en/info-montagne/carte-des-pistes/",
+    "webcamUrl": "https://skimontblanc.com/info-montagne/cameras-web/",
+    "trails": 43
   },
   {
     "id": "sommet-saint-sauveur",
@@ -7984,13 +8246,15 @@
     "summitFt": 1340,
     "baseFt": 630,
     "verticalFt": 710,
-    "websiteUrl": "https://www.sommets.com/fr/montagne-de-ski/sommet-saint-sauveur/",
+    "websiteUrl": "https://www.sommets.com/en/discover-les-sommets/sommet-saint-sauveur-winter/",
     "opensOn": "2026-11-08",
     "estimates": [
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://www.sommets.com/en/what-to-do/skiing-snowboarding/trail-conditions/",
+    "webcamUrl": "https://www.sommets.com/en/webcams/"
   },
   {
     "id": "station-touristique-du-massif-du-sud",
@@ -8013,7 +8277,10 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "snowReportUrl": "https://massifdusud.net/fr/montagne/conditions-ski/",
+    "trailMapUrl": "https://massifdusud.net/en/mountain/ski-maps/",
+    "webcamUrl": "https://massifdusud.net/fr/webcams"
   },
   {
     "id": "stoneham",
@@ -8029,14 +8296,12 @@
     ],
     "summitFt": 1950,
     "baseFt": 810,
-    "verticalFt": 1140,
+    "verticalFt": 1130,
     "websiteUrl": "https://www.ski-stoneham.com",
     "opensOn": "2026-12-04",
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ]
+    "trailMapUrl": "https://ski-stoneham.com/montagne/carte-des-pistes/",
+    "webcamUrl": "https://ski-stoneham.com/webcams/",
+    "trails": 43
   },
   {
     "id": "tremblant",
@@ -8056,10 +8321,12 @@
     "websiteUrl": "https://www.tremblant.ca",
     "opensOn": "2026-11-26",
     "estimates": [
-      "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://www.tremblant.ca/mountain-village/maps",
+    "webcamUrl": "https://www.tremblant.ca/mountain-village/webcams",
+    "trails": 102
   },
   {
     "id": "val-d-irene",
@@ -8081,6 +8348,7 @@
       "summitFt",
       "baseFt",
       "verticalFt"
-    ]
+    ],
+    "trailMapUrl": "https://valdi.ski/en/mountain/map-of-trails.html"
   }
 ]
