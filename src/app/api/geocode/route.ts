@@ -12,10 +12,15 @@ type OpenMeteoPlace = {
   latitude: number;
   longitude: number;
   admin1?: string;
+  country_code?: string;
   population?: number;
 };
 
-// Accepts a US zip code ("05672"), a city ("Burlington") or a city and state ("Burlington, VT").
+/** Snowbox covers the US and Canada. */
+const COUNTRIES = ["US", "CA"];
+
+// Accepts a US zip code ("05672"), a city ("Burlington", "Montreal") or a city and state or
+// province ("Burlington, VT", "Banff, AB").
 export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get("q")?.trim() ?? "";
   if (query.length < 2) {
@@ -29,7 +34,6 @@ export async function GET(request: NextRequest) {
   const params = new URLSearchParams({
     name: place,
     count: "20",
-    countryCode: "US",
     language: "en",
     format: "json",
   });
@@ -42,10 +46,11 @@ export async function GET(request: NextRequest) {
       return Response.json({ error: `Location service returned ${res.status}` }, { status: 502 });
     }
     const data: { results?: OpenMeteoPlace[] } = await res.json();
-    const matches = (data.results ?? []).filter((r) => !state || r.admin1 === state);
-    // Among same-named towns, prefer the Northeast, where the resorts are.
-    const northeast = ["Vermont", "New Hampshire", "Maine", "New York", "Massachusetts", "Connecticut", "Rhode Island"];
-    const best = matches.find((r) => r.admin1 && northeast.includes(r.admin1)) ?? matches[0];
+    // Open-Meteo ranks same-named towns by size, so "Aurora" is Colorado's and "Montreal" Quebec's.
+    const matches = (data.results ?? []).filter(
+      (r) => COUNTRIES.includes(r.country_code ?? "") && (!state || r.admin1 === state),
+    );
+    const best = matches[0];
     if (!best) {
       return Response.json({ error: `Couldn't find "${query}"` }, { status: 404 });
     }

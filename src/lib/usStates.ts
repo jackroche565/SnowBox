@@ -22,10 +22,10 @@ export const PROVINCES: Record<string, string> = {
 /** A mountain's state or province, by code. US and Canadian codes don't overlap. */
 export const PLACE_NAMES: Record<string, string> = { ...US_STATES, ...PROVINCES };
 
-/** Turns "VT", "vt" or "Vermont" into "Vermont"; returns undefined if unrecognized. */
+/** Turns "VT", "vt" or "Vermont" (or "QC", "Quebec") into "Vermont"; returns undefined if unrecognized. */
 export function normalizeState(input: string): string | undefined {
   const trimmed = input.trim();
-  const byCode = US_STATES[trimmed.toUpperCase()];
+  const byCode = PLACE_NAMES[trimmed.toUpperCase()];
   if (byCode) return byCode;
-  return Object.values(US_STATES).find((name) => name.toLowerCase() === trimmed.toLowerCase());
+  return Object.values(PLACE_NAMES).find((name) => name.toLowerCase() === trimmed.toLowerCase());
 }
