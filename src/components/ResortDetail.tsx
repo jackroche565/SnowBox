@@ -14,7 +14,7 @@ import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
 import { formatObservedEnd, useObserved } from "@/components/useObserved";
 import { STAKE_INCHES } from "@/components/SnowStake";
-import { sum, type DailyForecast, type ResortForecast } from "@/lib/forecast";
+import { NEAR_DAYS, sum, type DailyForecast, type ResortForecast } from "@/lib/forecast";
 import { formatDay, formatFeet, formatHour, formatInches, formatTemp } from "@/lib/format";
 import { POWDER_INCHES, last48In } from "@/lib/outlook";
 import {
@@ -167,13 +167,16 @@ function Snow({ resort, forecast }: { resort: Resort; forecast: ResortForecast }
   // NOAA's observed analysis when we have it; the model's own last two days otherwise.
   const observed = useObserved();
   const measured = observed?.last48[resort.id];
-  const fresh = measured ?? last48In(forecast);
+  // The past week comes with the slower part of the forecast; without it, the model has no last 48 hrs.
+  const fresh = measured ?? (forecast.past.length ? last48In(forecast) : null);
   const note =
     measured != null
       ? `Observed by NOAA, to ${formatObservedEnd(observed!.endsAt, resort.timezone)}`
-      : fresh < 1
-        ? lastSnow(forecast)
-        : "Modeled";
+      : fresh == null
+        ? undefined
+        : fresh < 1
+          ? lastSnow(forecast)
+          : "Modeled";
   return (
     <Section
       label="Snow"
@@ -371,7 +374,8 @@ function NextSevenDays({ resort, forecast, detail, today }: { resort: Resort; fo
       label="Next 7 days"
       aside={
         <>
-          Days 8–16 <span className="font-semibold text-ink">{formatInches(forecast.days8to16In)}</span>
+          Days 8–16{" "}
+          <span className="font-semibold text-ink">{forecast.outlook.length > NEAR_DAYS ? formatInches(forecast.days8to16In) : "—"}</span>
           {detail.data && (spread >= DISAGREE_INCHES ? ", models disagree" : ", models agree")}
         </>
       }
