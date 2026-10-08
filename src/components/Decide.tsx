@@ -14,7 +14,7 @@ import { formatDrive, isDrivable, rankDay, type Pick } from "@/lib/decide";
 import { formatDay, formatInches } from "@/lib/format";
 import { POWDER_INCHES } from "@/lib/outlook";
 import { WIND_HOLD_MPH } from "@/lib/resortForecast";
-import { resortsIn } from "@/lib/regions";
+import { regionLabel, resortsIn } from "@/lib/regions";
 import { resortPath } from "@/lib/resorts";
 import { formatOpening, openingDate } from "@/lib/season";
 
@@ -182,7 +182,8 @@ export default function Decide() {
 
         {forecasts && day && (
           <section aria-label={`Mountains ${dayName}`} className="rule-section">
-            {(!anySnow || !anyOpen) && (
+            {mine.length === 0 && <p className="px-4 pt-3.5 text-[14px] text-ink-muted">No {regionLabel(region)} mountains on the passes you chose.</p>}
+            {mine.length > 0 && (!anySnow || !anyOpen) && (
               <div className="px-4 pt-3.5 pb-1 text-[14px]">
                 {!anySnow && <p className="font-semibold">No new snow {dayName}.</p>}
                 {!anyOpen && (
