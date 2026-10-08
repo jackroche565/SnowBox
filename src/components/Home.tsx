@@ -414,7 +414,7 @@ function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: ()
 }
 
 export default function Home() {
-  const { forecasts, forecastState, favoriteIds, savedListsReady } = useAppState();
+  const { forecasts, regionState, favoriteIds, savedListsReady } = useAppState();
   const [editing, setEditing] = useState(false);
   const alerts = useAlerts();
 
@@ -424,6 +424,9 @@ export default function Home() {
     ? [...favorites].sort((a, b) => (forecasts[b.id]?.next7In ?? 0) - (forecasts[a.id]?.next7In ?? 0))
     : favorites;
   const picking = savedListsReady && (favorites.length === 0 || editing);
+  // Your mountains can be in regions other than the chosen one: wait for (or report on) theirs.
+  const states = [...new Set(favorites.map((r) => r.region))].map(regionState);
+  const loaded = !states.includes("loading") && favorites.some((r) => forecasts?.[r.id]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -437,10 +440,10 @@ export default function Home() {
         {savedListsReady && favorites.length > 0 && !editing && (
           <>
             <TerrainBand />
-            {forecasts && <Headline list={favorites} forecasts={forecasts} />}
+            {forecasts && loaded && <Headline list={favorites} forecasts={forecasts} />}
             {alerts && <Warnings list={favorites} alerts={alerts} />}
             <YourWeek list={sorted} forecasts={forecasts} onEdit={() => setEditing(true)} />
-            {forecastState === "error" && (
+            {states.includes("error") && (
               <p className="px-4 pt-3 text-[14px] text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>
             )}
             <footer className="rule-row mt-6 px-4 pt-3 pb-8 text-[11px] text-ink-faint">
