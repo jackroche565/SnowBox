@@ -33,5 +33,6 @@ export function snowNote(forecast: ResortForecast): SnowNote {
   }
   const light = forecast.outlook.findIndex((d) => (d.snowIn ?? 0) >= 0.1);
   if (light !== -1) return { text: `Flurries ${label(forecast.outlook[light].date, light)}`, tone: "none" };
-  return { text: "No snow in 16 days", tone: "none" };
+  // Usually 16 days; only the next 7 if the long-range part of the forecast couldn't be fetched.
+  return { text: `No snow in ${forecast.outlook.length} days`, tone: "none" };
 }

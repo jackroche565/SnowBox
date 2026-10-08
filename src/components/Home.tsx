@@ -61,7 +61,7 @@ function Headline({ list, forecasts }: { list: Resort[]; forecasts: Record<strin
         </Link>
         <p className="mt-1 text-[14px] text-ink-muted">
           {best
-            ? `Biggest day ${formatDay(best.day.date, best.index)}, ${formatInches(best.day.snowIn)}`
+            ? `Biggest day ${best.index === 0 ? "today" : formatDay(best.day.date, best.index)}, ${formatInches(best.day.snowIn)}`
             : next!.index < 7
               ? formatDay(next!.day.date, next!.index)
               : formatShortDate(next!.day.date)}
@@ -149,13 +149,19 @@ function DayCell({ inches, highlight }: { inches: number; highlight: boolean }) 
   );
 }
 
+/** A forecast's day by date (past or upcoming), so mountains in different time zones line up. */
+const dayOf = (forecast: ResortForecast | undefined, date: string) =>
+  forecast?.outlook.find((d) => d.date === date) ?? forecast?.past.find((d) => d.date === date);
+
 function WeekRow({
   resort,
   forecast,
+  dates,
   highlight,
 }: {
   resort: Resort;
   forecast: ResortForecast | undefined;
+  dates: string[];
   highlight: number;
 }) {
   const { myPasses } = useAppState();
@@ -167,7 +173,7 @@ function WeekRow({
           <PassTags passes={resort.passes} held={myPasses} />
         </span>
         {forecast
-          ? forecast.upcoming.map((d, i) => <DayCell key={d.date} inches={d.snowIn ?? 0} highlight={i === highlight} />)
+          ? dates.map((date, i) => <DayCell key={date} inches={dayOf(forecast, date)?.snowIn ?? 0} highlight={i === highlight} />)
           : Array.from({ length: 7 }, (_, i) => <span key={i} />)}
         <span
           className={`type-figure flex items-end justify-end pr-4 pb-2.5 text-[19px] ${
@@ -182,9 +188,11 @@ function WeekRow({
 }
 
 function YourWeek({ list, forecasts, onEdit }: { list: Resort[]; forecasts: Record<string, ResortForecast> | null; onEdit: () => void }) {
-  const days = forecasts ? (Object.values(forecasts)[0]?.upcoming ?? []) : [];
+  // The columns are one of your mountains' 7 days; every row is matched to them by date.
+  const days = list.map((r) => forecasts?.[r.id]).find(Boolean)?.upcoming ?? [];
+  const dates = days.map((d) => d.date);
   // The day with the most snow across your mountains.
-  const totals = days.map((_, i) => list.reduce((t, r) => t + (forecasts?.[r.id]?.upcoming[i]?.snowIn ?? 0), 0));
+  const totals = dates.map((date) => list.reduce((t, r) => t + (dayOf(forecasts?.[r.id], date)?.snowIn ?? 0), 0));
   const top = totals.reduce((m, t, i) => (t > totals[m] ? i : m), 0);
   const highlight = totals[top] >= MEASURABLE ? top : -1;
 
@@ -214,7 +222,7 @@ function YourWeek({ list, forecasts, onEdit }: { list: Resort[]; forecasts: Reco
       </div>
       <ul>
         {list.map((r) => (
-          <WeekRow key={r.id} resort={r} forecast={forecasts?.[r.id]} highlight={highlight} />
+          <WeekRow key={r.id} resort={r} forecast={forecasts?.[r.id]} dates={dates} highlight={highlight} />
         ))}
       </ul>
     </section>
@@ -406,7 +414,7 @@ function MountainPicker({ onToggle, onDone }: { onToggle: () => void; onDone: ()
 }
 
 export default function Home() {
-  const { forecasts, forecastState, favoriteIds, savedListsReady } = useAppState();
+  const { forecasts, regionState, favoriteIds, savedListsReady } = useAppState();
   const [editing, setEditing] = useState(false);
   const alerts = useAlerts();
 
@@ -416,6 +424,9 @@ export default function Home() {
     ? [...favorites].sort((a, b) => (forecasts[b.id]?.next7In ?? 0) - (forecasts[a.id]?.next7In ?? 0))
     : favorites;
   const picking = savedListsReady && (favorites.length === 0 || editing);
+  // Your mountains can be in regions other than the chosen one: wait for (or report on) theirs.
+  const states = [...new Set(favorites.map((r) => r.region))].map(regionState);
+  const loaded = !states.includes("loading") && favorites.some((r) => forecasts?.[r.id]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -429,10 +440,10 @@ export default function Home() {
         {savedListsReady && favorites.length > 0 && !editing && (
           <>
             <TerrainBand />
-            {forecasts && <Headline list={favorites} forecasts={forecasts} />}
+            {forecasts && loaded && <Headline list={favorites} forecasts={forecasts} />}
             {alerts && <Warnings list={favorites} alerts={alerts} />}
             <YourWeek list={sorted} forecasts={forecasts} onEdit={() => setEditing(true)} />
-            {forecastState === "error" && (
+            {states.includes("error") && (
               <p className="px-4 pt-3 text-[14px] text-ink-muted">Forecast unavailable right now. Try again in a few minutes.</p>
             )}
             <footer className="rule-row mt-6 px-4 pt-3 pb-8 text-[11px] text-ink-faint">

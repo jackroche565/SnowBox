@@ -59,12 +59,14 @@ export type Pick = {
   reasons: Reason[];
 };
 
-export function scoreDay(resort: Resort, forecast: ResortForecast, dayIndex: number, origin: LatLon | null): Pick | null {
+/** Scores a resort for one date (YYYY-MM-DD). By date, not position: mountains in a region can sit in
+ *  different time zones, so near midnight one's "today" is another's "tomorrow". */
+export function scoreDay(resort: Resort, forecast: ResortForecast, date: string, origin: LatLon | null): Pick | null {
   // One timeline of past and upcoming days, so "the 48 hours before" works for today too.
   const timeline = [...forecast.past, ...forecast.outlook];
-  const at = forecast.past.length + dayIndex;
+  const at = timeline.findIndex((d) => d.date === date);
+  if (at === -1) return null;
   const day = timeline[at];
-  if (!day) return null;
 
   const snowIn = day.snowIn ?? 0;
   const priorIn = timeline.slice(Math.max(0, at - 2), at).reduce((t, d) => t + (d.snowIn ?? 0), 0);
@@ -99,20 +101,21 @@ export const RANK_BY: Record<RankBy, string> = {
 };
 
 const byName = (a: Pick, b: Pick) => a.resort.name.localeCompare(b.resort.name);
+const shownSnow = (p: Pick) => (p.snowIn < 0.1 ? 0 : Math.round(p.snowIn * 10) / 10);
 const byDrive = (a: Pick, b: Pick) => (a.driveHours ?? 0) - (b.driveHours ?? 0);
 
 const SORTS: Record<RankBy, (a: Pick, b: Pick) => number> = {
   // The blend: snow, rain, wind and drive time together (weights above).
   overall: (a, b) => b.score - a.score || byDrive(a, b) || byName(a, b),
-  // Snow on the day, then snow just before it; distance only breaks ties.
-  snow: (a, b) => b.snowIn - a.snowIn || b.priorIn - a.priorIn || byDrive(a, b) || byName(a, b),
+  // Snow on the day only, as shown (to the tenth; under 0.1" is none); ties go closest first.
+  snow: (a, b) => shownSnow(b) - shownSnow(a) || byDrive(a, b) || byName(a, b),
   closest: (a, b) => byDrive(a, b) || b.snowIn - a.snowIn || byName(a, b),
 };
 
 export function rankDay(
   list: Resort[],
   forecasts: Record<string, ResortForecast>,
-  dayIndex: number,
+  date: string,
   origin: LatLon | null,
   maxDriveHours: number | null,
   rankBy: RankBy = "overall",
@@ -122,7 +125,7 @@ export function rankDay(
   return list
     .flatMap((resort) => {
       const forecast = forecasts[resort.id];
-      const pick = forecast && scoreDay(resort, forecast, dayIndex, origin);
+      const pick = forecast && scoreDay(resort, forecast, date, origin);
       if (!pick || (!pick.open && !includeClosed)) return [];
       if (maxDriveHours != null && pick.driveHours != null && pick.driveHours > maxDriveHours) return [];
       return [pick];
@@ -137,8 +140,9 @@ export function bestThisWeek(
   origin: LatLon | null,
 ): { pick: Pick; dayIndex: number } | null {
   let best: { pick: Pick; dayIndex: number } | null = null;
-  for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-    const top = rankDay(list, forecasts, dayIndex, origin, null)[0];
+  const days = list.map((r) => forecasts[r.id]).find(Boolean)?.upcoming ?? [];
+  for (let dayIndex = 0; dayIndex < days.length; dayIndex++) {
+    const top = rankDay(list, forecasts, days[dayIndex].date, origin, null)[0];
     if (top && top.snowIn >= 1 && (!best || top.score > best.pick.score)) best = { pick: top, dayIndex };
   }
   return best;

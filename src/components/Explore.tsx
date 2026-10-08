@@ -18,7 +18,7 @@ import type { ResortForecast } from "@/lib/forecast";
 import { estimateDriveHours, formatDrive, isDrivable } from "@/lib/decide";
 import { SNOW_BUCKETS, formatInches, formatTemp } from "@/lib/format";
 import { snowNote } from "@/lib/outlook";
-import { regionBounds, resortsIn } from "@/lib/regions";
+import { regionBounds, regionLabel, resortsIn } from "@/lib/regions";
 import { resortPath, type Resort } from "@/lib/resorts";
 import { PLACE_NAMES } from "@/lib/usStates";
 
@@ -110,13 +110,26 @@ function useRadarTime(on: boolean): string | null {
 }
 
 /** Top left of the map: which layer, and a key for it. */
-function LayerPanel({ layer, onChange, observedEnd }: { layer: Layer; onChange: (l: Layer) => void; observedEnd: string | null }) {
+function LayerPanel({
+  layer,
+  onChange,
+  observedEnd,
+  observedCovers,
+}: {
+  layer: Layer;
+  onChange: (l: Layer) => void;
+  observedEnd: string | null;
+  /** Whether NOAA's observed snow (lower 48 only) covers any mountain in the region. */
+  observedCovers: boolean;
+}) {
   const radarTime = useRadarTime(layer === "radar");
   return (
     <div className="absolute top-0 right-0 left-0 z-10 bg-snow/90 px-3 pt-2.5 pb-2 text-[11px] lg:right-auto">
       <SegmentedControl label="Map shows" value={layer} onChange={onChange} segments={LAYERS} />
       {layer === "radar" ? (
         <p className="mt-1.5 text-ink-muted">{radarTime ? `NOAA radar at ${formatObservedEnd(radarTime, viewerTimeZone())}.` : "Loading radar…"}</p>
+      ) : layer === "fell" && !observedCovers ? (
+        <p className="mt-1.5 text-ink-muted">NOAA&apos;s observed snow covers the lower 48 states only.</p>
       ) : (
         <>
           <ul className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5">
@@ -273,7 +286,12 @@ export default function Explore() {
             radar={layer === "radar"}
             frame={frame}
           />
-          <LayerPanel layer={layer} onChange={setLayer} observedEnd={observed?.endsAt ?? null} />
+          <LayerPanel
+            layer={layer}
+            onChange={setLayer}
+            observedEnd={observed?.endsAt ?? null}
+            observedCovers={inRegion.some((r) => r.country === "US" && r.state !== "AK")}
+          />
           {selected && (
             <PreviewPanel resort={selected.resort} forecast={forecasts?.[selected.resort.id]} onClose={() => setSelectedId(null)} />
           )}
@@ -303,7 +321,11 @@ export default function Explore() {
               </li>
             ))}
           </ul>
-          {visible.length === 0 && <p className="px-4 py-4 text-[15px] text-ink-muted">No mountains match “{query}”.</p>}
+          {visible.length === 0 && (
+            <p className="px-4 py-4 text-[15px] text-ink-muted">
+              {query.trim() ? `No mountains match “${query}”.` : `No ${regionLabel(region)} mountains on the passes you chose.`}
+            </p>
+          )}
           <p className="rule-row px-4 pt-3 text-[11px] text-ink-faint">
             Forecasts from{" "}
             <a className="underline" href="https://open-meteo.com/">

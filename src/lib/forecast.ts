@@ -150,7 +150,8 @@ export function parseLocation(loc: OpenMeteoLocation, timeZone: string, now = ne
     gustMph: daily?.wind_gusts_10m_max?.[i] ?? null,
     rainIn: toInches(daily?.rain_sum?.[i], loc.daily_units?.rain_sum),
   }));
-  const past = days.filter((d) => d.date < today);
+  // The last 7 days only: a cached response from before local midnight reaches back one day further.
+  const past = days.filter((d) => d.date < today).slice(-7);
   const outlook = days.filter((d) => d.date >= today);
   const snowOver = (list: DailyForecast[]) => sum(list.map((d) => d.snowIn));
 

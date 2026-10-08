@@ -9,11 +9,13 @@ const NEAR_SECONDS = 3600;
 const FAR_SECONDS = 6 * 3600;
 /** Locations per Open-Meteo request, to keep URLs and responses a sensible size. */
 const CHUNK = 100;
+/** Give up on a slow upstream rather than leave the page loading; the other part may still arrive. */
+const TIMEOUT_MS = 15_000;
 
 async function fetchAll(urls: string[], revalidate: number): Promise<OpenMeteoLocation[]> {
   const bodies = await Promise.all(
     urls.map(async (url) => {
-      const res = await fetch(url, { next: { revalidate } });
+      const res = await fetch(url, { next: { revalidate }, signal: AbortSignal.timeout(TIMEOUT_MS) });
       if (!res.ok) throw new Error(`Forecast service returned ${res.status}`);
       return asLocations(await res.json());
     }),
