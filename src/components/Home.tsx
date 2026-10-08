@@ -149,13 +149,19 @@ function DayCell({ inches, highlight }: { inches: number; highlight: boolean }) 
   );
 }
 
+/** A forecast's day by date (past or upcoming), so mountains in different time zones line up. */
+const dayOf = (forecast: ResortForecast | undefined, date: string) =>
+  forecast?.outlook.find((d) => d.date === date) ?? forecast?.past.find((d) => d.date === date);
+
 function WeekRow({
   resort,
   forecast,
+  dates,
   highlight,
 }: {
   resort: Resort;
   forecast: ResortForecast | undefined;
+  dates: string[];
   highlight: number;
 }) {
   const { myPasses } = useAppState();
@@ -167,7 +173,7 @@ function WeekRow({
           <PassTags passes={resort.passes} held={myPasses} />
         </span>
         {forecast
-          ? forecast.upcoming.map((d, i) => <DayCell key={d.date} inches={d.snowIn ?? 0} highlight={i === highlight} />)
+          ? dates.map((date, i) => <DayCell key={date} inches={dayOf(forecast, date)?.snowIn ?? 0} highlight={i === highlight} />)
           : Array.from({ length: 7 }, (_, i) => <span key={i} />)}
         <span
           className={`type-figure flex items-end justify-end pr-4 pb-2.5 text-[19px] ${
@@ -182,9 +188,11 @@ function WeekRow({
 }
 
 function YourWeek({ list, forecasts, onEdit }: { list: Resort[]; forecasts: Record<string, ResortForecast> | null; onEdit: () => void }) {
-  const days = forecasts ? (Object.values(forecasts)[0]?.upcoming ?? []) : [];
+  // The columns are one of your mountains' 7 days; every row is matched to them by date.
+  const days = list.map((r) => forecasts?.[r.id]).find(Boolean)?.upcoming ?? [];
+  const dates = days.map((d) => d.date);
   // The day with the most snow across your mountains.
-  const totals = days.map((_, i) => list.reduce((t, r) => t + (forecasts?.[r.id]?.upcoming[i]?.snowIn ?? 0), 0));
+  const totals = dates.map((date) => list.reduce((t, r) => t + (dayOf(forecasts?.[r.id], date)?.snowIn ?? 0), 0));
   const top = totals.reduce((m, t, i) => (t > totals[m] ? i : m), 0);
   const highlight = totals[top] >= MEASURABLE ? top : -1;
 
@@ -214,7 +222,7 @@ function YourWeek({ list, forecasts, onEdit }: { list: Resort[]; forecasts: Reco
       </div>
       <ul>
         {list.map((r) => (
-          <WeekRow key={r.id} resort={r} forecast={forecasts?.[r.id]} highlight={highlight} />
+          <WeekRow key={r.id} resort={r} forecast={forecasts?.[r.id]} dates={dates} highlight={highlight} />
         ))}
       </ul>
     </section>
