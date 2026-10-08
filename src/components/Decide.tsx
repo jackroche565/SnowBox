@@ -149,7 +149,7 @@ export default function Decide() {
   const mine = inRegion.filter((r) => onMyPasses(r.passes, myPasses));
   // Most snow first (ties, including no snow at all, go closest first), or simply closest first.
   // By date: the region's mountains can sit in different time zones.
-  const rank = (date: string, by: View) => (forecasts ? rankDay(mine, forecasts, date, origin, null, by, true) : []);
+  const rank = (date: string, by: View) => (forecasts ? rankDay(mine, forecasts, date, origin, by, true) : []);
   const picks = day ? rank(day.date, view) : [];
   const strip = days.map((d) => ({ date: d.date, maxIn: Math.max(0, ...rank(d.date, "snow").map((p) => p.snowIn)) }));
 
