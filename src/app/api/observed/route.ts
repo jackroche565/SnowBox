@@ -7,7 +7,10 @@ import { resorts } from "@/lib/resorts";
 const usResorts = resorts.filter((r) => r.country === "US" && r.state !== "AK");
 const REVALIDATE_SECONDS = 3600;
 
-const get = (url: string) => fetch(url, { next: { revalidate: REVALIDATE_SECONDS } });
+/** Give up on a slow download rather than leave the page waiting. */
+const TIMEOUT_MS = 20_000;
+
+const get = (url: string) => fetch(url, { next: { revalidate: REVALIDATE_SECONDS }, signal: AbortSignal.timeout(TIMEOUT_MS) });
 
 /** Observed snowfall over the last 24 and 48 hours at every resort, from the newest NOAA analysis. */
 export async function GET() {

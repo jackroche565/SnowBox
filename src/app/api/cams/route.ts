@@ -4,6 +4,8 @@ import { resorts } from "@/lib/resorts";
 // Resorts sometimes restart a stream under a new video id. YouTube's oEmbed answers only for
 // videos that exist and allow embedding, so a dead cam drops out and the page links instead.
 const REVALIDATE_SECONDS = 6 * 3600;
+/** A cam that doesn't answer in time counts as down. */
+const TIMEOUT_MS = 8_000;
 
 export type CamsResponse = { working: string[] };
 
@@ -15,7 +17,7 @@ export async function GET() {
   const ids = resorts.flatMap((r) => r.liveCams?.map((c) => c.youtube) ?? []);
   const checks = await Promise.all(
     ids.map((id) =>
-      fetch(oembed(id), { next: { revalidate: REVALIDATE_SECONDS } })
+      fetch(oembed(id), { next: { revalidate: REVALIDATE_SECONDS }, signal: AbortSignal.timeout(TIMEOUT_MS) })
         .then((res) => res.ok)
         .catch(() => false),
     ),

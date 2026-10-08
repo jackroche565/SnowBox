@@ -2336,7 +2336,7 @@
     "summitFt": 1940,
     "baseFt": 940,
     "verticalFt": 1000,
-    "websiteUrl": "Montage Mountain Ski Resort",
+    "websiteUrl": "https://www.montagemountainresorts.com/",
     "opensOn": "2026-12-09",
     "nws": {
       "office": "BGM",
@@ -2364,7 +2364,7 @@
     "summitFt": 1350,
     "baseFt": 770,
     "verticalFt": 580,
-    "websiteUrl": "roundtopmountainresort.com",
+    "websiteUrl": "https://www.skiroundtop.com/",
     "opensOn": "2026-12-12",
     "nws": {
       "office": "CTP",
@@ -7994,7 +7994,7 @@
   },
   {
     "id": "station-touristique-du-massif-du-sud",
-    "name": "Station  touristique du Massif du Sud",
+    "name": "Station touristique du Massif du Sud",
     "state": "QC",
     "country": "CA",
     "region": "canada-east",

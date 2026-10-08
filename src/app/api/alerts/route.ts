@@ -4,6 +4,8 @@ import { resorts } from "@/lib/resorts";
 
 // Warnings change within minutes of being issued; every visitor shares a 10-minute copy.
 const REVALIDATE_SECONDS = 600;
+/** The weather service can be slow; give up rather than leave the page waiting. */
+const TIMEOUT_MS = 10_000;
 
 export type AlertsResponse = { alerts: Record<string, NwsAlert[]> };
 
@@ -11,7 +13,11 @@ export type AlertsResponse = { alerts: Record<string, NwsAlert[]> };
 export async function GET() {
   await connection();
   try {
-    const res = await fetch(alertsUrl(), { headers: NWS_HEADERS, next: { revalidate: REVALIDATE_SECONDS } });
+    const res = await fetch(alertsUrl(), {
+      headers: NWS_HEADERS,
+      next: { revalidate: REVALIDATE_SECONDS },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
     if (!res.ok) return Response.json({ error: `Weather service returned ${res.status}` }, { status: 502 });
     const area = parseAlerts(await res.json());
     const alerts: Record<string, NwsAlert[]> = {};

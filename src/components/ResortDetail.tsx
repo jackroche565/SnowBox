@@ -14,7 +14,7 @@ import SegmentedControl from "@/components/SegmentedControl";
 import SiteHeader from "@/components/SiteHeader";
 import { formatObservedEnd, useObserved } from "@/components/useObserved";
 import { STAKE_INCHES } from "@/components/SnowStake";
-import { sum, type DailyForecast, type ResortForecast } from "@/lib/forecast";
+import { NEAR_DAYS, sum, type DailyForecast, type ResortForecast } from "@/lib/forecast";
 import { formatDay, formatFeet, formatHour, formatInches, formatTemp } from "@/lib/format";
 import { POWDER_INCHES, last48In } from "@/lib/outlook";
 import {
@@ -167,13 +167,16 @@ function Snow({ resort, forecast }: { resort: Resort; forecast: ResortForecast }
   // NOAA's observed analysis when we have it; the model's own last two days otherwise.
   const observed = useObserved();
   const measured = observed?.last48[resort.id];
-  const fresh = measured ?? last48In(forecast);
+  // The past week comes with the slower part of the forecast; without it, the model has no last 48 hrs.
+  const fresh = measured ?? (forecast.past.length ? last48In(forecast) : null);
   const note =
     measured != null
       ? `Observed by NOAA, to ${formatObservedEnd(observed!.endsAt, resort.timezone)}`
-      : fresh < 1
-        ? lastSnow(forecast)
-        : "Modeled";
+      : fresh == null
+        ? undefined
+        : fresh < 1
+          ? lastSnow(forecast)
+          : "Modeled";
   return (
     <Section
       label="Snow"
@@ -287,6 +290,7 @@ type Note = { key: string; wind?: boolean; lead: string; rest?: string };
 /** Plain sentences under the chart: the opening date, the storm or a refreeze, and wind holds. */
 function Notes({ resort, forecast, detail, today }: { resort: Resort; forecast: ResortForecast; detail: ResortDetailForecast | null; today: string }) {
   const notes: Note[] = [];
+  const dayName = (date: string) => (date === today ? "today" : weekday(date));
 
   if (!isOpenOn(resort, today)) {
     notes.push(
@@ -301,14 +305,14 @@ function Notes({ resort, forecast, detail, today }: { resort: Resort; forecast: 
     const crust = refreeze(detail.base.hours) ?? refreeze(detail.summit.hours);
     const line = snowLine(detail.summit, detail.base);
     if (crust && (!storm || crust.wetAt < storm.start)) {
-      notes.push({ key: "crust", lead: "Firm, icy snow likely.", rest: `Rain ${formatDay(crust.wetAt.slice(0, 10), 1)}, then ${formatTemp(crust.lowF)}.` });
+      notes.push({ key: "crust", lead: "Firm, icy snow likely.", rest: `Rain ${dayName(crust.wetAt.slice(0, 10))}, then ${formatTemp(crust.lowF)}.` });
     } else if (storm) {
       const quality = snowQuality(storm.tempF);
       const beforeLifts = Number(storm.end.slice(11, 13)) < FIRST_CHAIR_HOUR;
       const lead =
         storm.snowIn >= POWDER_INCHES
-          ? `Powder ${weekday(storm.end.slice(0, 10))}.`
-          : `${formatInches(storm.snowIn)} ${weekday(storm.start.slice(0, 10))}.`;
+          ? `Powder ${dayName(storm.end.slice(0, 10))}.`
+          : `${formatInches(storm.snowIn)} ${dayName(storm.start.slice(0, 10))}.`;
       const rest = [
         `Snow ${formatWhen(storm.start, today)} to ${
           storm.end.slice(0, 10) === storm.start.slice(0, 10) ? formatHour(storm.end) : formatWhen(storm.end, today)
@@ -334,7 +338,7 @@ function Notes({ resort, forecast, detail, today }: { resort: Resort; forecast: 
     notes.push({
       key: "wind",
       wind: true,
-      lead: `Wind hold possible ${windyDay.date === today ? "today" : weekday(windyDay.date)}.`,
+      lead: `Wind hold possible ${dayName(windyDay.date)}.`,
       rest: `Gusts to ${Math.round(windyDay.gustMph!)} mph.`,
     });
   }
@@ -356,10 +360,11 @@ function Notes({ resort, forecast, detail, today }: { resort: Resort; forecast: 
 }
 
 function NextSevenDays({ resort, forecast, detail, today }: { resort: Resort; forecast: ResortForecast; detail: DetailState; today: string }) {
-  // Week two: one figure, with whether the three models agree.
-  const late = detail.data?.models.slice(7) ?? [];
+  // Week two: one figure, with whether the three models agree. GEM stops after about 10 days and
+  // ECMWF after 15, so compare them only on the days every model covers.
+  const late = (detail.data?.models.slice(7) ?? []).filter((d) => MODELS.every((m) => d.byModel[m.id] != null));
   const totals = MODELS.map((m) => sum(late.map((d) => d.byModel[m.id])));
-  const spread = totals.length ? Math.max(...totals) - Math.min(...totals) : 0;
+  const spread = Math.max(...totals) - Math.min(...totals);
 
   const storm = detail.data ? nextStorm(detail.data.summit.hours) : null;
   const stormDays = storm
@@ -371,8 +376,9 @@ function NextSevenDays({ resort, forecast, detail, today }: { resort: Resort; fo
       label="Next 7 days"
       aside={
         <>
-          Days 8–16 <span className="font-semibold text-ink">{formatInches(forecast.days8to16In)}</span>
-          {detail.data && (spread >= DISAGREE_INCHES ? ", models disagree" : ", models agree")}
+          Days 8–16{" "}
+          <span className="font-semibold text-ink">{forecast.outlook.length > NEAR_DAYS ? formatInches(forecast.days8to16In) : "—"}</span>
+          {late.length > 0 && (spread >= DISAGREE_INCHES ? ", models disagree" : ", models agree")}
         </>
       }
     >
