@@ -12,6 +12,8 @@ export type Origin = LatLon & { label: string };
 export type ForecastState = "loading" | "error" | "ready";
 
 const COUNT_UP_WINDOW_MS = 1500;
+/** Come back to a tab after this long and its forecasts reload. */
+const REFRESH_AFTER_MS = 60 * 60 * 1000;
 
 // Storage keys predate the Snowbox name. Renaming them would drop everyone's saved lists.
 const STORAGE = {
@@ -101,6 +103,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [region, setRegion] = useState<RegionId>(DEFAULT_REGION);
   const [requested, setRequested] = useState<RegionId[]>([]);
   const started = useRef(new Set<RegionId>());
+  // A tab left open (overnight, say) loads fresh forecasts when you come back to it, so "today" stays today.
+  const loadedAt = useRef(0);
+  const [refreshes, setRefreshes] = useState(0);
 
   const [origin, setOrigin] = useState<Origin | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
@@ -137,25 +142,39 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return [...new Set<RegionId>([region, ...favoriteRegions, ...requested])];
   }, [region, requested, favoriteIds]);
   useEffect(() => {
+    loadedAt.current = Date.now();
+    const onVisible = () => {
+      if (document.visibilityState !== "visible" || Date.now() - loadedAt.current < REFRESH_AFTER_MS) return;
+      loadedAt.current = Date.now();
+      started.current.clear();
+      setRefreshes((n) => n + 1);
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, []);
+  useEffect(() => {
     if (!storageLoaded) return;
     for (const r of needed) {
       if (started.current.has(r)) continue;
       started.current.add(r);
-      setStates((prev) => ({ ...prev, [r]: "loading" }));
+      // A refresh keeps showing the old numbers until the new ones arrive.
+      setStates((prev) => (prev[r] === "ready" ? prev : { ...prev, [r]: "loading" }));
       fetch(`/api/forecast?region=${r}`)
         .then((res) => (res.ok ? (res.json() as Promise<ForecastResponse>) : Promise.reject()))
         .then((data) => {
           setForecasts((prev) => ({ ...prev, ...data.forecasts }));
           setStates((prev) => ({ ...prev, [r]: "ready" }));
-          setCountingUp(true);
-          setTimeout(() => setCountingUp(false), COUNT_UP_WINDOW_MS);
+          if (refreshes === 0) {
+            setCountingUp(true);
+            setTimeout(() => setCountingUp(false), COUNT_UP_WINDOW_MS);
+          }
         })
         .catch(() => {
           started.current.delete(r); // try again next time it's needed
-          setStates((prev) => ({ ...prev, [r]: "error" }));
+          setStates((prev) => (prev[r] === "ready" ? prev : { ...prev, [r]: "error" }));
         });
     }
-  }, [needed, storageLoaded]);
+  }, [needed, storageLoaded, refreshes]);
 
   const toggleFavorite = useCallback((id: string) => {
     setFavoriteIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
