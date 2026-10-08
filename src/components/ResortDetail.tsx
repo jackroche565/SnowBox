@@ -290,6 +290,7 @@ type Note = { key: string; wind?: boolean; lead: string; rest?: string };
 /** Plain sentences under the chart: the opening date, the storm or a refreeze, and wind holds. */
 function Notes({ resort, forecast, detail, today }: { resort: Resort; forecast: ResortForecast; detail: ResortDetailForecast | null; today: string }) {
   const notes: Note[] = [];
+  const dayName = (date: string) => (date === today ? "today" : weekday(date));
 
   if (!isOpenOn(resort, today)) {
     notes.push(
@@ -304,14 +305,14 @@ function Notes({ resort, forecast, detail, today }: { resort: Resort; forecast: 
     const crust = refreeze(detail.base.hours) ?? refreeze(detail.summit.hours);
     const line = snowLine(detail.summit, detail.base);
     if (crust && (!storm || crust.wetAt < storm.start)) {
-      notes.push({ key: "crust", lead: "Firm, icy snow likely.", rest: `Rain ${formatDay(crust.wetAt.slice(0, 10), 1)}, then ${formatTemp(crust.lowF)}.` });
+      notes.push({ key: "crust", lead: "Firm, icy snow likely.", rest: `Rain ${dayName(crust.wetAt.slice(0, 10))}, then ${formatTemp(crust.lowF)}.` });
     } else if (storm) {
       const quality = snowQuality(storm.tempF);
       const beforeLifts = Number(storm.end.slice(11, 13)) < FIRST_CHAIR_HOUR;
       const lead =
         storm.snowIn >= POWDER_INCHES
-          ? `Powder ${weekday(storm.end.slice(0, 10))}.`
-          : `${formatInches(storm.snowIn)} ${weekday(storm.start.slice(0, 10))}.`;
+          ? `Powder ${dayName(storm.end.slice(0, 10))}.`
+          : `${formatInches(storm.snowIn)} ${dayName(storm.start.slice(0, 10))}.`;
       const rest = [
         `Snow ${formatWhen(storm.start, today)} to ${
           storm.end.slice(0, 10) === storm.start.slice(0, 10) ? formatHour(storm.end) : formatWhen(storm.end, today)
@@ -337,7 +338,7 @@ function Notes({ resort, forecast, detail, today }: { resort: Resort; forecast: 
     notes.push({
       key: "wind",
       wind: true,
-      lead: `Wind hold possible ${windyDay.date === today ? "today" : weekday(windyDay.date)}.`,
+      lead: `Wind hold possible ${dayName(windyDay.date)}.`,
       rest: `Gusts to ${Math.round(windyDay.gustMph!)} mph.`,
     });
   }

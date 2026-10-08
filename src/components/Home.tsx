@@ -61,7 +61,7 @@ function Headline({ list, forecasts }: { list: Resort[]; forecasts: Record<strin
         </Link>
         <p className="mt-1 text-[14px] text-ink-muted">
           {best
-            ? `Biggest day ${formatDay(best.day.date, best.index)}, ${formatInches(best.day.snowIn)}`
+            ? `Biggest day ${best.index === 0 ? "today" : formatDay(best.day.date, best.index)}, ${formatInches(best.day.snowIn)}`
             : next!.index < 7
               ? formatDay(next!.day.date, next!.index)
               : formatShortDate(next!.day.date)}
