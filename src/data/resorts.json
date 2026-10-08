@@ -816,33 +816,6 @@
     }
   },
   {
-    "id": "granite-gorge",
-    "name": "Granite Gorge",
-    "state": "NH",
-    "country": "US",
-    "region": "northeast",
-    "lat": 42.9688,
-    "lon": -72.2126,
-    "timezone": "America/New_York",
-    "passes": [],
-    "summitFt": 1310,
-    "baseFt": 810,
-    "verticalFt": 500,
-    "websiteUrl": "https://granitegorge.com/",
-    "nws": {
-      "office": "GYX",
-      "zone": "NHZ011",
-      "county": "NHC005"
-    },
-    "estimates": [
-      "summitFt",
-      "baseFt",
-      "verticalFt"
-    ],
-    "snowReportUrl": "https://granitegorge.com/conditions/",
-    "webcamUrl": "https://granitegorge.com/webcam/"
-  },
-  {
     "id": "gunstock",
     "name": "Gunstock",
     "state": "NH",
@@ -2719,8 +2692,8 @@
       "Indy"
     ],
     "summitFt": 3450,
-    "baseFt": 1310,
-    "verticalFt": 2140,
+    "baseFt": 2950,
+    "verticalFt": 500,
     "websiteUrl": "https://obergatlinburg.com/",
     "opensOn": "2026-11-26",
     "nws": {
@@ -2730,8 +2703,7 @@
     },
     "estimates": [
       "summitFt",
-      "baseFt",
-      "verticalFt"
+      "baseFt"
     ],
     "snowReportUrl": "https://www.obergatlinburg.com/slope-report",
     "trailMapUrl": "https://www.obergatlinburg.com/mountain-maps",
